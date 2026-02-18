@@ -13,7 +13,16 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        inter: ["Inter", "sans-serif"],
+        hammersmith: ["Hammersmith One", "sans-serif"],
+      },
       colors: {
+        "bni-red": "#CF2031",
+        "bni-yellow": "#FFD900",
+        "bni-gray": "#817E7E",
+        "bni-lightgray": "#E6E6E6",
+        "bni-darkgray": "#848484",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
