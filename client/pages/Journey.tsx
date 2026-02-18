@@ -4,7 +4,7 @@ import { Mission } from "../components/Mission";
 import { SuccessMap } from "../components/SuccessMap";
 import { Rewards } from "../components/Rewards";
 
-export default function Index() {
+export default function Journey() {
   return (
     <div className="min-h-screen bg-white">
       {/* Main Content */}
