@@ -13,10 +13,11 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Merchandise from "./pages/Merchandise";
 import { Header } from "./components/Header";
+import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+export const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -24,7 +25,7 @@ const App = () => (
       <BrowserRouter>
         <Header />
         <Routes>
-          <Route path="/" element={<Journey />} />
+          <Route path="/" element={<Index />} />
           <Route path="/journey" element={<Journey />} />
           <Route path="/training" element={<Training />} />
           <Route path="/login" element={<Login />} />
