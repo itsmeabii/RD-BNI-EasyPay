@@ -1,15 +1,17 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { trainings, MONTHS, formatPrice } from "@/data/Training";
 import TrainingCard from "@/components/TrainingCard";
 import SearchButton from "@/components/SearchBox";
 import FilterDropdown, { FilterStatus } from "@/components/TrainingFilter";
 import Footer from "@/components/Footer";
+import { useLocation } from "react-router-dom";
 
 export default function TrainingPage() {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [filterMonths, setFilterMonths] = useState<string[]>([]);
   const [cartIds, setCartIds] = useState<number[]>([]);
+  const location = useLocation();
 
   // Filter logic
   const filtered = useMemo(() => {
@@ -60,6 +62,12 @@ export default function TrainingPage() {
     filterStatus === "upcoming" && "Upcoming",
     ...filterMonths,
   ].filter(Boolean) as string[];
+
+  useEffect(() => {
+    if (location.pathname === "/training") {
+      document.getElementById("training-section")?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [location]);
 
   return (
     <div className="min-h-screen">
