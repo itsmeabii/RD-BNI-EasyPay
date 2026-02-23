@@ -1,8 +1,9 @@
-import ShoppingCartButton from "@/components/ShoppingCart";
+import ShoppingCartButton from "@/components/ShoppingCartButton";
+import Training from "./Training";
 
-export default function Index() {
+export default function Home() {
   return (
-    <div className="max-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
         <section className="min-h-[500px] lg:min-h-[600px] relative overflow-hidden">
           {/* Decorative triangular SVG elements */}
@@ -53,16 +54,13 @@ export default function Index() {
               alt="BNI - Cheers to 40 Years"
               className="w-full max-w-5xl h-auto object-contain z-30"
             />
-            {/* Shopping Cart Button - positioned absolutely on larger screens */}
           </div>
         </section>
-        <div className="bg-white py-6 lg:py-8 px-4 sm:px-6">
-          <div className="max-w-7xl mx-auto flex items-center justify-center relative">
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-black text-center px-12 lg:px-0">
-            2026 BNI Taguig Trainings and Workshops
-          </h2>
-          </div>
-        </div>
+        
+        {/* Training Section */}
+        <section id="training-section" className="min-h-[600px] bg-white">
+          <Training />
+        </section>
         <ShoppingCartButton count={0} />
       </main>
   </div>

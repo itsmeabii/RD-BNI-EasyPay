@@ -52,7 +52,7 @@ export default function Header({ userName }: HeaderProps) {
         </Link>
         <nav className="flex items-center gap-3 sm:gap-6 lg:gap-12">
           <Link
-            to="/training"
+            to="/training#top"
             className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
               location.pathname === "/training" ? "text-bni-red" : "text-black"
             }`}
