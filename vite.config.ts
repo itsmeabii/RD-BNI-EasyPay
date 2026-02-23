@@ -19,7 +19,6 @@ function expressPlugin(): Plugin {
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // root: "client",   <-- REMOVE THIS line
   server: {
     host: "::",
     port: 8080,
