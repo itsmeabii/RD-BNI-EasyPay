@@ -5,6 +5,8 @@ import SearchButton from "@/components/SearchBox";
 import FilterDropdown, { FilterStatus } from "@/components/TrainingFilter";
 import Footer from "@/components/Footer";
 import { useLocation } from "react-router-dom";
+import Patterns from "@/components/patterns";
+import { Search } from "lucide-react";
 
 export default function TrainingPage() {
   const [search, setSearch] = useState("");
@@ -70,14 +72,14 @@ export default function TrainingPage() {
   }, [location]);
 
   return (
-    <div className="min-h-screen">
-      <div className="text-center px-6 pt-10 pb-5">
+    <div>
+      <div className="relative z-10 text-center px-6 pt-10 pb-5">
         <h1 className="text-3xl font-extrabold text-gray-900 mb-6 ">
           2026 BNI Taguig Trainings and Workshops
         </h1>
 
         {/* Search + Filter row */}
-        <div className="flex gap-3 max-w-3xl mx-auto items-center">
+         <div className="flex gap-3 max-w-3xl mx-auto items-center z-10">
           <SearchButton value={search} onChange={setSearch} />
           <FilterDropdown
             filterStatus={filterStatus}
@@ -87,7 +89,7 @@ export default function TrainingPage() {
             onClear={clearFilters}
           />
         </div>
-
+        
         {/* Active filter pills */}
         {activeFilterPills.length > 0 && (
           <div className="flex gap-2 justify-center mt-3">
@@ -110,15 +112,15 @@ export default function TrainingPage() {
         </p>
       </div>
 
-      {/* ── Training Grid ── */}
+      {/* Training Grid */}
       <div className="max-w-6xl mx-auto px-6 pb-20">
         {filtered.length === 0 ? (
-          <div className="text-center py-20 text-gray-400">
-            <p className="text-5xl mb-4">🔍</p>
+          <div className="items-center text-center py-20 text-gray-500">
+            <div className="mb-4 flex justify-center"><Search/></div>
             <p className="text-lg font-semibold text-gray-600 mb-1">
               No trainings found
             </p>
-            <p className="text-sm">Try adjusting your search or filters</p>
+            <p className="text-sm">Try searching with other keywords.</p>
           </div>
         ) : (
           MONTHS.filter((m) => grouped[m]).map((month) => (

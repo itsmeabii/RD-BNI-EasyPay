@@ -1,5 +1,6 @@
 import ShoppingCartButton from "@/components/ShoppingCartButton";
 import Training from "./Training";
+import Patterns from "@/components/patterns";
 
 export default function Home() {
   return (
@@ -7,45 +8,11 @@ export default function Home() {
       <main className="flex-grow">
         <section className="min-h-[500px] lg:min-h-[600px] relative overflow-hidden">
           {/* Decorative triangular SVG elements */}
-          <svg
-            className="absolute left-0 top-32 lg:top-24 z-20"
-            width="112"
-            height="90"
-            viewBox="0 0 112 90"
-            fill="#D9D9D9"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M111.789 1.88001L1.26 87.6226L1.45617 2.17327L111.789 1.88001Z"
-              fill="#D9D9D9"
-            />
-          </svg>
-          <svg
-            className="absolute left-28 top-0 lg:top-0 z-20"
-            width="112"
-            height="90"
-            viewBox="0 0 112 90"
-            fill="#D9D9D9"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M111.789 1.88001L1.26 87.6226L1.45617 2.17327L111.789 1.88001Z"
-              fill="#D9D9D9"
-            />
-          </svg>
-          <svg
-            className="absolute left-28 top-20 lg:top-24 z-20"
-            width="112"
-            height="90"
-            viewBox="0 0 112 90"
-            fill="#D9D9D9"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M111.789 1.88001L1.26 87.6226L1.45617 2.17327L111.789 1.88001Z"
-              fill="#D9D9D9"
-            />
-          </svg>
+          <Patterns
+            first="absolute left-1 top-20 lg:top-23 z-20"
+            second="absolute left-28 top-0 z-20"
+            third="absolute left-28 top-20 lg:top-23 z-20"
+          />
 
           {/* Main BNI 40 Years Image */}
           <div className="bg-bni-gray-200 relative flex items-center justify-center py-12 lg:py-16 px-4">
@@ -58,7 +25,12 @@ export default function Home() {
         </section>
         
         {/* Training Section */}
-        <section id="training-section" className="min-h-[600px] bg-white">
+        <section id="training-section" className="min-h-[600px] bg-white relative">
+          <Patterns
+            first="absolute right-1 top-20 z-0"
+            second="absolute right-1 top-0 z-0"
+            third="absolute right-28 top-20 z-0"
+          />
           <Training />
         </section>
         <ShoppingCartButton count={0} />
