@@ -2,13 +2,16 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { trainings, formatPrice } from "@/data/Training";
+import { useCart } from "@/context/CartContext";
+import ShoppingCartButton from "@/components/ShoppingCartButton";
 
 export default function TrainingDetail() {
+  const [dateError, setDateError] = useState(false);
   const { id } = useParams<{ id: string }>();
   const training = trainings.find((t) => t.id === Number(id));
-
   const [activeImage, setActiveImage] = useState(0);
   const [selectedDate, setSelectedDate] = useState("");
+  const { addToCart } = useCart();
 
   if (!training) {
     return (
@@ -22,11 +25,28 @@ export default function TrainingDetail() {
       </div>
     );
   }
+  const selectedDateObj = training.dates.find((d) => d.date === selectedDate);
 
   const prevImage = () =>
     setActiveImage((i) => (i === 0 ? training.images.length - 1 : i - 1));
   const nextImage = () =>
     setActiveImage((i) => (i === training.images.length - 1 ? 0 : i + 1));
+
+   const handleAddToCart = () => {
+    if (!selectedDate) {
+        setDateError(true);
+        return;
+    }
+    setDateError(false);
+        addToCart({
+        id: training.id,
+        title: training.title,
+        price: training.price,
+        thumbnail: training.thumbnail,
+        selectedDate: selectedDateObj?.date,
+        selectedTime: selectedDateObj?.time,
+        });
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -113,22 +133,31 @@ export default function TrainingDetail() {
             </div>
 
             {/* Select Date */}
-            <div className="flex items-center gap-4 mb-6">
-              <label className="text-md font-semibold text-gray-800 whitespace-nowrap">
-                Select Date
-              </label>
-              <select
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="flex-1 border border-gray-300 rounded px-3 py-2 text-md text-gray-500 outline-none focus:border-bni-red"
-              >
-                <option value="">Choose an Option</option>
-                {training.dates.map((d) => (
-                  <option key={d.value} value={d.value}>
-                    {d.label} - {d.time}
-                  </option>
-                ))}
-              </select>
+            <div className="flex flex-col mb-6">
+                <div className="flex gap-4 items-center">
+                    <label className="text-md font-semibold text-gray-800 whitespace-nowrap">
+                        Select Date
+                    </label>         
+                    <select
+                        value={selectedDate}
+                        onChange={(e) => {setSelectedDate(e.target.value); setDateError(false);}}
+                        className="flex-1 border border-gray-300 rounded px-3 py-2 text-md text-gray-500 outline-none focus:border-bni-red"
+                    >
+                        <option value="">Choose an Option</option>
+                        {training.dates.map((d) => (
+                        <option key={d.date} value={d.date}>
+                            {d.date} - {d.time}
+                        </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="pl-[105px] h-5">
+                    {dateError && (
+                        <p className="text-red-500 text-xs mt-1">
+                            Please select a date before adding to cart.
+                        </p>
+                 )}
+                </div>
             </div>
 
             {/* Instructors carousel */}
@@ -163,15 +192,20 @@ export default function TrainingDetail() {
 
             {/* Buttons */}
             <div className="flex gap-3">
-              <button className="bg-bni-red text-white font-semibold text-sm px-6 py-3 rounded-lg hover:opacity-90 transition">
+              <button 
+              onClick={handleAddToCart}
+              className="bg-bni-red text-white font-semibold text-sm px-6 py-3 rounded-lg hover:opacity-90 transition">
                 Add to Cart
               </button>
-              <button className="bg-bni-red text-white font-semibold text-sm px-6 py-3 rounded-lg hover:opacity-90 transition">
+              <button 
+              onClick={handleAddToCart}
+              className="bg-bni-red text-white font-semibold text-sm px-6 py-3 rounded-lg hover:opacity-90 transition">
                 Checkout Now
               </button>
             </div>
           </div>
         </div>
+        <ShoppingCartButton/>
       </div>
     </div>
   );

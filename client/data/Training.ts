@@ -5,8 +5,7 @@ export interface Instructor {
 }
 
 export interface TrainingDate {
-  label: string;
-  value: string;
+  date: string;
   time: string;
 }
 
@@ -51,8 +50,8 @@ export const trainings: Training[] = [
     completed: true,
     completedDate: "12-15-2025",
     dates: [
-      { label: "January 15, 2026", value: "2026-01-15", time: "9:00 AM – 5:00 PM" },
-      { label: "February 20, 2026", value: "2026-02-20", time: "8:00 AM – 4:00 PM" },
+      { date: "January 15, 2026", time: "9:00 AM – 5:00 PM" },
+      { date: "February 20, 2026", time: "8:00 AM – 4:00 PM" },
     ],
     location: "BNI Taguig Back Office, Unit 30B Guimaras Bldg., Bonifacio Heights, Taguig City",
     instructors: [
@@ -89,7 +88,7 @@ export const trainings: Training[] = [
     months: ["January"],
     completed: false,
     dates: [
-      { label: "January 22, 2026", value: "2026-01-22", time: "9:00 AM – 5:00 PM" },
+      { date: "January 22, 2026", time: "9:00 AM – 5:00 PM" },
     ],
     location: "BNI Taguig Back Office, Unit 30B Guimaras Bldg., Bonifacio Heights, Taguig City",
     instructors: [
@@ -121,8 +120,8 @@ export const trainings: Training[] = [
     months: ["January"],
     completed: false,
     dates: [
-      { label: "January 13, 2026", value: "2026-01-13", time: "9:00 AM – 5:00 PM" },
-      { label: "January 14, 2026", value: "2026-01-14", time: "9:00 AM – 3:00 PM" },
+      { date: "January 13, 2026", time: "9:00 AM – 5:00 PM" },
+      { date: "January 14, 2026", time: "9:00 AM – 3:00 PM" },
     ],
     location: "BNI Taguig Back Office, Unit 30B Guimaras Bldg., Bonifacio Heights, Taguig City",
     instructors: [
@@ -154,7 +153,7 @@ export const trainings: Training[] = [
     months: ["February"],
     completed: false,
     dates: [
-      { label: "February 10, 2026", value: "2026-02-10", time: "9:00 AM – 5:00 PM" },
+      { date: "February 10, 2026", time: "9:00 AM – 5:00 PM" },
     ],
     location: "BNI Taguig Back Office, Unit 30B Guimaras Bldg., Bonifacio Heights, Taguig City",
     instructors: [
@@ -186,8 +185,8 @@ export const trainings: Training[] = [
     months: ["February"],
     completed: false,
     dates: [
-      { label: "February 12, 2026", value: "2026-02-12", time: "9:00 AM – 5:00 PM" },
-      { label: "February 13, 2026", value: "2026-02-13", time: "9:00 AM – 12:00 PM" },
+      { date: "February 12, 2026", time: "9:00 AM – 5:00 PM" },
+      { date: "February 13, 2026", time: "9:00 AM – 12:00 PM" },
     ],
     location: "BNI Taguig Back Office, Unit 30B Guimaras Bldg., Bonifacio Heights, Taguig City",
     instructors: [
@@ -219,7 +218,7 @@ export const trainings: Training[] = [
     months: ["March"],
     completed: false,
     dates: [
-      { label: "March 5, 2026", value: "2026-03-05", time: "9:00 AM – 5:00 PM" },
+      { date: "March 5, 2026", time: "9:00 AM – 5:00 PM" },
     ],
     location: "BNI Taguig Back Office, Unit 30B Guimaras Bldg., Bonifacio Heights, Taguig City",
     instructors: [
@@ -251,7 +250,7 @@ export const trainings: Training[] = [
     months: ["March"],
     completed: false,
     dates: [
-      { label: "March 19, 2026", value: "2026-03-19", time: "9:00 AM – 5:00 PM" },
+      { date: "March 19, 2026", time: "9:00 AM – 5:00 PM" },
     ],
     location: "BNI Taguig Back Office, Unit 30B Guimaras Bldg., Bonifacio Heights, Taguig City",
     instructors: [
@@ -283,8 +282,8 @@ export const trainings: Training[] = [
     months: ["April"],
     completed: false,
     dates: [
-      { label: "April 8, 2026", value: "2026-04-08", time: "9:00 AM – 5:00 PM" },
-      { label: "April 9, 2026", value: "2026-04-09", time: "10:00 AM – 3:00 PM" },
+      { date: "April 8, 2026", time: "9:00 AM – 5:00 PM" },
+      { date: "April 9, 2026", time: "10:00 AM – 3:00 PM" },
     ],
     location: "BNI Taguig Back Office, Unit 30B Guimaras Bldg., Bonifacio Heights, Taguig City",
     instructors: [

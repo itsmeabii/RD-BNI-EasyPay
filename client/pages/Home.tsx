@@ -1,8 +1,10 @@
 import ShoppingCartButton from "@/components/ShoppingCartButton";
 import Training from "./Training/Training";
 import Patterns from "@/components/Patterns";
+import { useCart } from "@/context/CartContext";
 
 export default function Home() {
+  const { totalCount } = useCart();
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow">
@@ -33,7 +35,7 @@ export default function Home() {
           />
           <Training />
         </section>
-        <ShoppingCartButton count={0} />
+        <ShoppingCartButton />
       </main>
   </div>
     

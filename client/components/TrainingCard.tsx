@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface TrainingCardProps {
   id: number;
@@ -19,6 +19,7 @@ export default function TrainingCard({
   status,
   onAddToCart,
 }: TrainingCardProps) {
+  const navigate = useNavigate();
   return (
     <div className="bg-white flex flex-col">
       {/* Card Image */}
@@ -56,7 +57,7 @@ export default function TrainingCard({
           </div>
 
           <button
-            onClick={() => onAddToCart(id)}
+            onClick={() => navigate(`/training/${id}`)}
             className="bg-bni-red text-white rounded-full w-9 h-9 flex items-center justify-center hover:opacity-90 transition flex-shrink-0"
             aria-label="Add to cart"
           >

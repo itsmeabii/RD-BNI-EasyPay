@@ -6,12 +6,12 @@ import FilterDropdown, { FilterStatus } from "@/components/TrainingFilter";
 import Footer from "@/components/Footer";
 import { useLocation } from "react-router-dom";
 import { Search } from "lucide-react";
+import { useCart } from "@/context/CartContext";
 
 export default function TrainingPage() {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState<FilterStatus>("all");
   const [filterMonths, setFilterMonths] = useState<string[]>([]);
-  const [cartIds, setCartIds] = useState<number[]>([]);
   const location = useLocation();
 
   // Filter logic
@@ -50,11 +50,6 @@ export default function TrainingPage() {
     });
     return map;
   }, [filtered]);
-
-  // Helpers
-  const handleAddToCart = (id: number) => {
-    setCartIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
-  };
 
   const clearFilters = () => {
     setFilterStatus("all");
@@ -95,12 +90,12 @@ export default function TrainingPage() {
         {/* Active filter pills */}
         {activeFilterPills.length > 0 && (
           <div className="flex gap-2 justify-center mt-3">
-            {activeFilterPills.map((f) => (
+            {activeFilterPills.map((filter) => (
               <span
-                key={f}
+                key={filter}
                 className="bg-red-50 text-bni-red text-xs font-semibold px-3 py-1 rounded-full border border-red-200"
               >
-                {f}
+                {filter}
               </span>
             ))}
           </div>
@@ -140,7 +135,7 @@ export default function TrainingPage() {
                     price={formatPrice(t.price)}
                     image={t.thumbnail}
                     status={t.completed ? "Completed" : null}
-                    onAddToCart={handleAddToCart}
+                    onAddToCart={()=>{}}
                   />
                 ))}
               </div>
