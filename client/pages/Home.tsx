@@ -1,6 +1,6 @@
 import ShoppingCartButton from "@/components/ShoppingCartButton";
-import Training from "./Training";
-import Patterns from "@/components/patterns";
+import Training from "./Training/Training";
+import Patterns from "@/components/Patterns";
 
 export default function Home() {
   return (

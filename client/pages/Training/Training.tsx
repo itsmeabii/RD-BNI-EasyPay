@@ -5,7 +5,6 @@ import SearchButton from "@/components/SearchBox";
 import FilterDropdown, { FilterStatus } from "@/components/TrainingFilter";
 import Footer from "@/components/Footer";
 import { useLocation } from "react-router-dom";
-import Patterns from "@/components/patterns";
 import { Search } from "lucide-react";
 
 export default function TrainingPage() {
@@ -33,18 +32,21 @@ export default function TrainingPage() {
           : !t.completed;
 
       const matchMonth =
-        filterMonths.length === 0 ? true : filterMonths.includes(t.month);
+        filterMonths.length === 0 ? true : t.months.some((m) => filterMonths.includes(m));
 
       return matchSearch && matchStatus && matchMonth;
     });
   }, [search, filterStatus, filterMonths]);
 
   // Group filtered results by month, preserving calendar order
+  // After — adds training under each of its months
   const grouped = useMemo(() => {
     const map: Record<string, typeof trainings> = {};
     filtered.forEach((t) => {
-      if (!map[t.month]) map[t.month] = [];
-      map[t.month].push(t);
+      t.months.forEach((m) => {
+        if (!map[m]) map[m] = [];
+        map[m].push(t);
+      });
     });
     return map;
   }, [filtered]);
@@ -136,7 +138,7 @@ export default function TrainingPage() {
                     title={t.title}
                     description={t.description}
                     price={formatPrice(t.price)}
-                    image={t.image}
+                    image={t.thumbnail}
                     status={t.completed ? "Completed" : null}
                     onAddToCart={handleAddToCart}
                   />

@@ -44,7 +44,6 @@ export default function TrainingCard({
         <p className="text-xs sm:text-sm text-gray-600 mb-3 leading-relaxed">
           {description}
         </p>
-
         {/* Status + Price + Cart */}
         <div className="mt-auto flex items-end justify-between gap-2">
           <div>

@@ -13,6 +13,7 @@ import Signup from "./pages/Signup";
 import Merchandise from "./pages/Merchandise";
 import Header from "./components/Header";
 import Home from "./pages/Home";
+import TrainingDetail from "./pages/Training/[id]/page";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ export const App = () => (
           <Route path="/" element={<Home />} />
           <Route path="/journey" element={<Journey />} />
           <Route path="/training" element={<Home />} />
+          <Route path="/training/:id" element={<TrainingDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/merchandise" element={<Merchandise />} />
