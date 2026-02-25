@@ -80,7 +80,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   };
 
   const checkoutSingle = (item: CartItem) => {
-    setCheckoutItems([item]);
+    const items = [{ ...item, qty: item.qty ?? 1 }];
+    setCheckoutItems(items);
+    return items;
   };
 
   const openCart = () => setIsCartOpen(true);

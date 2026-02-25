@@ -35,7 +35,10 @@ export default function Home() {
           />
           <Training />
         </section>
-        <ShoppingCartButton />
+        <div className="fixed bottom-6 right-6 z-[100]">
+          <ShoppingCartButton />
+        </div>
+  
       </main>
   </div>
     

@@ -27,33 +27,19 @@ export default function Checkout() {
   const [discount, setDiscount]       = useState(0);
   const [payMethod, setPayMethod]     = useState<"paynamics" | "bank">("paynamics");
   const [order, setOrder]             = useState<OrderState | null>(null);
+
   const orderNum  = useRef(`A${10000 + Math.floor(Math.random() * 90000)}`).current;
   const orderDate = useRef(
     new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
   ).current;
+
   const checkoutItems =
     contextItems.length > 0
       ? contextItems
       : (location.state?.checkoutItems ?? []);
+      
   const subtotal = checkoutItems.reduce((s, i) => s + i.price * (i.qty ?? 1), 0);
   const total    = subtotal - discount;
-
-  
-  if (checkoutItems.length === 0) {
-    return (
-      <div className="min-h-screen bg-white flex flex-col items-center justify-center text-center px-6">
-        <div className="text-6xl mb-4">🛒</div>
-        <h2 className="text-2xl font-bold text-gray-700 mb-2">No items to checkout</h2>
-        <p className="text-gray-400 mb-6">Looks like your cart is empty.</p>
-        <button
-          onClick={() => navigate(-1)}
-          className="bg-bni-red text-white font-bold px-6 py-3 rounded-xl hover:opacity-90 transition"
-        >
-          Go Back
-        </button>
-      </div>
-    );
-  }
 
   const handleApplyCoupon = () => {
     const code = coupon.trim().toUpperCase();
@@ -90,6 +76,22 @@ export default function Checkout() {
   };
 
   const stepNum = step === "billing" ? 1 : step === "payment" ? 2 : 3;
+
+   if (checkoutItems.length === 0) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center text-center px-6">
+        <div className="text-6xl mb-4">🛒</div>
+        <h2 className="text-2xl font-bold text-gray-700 mb-2">No items to checkout</h2>
+        <p className="text-gray-400 mb-6">Looks like your cart is empty.</p>
+        <button
+          onClick={() => navigate(-1)}
+          className="bg-bni-red text-white font-bold px-6 py-3 rounded-xl hover:opacity-90 transition"
+        >
+          Go Back
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className=" bg-gray-50">

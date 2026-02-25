@@ -2,7 +2,8 @@ import { useCart } from "@/context/CartContext";
 import { ShoppingCart } from "lucide-react";
 
 export default function ShoppingCartButton() {
-  const {totalCount, openCart} = useCart();
+  const {totalCount, openCart, isCartOpen} = useCart();
+  if (isCartOpen) return null;
   return (
     <button 
     onClick={openCart}

@@ -164,8 +164,10 @@ export function FileUploadZone({ file, onFile, onRemove }: FileUploadZoneProps) 
             <div className="mb-2 opacity-30 flex justify-center">
               <CloudUpload className="w-8 h-8" />
             </div>
-            <p className="text-gray-500 text-sm italic mb-1.5">Drag and drop files here</p>
-            <span className="text-bni-red text-[13px] font-bold underline">or browse files</span>
+            <p className="text-gray-500 text-md italic mb-1.5">Drag and drop files here</p>
+            <p className="text-gray-500 text-xs italic mb-1">Max file size: 2MB<br />File format: jpg, jpeg, png</p>
+            <p className="text-gray-500 text-xs italic">or</p>
+            <span className="text-bni-red text-[13px] font-bold underline">browse files</span>
           </div>
         )}
       </div>

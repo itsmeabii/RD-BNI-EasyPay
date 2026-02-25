@@ -1,6 +1,6 @@
 import { peso } from "@/components/Checkout/OrderSummaryPanel";
 import { OrderState } from "@/data/Checkout";
-
+import { useNavigate } from "react-router-dom";
 interface ConfirmationPageProps {
   order: OrderState;
   onReset: () => void;
@@ -12,6 +12,12 @@ export default function ConfirmationPage({ order, onReset }: ConfirmationPagePro
     ["Payment Method", order.payMethod === "bank" ? "Direct Bank Transfer" : "Paynamics"],
     ["Status",         "Pending Verification"],
   ];
+  const navigate = useNavigate();
+
+  const handleReset = () => {
+    onReset();             
+    navigate("/training");
+  };
 
   return (
     <div className="max-w-[500px] mx-auto p-6 text-center">
@@ -41,7 +47,7 @@ export default function ConfirmationPage({ order, onReset }: ConfirmationPagePro
       </div>
 
       <button
-        onClick={onReset}
+        onClick={handleReset}
         className="bg-bni-red hover:bg-bni-red/90 text-white border-none rounded-xl py-3.5 px-11 text-[15px] font-bold cursor-pointer tracking-wide transition-colors"
       >
         Back to Shop

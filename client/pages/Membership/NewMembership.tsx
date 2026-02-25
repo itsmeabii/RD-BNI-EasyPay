@@ -23,8 +23,14 @@ export default function NewMembership() {
 
 
   const handleCheckout = (plan: MembershipPlan) => {
-    checkoutSingle({ id: plan.id, title: plan.label, price: plan.price, thumbnail: plan.image });
-    navigate("/checkout");
+    const items = checkoutSingle({
+      id: plan.id,
+      title: plan.label,
+      price: plan.price,
+      thumbnail: plan.image,
+      qty: 1,
+    });
+    navigate("/checkout", { state: { checkoutItems: items } });
   };
 
   return (
