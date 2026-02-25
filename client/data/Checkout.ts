@@ -34,13 +34,6 @@ export interface ShippingData {
   phone: string;
 }
 
-export interface CartItem {
-  id: number;
-  name: string;
-  qty: number;
-  price: number;
-}
-
 export interface OrderState {
   billing: BillingData;
   shipping: ShippingData;

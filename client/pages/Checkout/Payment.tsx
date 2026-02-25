@@ -1,7 +1,8 @@
 import { useState, useRef, useCallback } from "react";
 import { OrderState } from "@/data/Checkout";
 import RedButton from "@/components/Checkout/RedButton";
-import { BankDetails, FileUploadZone, OrderDetailsTable, OrderMetaBar } from "@/components/Checkout/PaymentFields";
+import { BankDetails, FileUploadZone, OrderDetailsTable, OrderSummaryBar } from "@/components/Checkout/PaymentFields";
+import { useCart } from "@/context/CartContext";
 
 interface PaymentPageProps {
   order: OrderState;
@@ -11,6 +12,7 @@ interface PaymentPageProps {
 }
 
 export default function PaymentPage({ order, orderNum, orderDate, onPlaceOrder }: PaymentPageProps) {
+  const { checkoutItems } = useCart();
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
 
   return (
@@ -19,16 +21,14 @@ export default function PaymentPage({ order, orderNum, orderDate, onPlaceOrder }
         Almost there! Just one more step to finish your order.
       </h1>
 
-      <OrderMetaBar orderNum={orderNum} date={orderDate} order={order} />
+      <OrderSummaryBar orderNum={orderNum} date={orderDate} order={order} />
 
       <div className="flex gap-8 items-start">
-        {/* order details */}
         <div className="flex-1">
           <h2 className="text-2xl font-extrabold text-bni-red mb-4">Order details</h2>
-          <OrderDetailsTable order={order} />
+          <OrderDetailsTable items={checkoutItems} order={order} />
         </div>
 
-        {/* bank details and upload field */}
         <div className="w-[360px] flex-shrink-0">
           <BankDetails />
           <FileUploadZone

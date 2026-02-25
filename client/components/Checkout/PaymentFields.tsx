@@ -2,45 +2,50 @@ import { CloudUpload } from "lucide-react";
 import ZigzagBorder from "./ZigzagBorder";
 import { useCallback, useRef, useState } from "react";
 import { peso } from "./OrderSummaryPanel";
-import { useCart } from "@/context/CartContext";
 import { OrderState } from "@/data/Checkout";
+import { CartItem } from "@/context/CartContext";
 
-interface OrderMetaBarProps {
+interface OrderSummaryBarProps {
   orderNum: string;
   date: string;
   order: Pick<OrderState, "total" | "payMethod">;
 }
 
-export function OrderMetaBar({ orderNum, date, order }: OrderMetaBarProps) {
-  const metaItems = [
-    ["Order Number:", orderNum],
-    ["Date:", date],
-    ["Total", peso(order.total)],
-    ["Payment Method:", order.payMethod === "bank" ? "Direct Bank Transfer" : "Pay via Paynamics"],
+export function OrderSummaryBar({ orderNum, date, order }: OrderSummaryBarProps) {
+  const orderSummaryBarItems: { id: string; title: string; detail: string }[] = [
+    { id: "order-number",   title: "Order Number:",   detail: orderNum },
+    { id: "date",           title: "Date:",           detail: date },
+    { id: "total",          title: "Total:",          detail: peso(order.total) },
+    { id: "payment-method", title: "Payment Method:", detail: order.payMethod === "bank" ? "Direct Bank Transfer" : "Pay via Paynamics" },
   ];
 
   return (
     <div className="flex border border-gray-200 rounded-xl overflow-hidden mb-8 bg-white">
-      {metaItems.map(([lbl, val], i) => (
+      {orderSummaryBarItems.map(({ id, title, detail }, index) => (
         <div
-          key={i}
-          className={`flex-1 min-w-[120px] px-5 py-3.5 ${i < 3 ? "border-r border-gray-200" : ""}`}
+          key={id}
+          className={`flex-1 min-w-[120px] px-5 py-3.5 ${index < orderSummaryBarItems.length - 1 ? "border-r border-gray-200" : ""}`}
         >
-          <div className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">{lbl}</div>
-          <div className="text-sm font-extrabold text-gray-800 mt-1">{val}</div>
+          <div className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">{title}</div>
+          <div className="text-sm font-extrabold text-gray-800 mt-1">{detail}</div>
         </div>
       ))}
     </div>
   );
 }
-
 interface OrderDetailsTableProps {
+  items: CartItem[];
   order: Pick<OrderState, "payMethod" | "subtotal" | "total">;
 }
 
-export function OrderDetailsTable({ order }: OrderDetailsTableProps) {
-  const { checkoutItems } = useCart();
+export function OrderDetailsTable({ items, order }: OrderDetailsTableProps) {
   const payLabel = order.payMethod === "bank" ? "Direct Bank Transfer" : "Pay via paynamics";
+
+  const orderSummaryRows = [
+        { id: "payment-method", title: "Payment method:", detail: payLabel },
+        { id: "shipping",       title: "Shipping:",       detail: "₱0.00" },
+        { id: "subtotal",       title: "Subtotal:",       detail: peso(order.subtotal) },
+      ];
 
   return (
     <div className="border border-gray-200 rounded-xl overflow-hidden bg-white">
@@ -51,25 +56,28 @@ export function OrderDetailsTable({ order }: OrderDetailsTableProps) {
       </div>
 
       {/* Items */}
-      {checkoutItems.map(item => (
-        <div key={item.id} className="grid grid-cols-[1fr_auto] px-5 py-3 border-b border-gray-100">
-          <span className="text-bni-red font-semibold text-sm">{item.title}</span>
-          <span className="text-sm font-semibold text-gray-700">{peso(item.price)}</span>
-        </div>
-      ))}
+      {items.length === 0 ? (
+        <div className="px-5 py-4 text-sm text-gray-400 italic">No items found.</div>
+      ) : (
+        items.map(item => (
+          <div key={item.id} className="grid grid-cols-[1fr_auto] px-5 py-3 border-b border-gray-100">
+            <div>
+              <span className="text-bni-red font-semibold text-sm block">{item.title}</span>
+            </div>
+            <span className="text-sm font-semibold text-gray-700 self-center">
+              {peso(item.price * (item.qty ?? 1))}
+            </span>
+          </div>
+        ))
+      )}
 
       {/* Spacer */}
       <div className="h-4 border-b border-gray-100 bg-gray-50" />
 
-      {/* Summary rows */}
-      {[
-        ["Payment method:", payLabel,          "text-black"],
-        ["Shipping:",        "₱0.00",           "text-black"],
-        ["Subtotal:",        peso(order.subtotal), "text-black"],
-      ].map(([k, v, color]) => (
-        <div key={k} className="grid grid-cols-[1fr_auto] px-5 py-2.5 border-b border-gray-100 bg-gray-50 text-sm">
-          <span className="text-gray-400">{k}</span>
-          <span className={color}>{v}</span>
+      {orderSummaryRows.map(({ id, title, detail }) => (
+        <div key={id} className="grid grid-cols-[1fr_auto] px-5 py-2.5 border-b border-gray-100 bg-gray-50 text-sm">
+          <span className="text-gray-400">{title}</span>
+          <span className="text-black">{detail}</span>
         </div>
       ))}
 
