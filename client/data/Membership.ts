@@ -1,5 +1,5 @@
 export interface MembershipPlan {
-  id: string;
+  id: number;
   label: string;
   duration: string;
   price: number;
@@ -23,7 +23,7 @@ export const MEMBERSHIP_CATEGORIES: MembershipCategory[] = [
 
 export const NEW_MEMBERSHIP_PLANS: MembershipPlan[] = [
   {
-    id: "new-1yr",
+    id: 10,
     label: "1 Year Plan",
     duration: "1 year",
     price: 42000,
@@ -32,7 +32,7 @@ export const NEW_MEMBERSHIP_PLANS: MembershipPlan[] = [
     image: "/bni-membership.svg",
   },
   {
-    id: "new-2yr",
+    id: 11,
     label: "2 Year Plan",
     duration: "2 years",
     price: 75600,
@@ -45,7 +45,7 @@ export const NEW_MEMBERSHIP_PLANS: MembershipPlan[] = [
 
 export const RENEWAL_PLANS: MembershipPlan[] = [
   {
-    id: "renewal-1yr",
+    id: 12,
     label: "1 Year Renewal",
     duration: "1 year",
     price: 42000,
@@ -54,7 +54,7 @@ export const RENEWAL_PLANS: MembershipPlan[] = [
     image: "/membership/bni-membership.svg",
   },
   {
-    id: "renewal-2yr",
+    id: 13,
     label: "2 Year Renewal",
     duration: "2 years",
     price: 75000,
@@ -67,7 +67,7 @@ export const RENEWAL_PLANS: MembershipPlan[] = [
 
 export const LATE_FEE_PLANS: MembershipPlan[] = [
   {
-    id: "late-fee",
+    id: 14,
     label: "Late Fee",
     duration: "",
     price: 500,
@@ -79,7 +79,7 @@ export const LATE_FEE_PLANS: MembershipPlan[] = [
 
 export const ADMIN_FEE_PLANS: MembershipPlan[] = [
   {
-    id: "admin-fee",
+    id: 15,
     label: "Admin Fee",
     duration: "",
     price: 1000,

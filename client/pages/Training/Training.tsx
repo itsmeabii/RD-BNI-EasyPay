@@ -4,9 +4,8 @@ import TrainingCard from "@/components/TrainingCard";
 import SearchButton from "@/components/SearchBox";
 import FilterDropdown, { FilterStatus } from "@/components/TrainingFilter";
 import Footer from "@/components/Footer";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Search } from "lucide-react";
-import { useCart } from "@/context/CartContext";
 
 export default function TrainingPage() {
   const [search, setSearch] = useState("");
@@ -38,8 +37,6 @@ export default function TrainingPage() {
     });
   }, [search, filterStatus, filterMonths]);
 
-  // Group filtered results by month, preserving calendar order
-  // After — adds training under each of its months
   const grouped = useMemo(() => {
     const map: Record<string, typeof trainings> = {};
     filtered.forEach((t) => {
@@ -51,6 +48,12 @@ export default function TrainingPage() {
     return map;
   }, [filtered]);
 
+  useEffect(() => {
+    if (location.pathname === "/training") {
+      document.getElementById("training-section")?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [location]);
+
   const clearFilters = () => {
     setFilterStatus("all");
     setFilterMonths([]);
@@ -61,12 +64,6 @@ export default function TrainingPage() {
     filterStatus === "upcoming" && "Upcoming",
     ...filterMonths,
   ].filter(Boolean) as string[];
-
-  useEffect(() => {
-    if (location.pathname === "/training") {
-      document.getElementById("training-section")?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [location]);
 
   return (
     <div>

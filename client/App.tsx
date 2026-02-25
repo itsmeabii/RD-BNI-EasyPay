@@ -17,6 +17,7 @@ import TrainingDetail from "./pages/Training/[id]/page";
 import { CartProvider } from "./context/CartContext";
 import Cart from "./pages/Cart";
 import Membership from "./pages/Membership/NewMembership";
+import Checkout from "./pages/Checkout/Checkout";
 
 const queryClient = new QueryClient();
 
@@ -24,25 +25,25 @@ export const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
-        <Sonner />
-          <CartProvider>
-            <BrowserRouter>
-              <Header className="relative z-50" />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/journey" element={<Journey />} />
-                <Route path="/training" element={<Home />} />
-                <Route path="/training/:id" element={<TrainingDetail />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/membership" element={<Membership/>}/>
-                <Route path="/merchandise" element={<Merchandise />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              <Cart /> 
-          </BrowserRouter>
-        </CartProvider>
+      <Sonner />
+      <CartProvider>
+        <BrowserRouter>
+          <Header className="relative z-50" />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/journey" element={<Journey />} />
+            <Route path="/training" element={<Home />} />
+            <Route path="/training/:id" element={<TrainingDetail />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/membership" element={<Membership />} />
+            <Route path="/merchandise" element={<Merchandise />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <Cart />
+        </BrowserRouter>
+      </CartProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

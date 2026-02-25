@@ -9,7 +9,7 @@ import { useCart } from "@/context/CartContext";
 
 export default function NewMembership() {
   const navigate = useNavigate();
-  const { addToCart, openCart } = useCart();
+  const { addToCart, openCart, checkoutSingle } = useCart();
 
   const handleAddToCart = (plan: MembershipPlan) => {
     addToCart({
@@ -21,13 +21,9 @@ export default function NewMembership() {
     openCart();
   };
 
+
   const handleCheckout = (plan: MembershipPlan) => {
-    addToCart({
-      id: plan.price,
-      title: plan.label,
-      price: plan.price,
-      thumbnail: plan.image,
-    });
+    checkoutSingle({ id: plan.id, title: plan.label, price: plan.price, thumbnail: plan.image });
     navigate("/checkout");
   };
 
