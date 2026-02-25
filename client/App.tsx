@@ -16,6 +16,7 @@ import Home from "./pages/Home";
 import TrainingDetail from "./pages/Training/[id]/page";
 import { CartProvider } from "./context/CartContext";
 import Cart from "./pages/Cart";
+import Membership from "./pages/Membership/NewMembership";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ export const App = () => (
                 <Route path="/training/:id" element={<TrainingDetail />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/membership" element={<Membership/>}/>
                 <Route path="/merchandise" element={<Merchandise />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />

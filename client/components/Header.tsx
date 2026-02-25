@@ -67,15 +67,22 @@ export default function Header({ userName }: HeaderProps) {
           >
             Journey
           </Link>
-          <Link
-            to="/membership"
-            className={`flex items-center gap-1 text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
-              location.pathname.startsWith("/membership") ? "text-bni-red" : "text-black"
-            }`}
-          >
-            Membership
-            <ChevronDown className="w-4 h-4 lg:w-5 lg:h-5" />
-          </Link>
+          <div className="relative group">
+            <button
+              className={`flex items-center gap-1 text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
+                location.pathname.startsWith("/membership") ? "text-bni-red" : "text-black"
+              }`}
+            >
+              Membership
+              <ChevronDown className="w-4 h-4" />
+            </button>
+            <div className="absolute top-full left-0 mt-1 w-48 border-t-4 border-bni-red bg-white shadow-lg rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+              <Link to="/membership" className="block px-4 py-2.5 text-md hover:bg-red-50 hover:text-bni-red transition">Membership</Link>
+              <Link to="/membership/renewal" className="block px-4 py-2.5 text-md hover:bg-red-50 hover:text-bni-red transition">Renewal</Link>
+              <Link to="/membership/late-fee" className="block px-4 py-2.5 text-md hover:bg-red-50 hover:text-bni-red transition">Late Fee</Link>
+              <Link to="/membership/admin-fee" className="block px-4 py-2.5 text-md hover:bg-red-50 hover:text-bni-red transition">Admin Fee</Link>
+            </div>
+        </div>
           <Link
             to="/merchandise"
             className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
