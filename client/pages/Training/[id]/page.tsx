@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { trainings, formatPrice } from "@/data/Training";
 import { useCart } from "@/context/CartContext";
@@ -11,7 +11,8 @@ export default function TrainingDetail() {
   const training = trainings.find((t) => t.id === Number(id));
   const [activeImage, setActiveImage] = useState(0);
   const [selectedDate, setSelectedDate] = useState("");
-  const { addToCart } = useCart();
+  const { addToCart, checkoutSingle } = useCart();
+  const navigate = useNavigate();
 
   if (!training) {
     return (
@@ -25,6 +26,7 @@ export default function TrainingDetail() {
       </div>
     );
   }
+
   const selectedDateObj = training.dates.find((d) => d.date === selectedDate);
 
   const prevImage = () =>
@@ -32,20 +34,35 @@ export default function TrainingDetail() {
   const nextImage = () =>
     setActiveImage((i) => (i === training.images.length - 1 ? 0 : i + 1));
 
-   const handleAddToCart = () => {
+  // ── Shared validation ───────────────────────────────────────────────────────
+  const buildCartItem = () => {
     if (!selectedDate) {
-        setDateError(true);
-        return;
+      setDateError(true);
+      return null;
     }
     setDateError(false);
-        addToCart({
-        id: training.id,
-        title: training.title,
-        price: training.price,
-        thumbnail: training.thumbnail,
-        selectedDate: selectedDateObj?.date,
-        selectedTime: selectedDateObj?.time,
-        });
+    return {
+      id: training.id,
+      title: training.title,
+      price: training.price,
+      thumbnail: training.thumbnail,
+      qty: 1,
+      selectedDate: selectedDateObj?.date,
+      selectedTime: selectedDateObj?.time,
+    };
+  };
+
+  const handleAddToCart = () => {
+    const item = buildCartItem();
+    if (!item) return;
+    addToCart(item);
+  };
+
+  const handleCheckoutNow = () => {
+    const item = buildCartItem();
+    if (!item) return;
+    const selected = checkoutSingle(item); // bypass cart selection entirely
+    navigate("/checkout", { state: { checkoutItems: selected } });
   };
 
   return (
@@ -55,7 +72,6 @@ export default function TrainingDetail() {
 
           {/* Image Gallery */}
           <div className="w-full lg:w-[420px] flex-shrink-0">
-            {/* Main image */}
             <div className="relative overflow-hidden rounded-sm bg-gray-100 mb-3">
               <img
                 src={training.images[activeImage]}
@@ -64,7 +80,6 @@ export default function TrainingDetail() {
                 height={380}
                 className="w-full h-[320px] lg:h-[380px] object-cover"
               />
-              {/* Image Navigation */}
               <button
                 onClick={prevImage}
                 className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white rounded-full flex items-center justify-center shadow transition"
@@ -101,13 +116,12 @@ export default function TrainingDetail() {
             </div>
           </div>
 
-          {/* Right: Details */}
+          {/* Details */}
           <div className="flex-1">
-            {/* Title */}
             <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">
               {training.title}
             </h1>
-            {/* Price + status */}
+
             <div className="flex items-center gap-7 mb-5">
               <span className="text-xl font-bold text-gray-900">
                 {formatPrice(training.price)}
@@ -119,48 +133,42 @@ export default function TrainingDetail() {
               )}
             </div>
 
-            {/* Description fields */}
             <div className="space-y-3 mb-6">
-              <p className="text-sm font-semibold text-gray-800">
-                {training.description}
-              </p>
-              <p className="text-sm font-semibold text-gray-800">
-                {training.keyTopics}
-              </p>
-              <p className="text-sm text-gray-700 leading-relaxed">
-                {training.outcomes}
-              </p>
+              <p className="text-sm font-semibold text-gray-800">{training.description}</p>
+              <p className="text-sm font-semibold text-gray-800">{training.keyTopics}</p>
+              <p className="text-sm text-gray-700 leading-relaxed">{training.outcomes}</p>
             </div>
 
             {/* Select Date */}
             <div className="flex flex-col mb-6">
-                <div className="flex gap-4 items-center">
-                    <label className="text-md font-semibold text-gray-800 whitespace-nowrap">
-                        Select Date
-                    </label>         
-                    <select
-                        value={selectedDate}
-                        onChange={(e) => {setSelectedDate(e.target.value); setDateError(false);}}
-                        className="flex-1 border border-gray-300 rounded px-3 py-2 text-md text-gray-500 outline-none focus:border-bni-red"
-                    >
-                        <option value="">Choose an Option</option>
-                        {training.dates.map((d) => (
-                        <option key={d.date} value={d.date}>
-                            {d.date} - {d.time}
-                        </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="pl-[105px] h-5">
-                    {dateError && (
-                        <p className="text-red-500 text-xs mt-1">
-                            Please select a date before adding to cart.
-                        </p>
-                 )}
-                </div>
+              <div className="flex gap-4 items-center">
+                <label className="text-md font-semibold text-gray-800 whitespace-nowrap">
+                  Select Date
+                </label>
+                <select
+                  value={selectedDate}
+                  onChange={(e) => { setSelectedDate(e.target.value); setDateError(false); }}
+                  className={`flex-1 border rounded px-3 py-2 text-md text-gray-500 outline-none transition
+                    ${dateError ? "border-red-400 focus:border-red-400" : "border-gray-300 focus:border-bni-red"}`}
+                >
+                  <option value="">Choose an Option</option>
+                  {training.dates.map((d) => (
+                    <option key={d.date} value={d.date}>
+                      {d.date} - {d.time}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="pl-[105px] h-5">
+                {dateError && (
+                  <p className="text-red-500 text-xs mt-1">
+                    Please select a date before proceeding.
+                  </p>
+                )}
+              </div>
             </div>
 
-            {/* Instructors carousel */}
+            {/* Instructors */}
             <div className="flex gap-3 mb-6 overflow-x-auto pb-1">
               {training.instructors.map((instructor, i) => (
                 <div
@@ -176,15 +184,9 @@ export default function TrainingDetail() {
                   />
                   <div>
                     <p className="text-xs text-black mb-0.5">Name of Instructor:</p>
-                    <p className="text-sm font-bold text-black mb-2">
-                      {instructor.name}
-                    </p>
-                    <p className="text-xs font-bold text-black mb-1">
-                      Brief Background:
-                    </p>
-                    <p className="text-xs text-black leading-relaxed">
-                      {instructor.background}
-                    </p>
+                    <p className="text-sm font-bold text-black mb-2">{instructor.name}</p>
+                    <p className="text-xs font-bold text-black mb-1">Brief Background:</p>
+                    <p className="text-xs text-black leading-relaxed">{instructor.background}</p>
                   </div>
                 </div>
               ))}
@@ -192,20 +194,22 @@ export default function TrainingDetail() {
 
             {/* Buttons */}
             <div className="flex gap-3">
-              <button 
-              onClick={handleAddToCart}
-              className="bg-bni-red text-white font-semibold text-sm px-6 py-3 rounded-lg hover:opacity-90 transition">
+              <button
+                onClick={handleAddToCart}
+                className="bg-bni-red text-white font-semibold text-sm px-6 py-3 rounded-lg hover:opacity-90 transition"
+              >
                 Add to Cart
               </button>
-              <button 
-              onClick={handleAddToCart}
-              className="bg-bni-red text-white font-semibold text-sm px-6 py-3 rounded-lg hover:opacity-90 transition">
+              <button
+                onClick={handleCheckoutNow}
+                className="bg-bni-red text-white font-semibold text-sm px-6 py-3 rounded-lg hover:opacity-90 transition"
+              >
                 Checkout Now
               </button>
             </div>
           </div>
         </div>
-        <ShoppingCartButton/>
+        <ShoppingCartButton />
       </div>
     </div>
   );
