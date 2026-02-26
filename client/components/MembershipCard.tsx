@@ -1,3 +1,5 @@
+"use client";
+
 import { ShoppingCart } from "lucide-react";
 import { MembershipPlan, formatMembershipPrice } from "@/data/Membership";
 

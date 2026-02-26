@@ -1,20 +1,16 @@
 import "./global.css";
 
-import { Toaster } from "@/components/ui/toaster";
 import { createRoot } from "react-dom/client";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { App } from "./App";
 
-const queryClient = new QueryClient();
+import App from "./App";
 
-createRoot(document.getElementById("root")!).render(
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <App />
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const rootElement = document.getElementById("root")!;
+rootElement.setAttribute("translate", "no");
+
+createRoot(rootElement).render(<App />);
+
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted) {
+    window.location.reload();
+  }
+});

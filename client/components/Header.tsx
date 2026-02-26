@@ -1,16 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, User, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 
 interface HeaderProps {
-  userName?: string;
   className?: string;
 
 }
 
-export default function Header({ userName }: HeaderProps) {
+export default function Header({ className }: HeaderProps) {
   const location = useLocation();
-  const [isLoggedIn] = useState(!!userName);
+  const { user } = useAuth();
 
   return (
     <header>
@@ -24,10 +23,10 @@ export default function Header({ userName }: HeaderProps) {
           <span className="hidden sm:inline">Back to BNI Taguig Website</span>
           <span className="sm:hidden">Back</span>
         </Link>
-        {isLoggedIn ? (
+        {user ? (
           <div className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px]">
             <User className="w-4 h-4 lg:w-5 lg:h-5" />
-            <span className="hidden sm:inline">{userName}</span>
+            <span className="hidden sm:inline">{user.userName}</span>
           </div>
         ) : (
           <Link
