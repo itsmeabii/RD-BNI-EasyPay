@@ -1,8 +1,8 @@
-import { TotalProgress } from "../components/Journey/TotalProgress";
-import { InProgress } from "../components/Journey/InProgress";
-import { Mission } from "../components/Journey/Mission";
-import { SuccessMap } from "../components/Journey/SuccessMap";
-import { Rewards } from "../components/Journey/Rewards";
+import { TotalProgress } from "./TotalProgressSection";
+import { InProgress } from "./InProgressSection";
+import { Mission } from "./MissionSection";
+import { SuccessMap } from "./SuccessMapSection";
+import { Rewards } from "./RewardsSection";
 
 export default function Journey() {
   return (

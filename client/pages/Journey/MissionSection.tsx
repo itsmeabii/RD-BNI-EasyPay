@@ -25,7 +25,7 @@ export function Mission() {
                 Login
               </Link>
               <span className="text-bni-gray"> or </span>
-              <Link to="/signup" className="text-bni-red hover:underline">
+              <Link to="/login" className="text-bni-red hover:underline">
                 Sign Up
               </Link>
               <span className="text-bni-gray"> with your BNI Account to see Mission Map</span>

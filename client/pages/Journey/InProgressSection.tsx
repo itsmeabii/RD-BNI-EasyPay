@@ -1,5 +1,5 @@
 import { PROGRAMS, ProgramTrackerProps } from "@/data/Journey";
-import { Star } from "./Star";
+import { Star } from "./StarSection";
 
 function ProgramTracker({ title, starsCompleted, totalStars = 10 }: ProgramTrackerProps) {
   return (

@@ -1,5 +1,5 @@
 import ShoppingCartButton from "@/components/ShoppingCartButton";
-import Training from "./Training/Training";
+import Training from "./Training/TrainingPage";
 import Patterns from "@/components/Patterns";
 import { useCart } from "@/context/CartContext";
 

@@ -1,4 +1,4 @@
-import { Star } from "./Star";
+import { Star } from "./StarSection";
 
 const MILESTONES = [
   { label: "5 star", completed: true },
