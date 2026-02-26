@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Merchandise from "./pages/Merchandise";
 import { Header } from "./components/Header";
+import Index from './pages/ProductDetailedDescription';
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
       <BrowserRouter>
         <Header />
         <Routes>
+          <Route path="/ProductDetailedDescription" element={<Index />} />
           <Route path="/" element={<Journey />} />
           <Route path="/journey" element={<Journey />} />
           <Route path="/training" element={<Training />} />
