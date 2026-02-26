@@ -8,34 +8,44 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Journey from "./pages/Journey";
 import NotFound from "./pages/NotFound";
-import Training from "./pages/Training";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Merchandise from "./pages/Merchandise";
-import { Header } from "./components/Header";
+import Header from "./components/Header";
+import Home from "./pages/Home";
+import TrainingDetail from "./pages/Training/[id]/page";
+import { CartProvider } from "./context/CartContext";
+import Cart from "./pages/Cart";
+import Membership from "./pages/Membership/NewMembership";
+import Checkout from "./pages/Checkout/Checkout";
 import Index from './pages/ProductDetailedDescription';
 
 const queryClient = new QueryClient();
 
-const App = () => (
+export const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/ProductDetailedDescription" element={<Index />} />
-          <Route path="/" element={<Journey />} />
-          <Route path="/journey" element={<Journey />} />
-          <Route path="/training" element={<Training />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/merchandise" element={<Merchandise />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <CartProvider>
+        <BrowserRouter>
+          <Header className="relative z-50" />
+          <Routes>
+            <Route path="/ProductDetailedDescription" element={<Index />} />
+          <Route path="/" element={<Home />} />
+            <Route path="/journey" element={<Journey />} />
+            <Route path="/training" element={<Home />} />
+            <Route path="/training/:id" element={<TrainingDetail />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/membership" element={<Membership />} />
+            <Route path="/merchandise" element={<Merchandise />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <Cart />
+        </BrowserRouter>
+      </CartProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

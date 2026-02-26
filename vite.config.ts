@@ -19,13 +19,12 @@ function expressPlugin(): Plugin {
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  root: "client",
-
   server: {
     host: "::",
     port: 8080,
     fs: {
       allow: [
+        path.resolve(__dirname),
         path.resolve(__dirname, "client"),
         path.resolve(__dirname, "shared"),
       ],
@@ -34,15 +33,15 @@ export default defineConfig(({ mode }) => ({
   },
 
   build: {
-    outDir: "../dist/spa",
+    outDir: "dist/spa", // adjust if needed
   },
 
   plugins: [react(), expressPlugin()],
 
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./client"),
-      "@shared": path.resolve(__dirname, "./shared"),
+      "@": path.resolve(__dirname, "client"),
+      "@shared": path.resolve(__dirname, "shared"),
     },
   },
 }));

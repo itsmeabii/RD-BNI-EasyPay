@@ -16,16 +16,14 @@ function RewardCard({ imageUrl, description }: RewardCardProps) {
           <span className="text-black text-[18px]">Reward img</span>
         )}
       </div>
-
-      {/* Description and Button */}
       <div className="flex-1 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 w-full">
         <div className="text-black text-[16px] md:text-[18px] flex-1">
           {description}
         </div>
-        <button className="w-full md:w-[184px] h-[46px] bg-bni-red text-white font-black text-[18px] hover:bg-bni-red/90 transition-colors flex items-center justify-center">
-          Redeem
-        </button>
       </div>
+      <button className="w-full md:w-[184px] h-[46px] bg-bni-red text-white font-black text-[18px] hover:bg-bni-red/90 transition-colors flex items-center justify-center">
+          Redeem
+      </button>
     </div>
   );
 }
@@ -39,14 +37,14 @@ export function Rewards() {
   ];
 
   return (
-    <div className="w-full max-w-[1063px] flex flex-col gap-4">
+    <div className="w-full flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-[28px] md:text-[35px] font-semibold text-black">
           Rewards
         </h2>
         <div className="flex items-center gap-2">
-          <Star className="w-5 h-5 text-black fill-current" />
+          <Star className="w-5 h-5 text-black " />
           <span className="text-[14px] md:text-[16px] text-black">
             20 Stars Available to Redeem
           </span>
