@@ -1,59 +1,49 @@
-import "./global.css";
-
-import { Toaster } from "@/components/ui/toaster";
-import { createRoot } from "react-dom/client";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Journey from "./pages/Journey";
-import NotFound from "./pages/NotFound";
-import { UpcomingTrainings } from "./pages/Training";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { AuthProvider } from "./context/AuthContext";
+import { CartProvider } from "./context/CartContext";
+import Header from "./components/Header";
+import Cart from "./pages/CartDrawer";
+import Home from "./pages/Home";
+import Journey from "./pages/Journey/JourneyPage";
+import AuthPage from "./pages/Auth/AuthPage";
+import Membership from "./pages/Membership/NewMembershipPage";
 import Merchandise from "./pages/Merchandise";
-import { Header } from "./components/Header";
-import AccountDetails from "./pages/my-account/AccountDetails";
-import Addresses from "./pages/my-account/Addresses";
-import Downloads from "./pages/my-account/Downloads";
-import Logout from "./pages/my-account/Logout";
-import MyWallet from "./pages/my-account/MyWallet";
-import OrderHistory from "./pages/my-account/OrderHistory";
-import TrainerApplication from "./pages/my-account/TrainerApplication";
+import Checkout from "./pages/Checkout/Checkout";
+import TrainingDetail from "./pages/Training/[id]/page";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Header />
-        <Routes>
-          <Route path="/" element={<Journey />} />
-          <Route path="/journey" element={<Journey />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/merchandise" element={<Merchandise />} />
-          <Route path="/my-account/UpcomingTrainings" element={<UpcomingTrainings />} />
-          <Route path="/my-account/AccountDetails" element={<AccountDetails/>} />
-          <Route path="/my-account/Addresses" element={<Addresses />} />
-          <Route path="/my-account/Downloads" element={<Downloads />} />
-          <Route path="/my-account/Logout" element={<Logout />} />
-          <Route path="/my-account/MyWallet" element={<MyWallet />} />
-          <Route path="/my-account/OrderHistory" element={<OrderHistory />} />
-          <Route path="/my-account/TrainerApplication" element={<TrainerApplication />} />
-
-
-
-
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
-
-createRoot(document.getElementById("root")!).render(<App />);
+export default function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <CartProvider>
+            <BrowserRouter>
+              <Header />
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<AuthPage />} />
+                <Route path="/journey" element={<Journey />} />
+                <Route path="/training" element={<Home />} />
+                <Route path="/training/:id" element={<TrainingDetail />} />
+                <Route path="/membership" element={<Membership />} />
+                <Route path="/merchandise" element={<Merchandise />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <Cart />
+            </BrowserRouter>
+          </CartProvider>
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+}
