@@ -1,4 +1,4 @@
-import { SearchAndFilters } from "./SearchAndFilter";
+import { SearchAndFilters } from "../../components/SearchAndFilter";
 
 export default function UpcomingTraining() {
   return (
