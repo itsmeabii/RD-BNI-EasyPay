@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 // Positions are percentages of the map container (left %, top %)
 // so they scale perfectly at any container width/height.
 const MONTHS = [
@@ -15,9 +17,9 @@ const MONTHS = [
   { name: "DECEMBER",  left: 95, top: 51 },
 ];
 
-function PinMarker({ name }: { name: string }) {
+function PinMarker({ name, onClick }: { name: string; onClick: () => void }) {
   return (
-    <div className="flex flex-col items-center" style={{ transform: "translateX(-50%)" }}>
+    <div className="flex flex-col items-center" style={{ transform: "translateX(-50%)" }} onClick={onClick}>
       {/* Teardrop pin */}
       <svg
         width="28"
@@ -47,7 +49,11 @@ function PinMarker({ name }: { name: string }) {
   );
 }
 
-export function SuccessMap() {
+export function SuccessMapSection() {
+  const navigate = useNavigate();
+  const handlePinClick = (monthName: string) => {
+    navigate(`/success-treasure-map?month=${monthName.toLowerCase()}`);
+  };
   return (
     <div className="w-full flex flex-col gap-[8px]">
       <h2 className="text-[28px] md:text-[35px] font-semibold text-black">
@@ -84,7 +90,7 @@ export function SuccessMap() {
               top: `${month.top}%`,
             }}
           >
-            <PinMarker name={month.name} />
+            <PinMarker name={month.name} onClick={() => handlePinClick(month.name)}/>
           </div>
         ))}
       </div>

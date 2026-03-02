@@ -4,7 +4,7 @@ interface StarProps {
   className?: string;
 }
 
-export function Star({ filled = false, size = "lg", className = "" }: StarProps) {
+export function StarSection({ filled = false, size = "lg", className = "" }: StarProps) {
   const config = {
     sm: {
       sizeClass: "w-8 h-8",
