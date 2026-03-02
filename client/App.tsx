@@ -15,6 +15,8 @@ import Merchandise from "./pages/Merchandise";
 import Checkout from "./pages/Checkout/Checkout";
 import TrainingDetail from "./pages/Training/[id]/page";
 import NotFound from "./pages/NotFound";
+import SuccessTreasureMap from "@/pages/Journey/SuccessMap/SuccessTreasureMap";
+import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWorkshopDetails";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +39,8 @@ export default function App() {
                 <Route path="/membership" element={<Membership />} />
                 <Route path="/merchandise" element={<Merchandise />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
+                <Route path="/success-treasure-map/:id" element={<SuccessMapWorkshopDetails />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Cart />

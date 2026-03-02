@@ -18,6 +18,7 @@ export default {
         hammersmith: ["Hammersmith One", "sans-serif"],
       },
       colors: {
+        "bni-white": "#FFFFFF",
         "bni-red": "#CF2031",
         "bni-yellow": "#FFD900",
         "bni-gray-200":"#F0F0F0",

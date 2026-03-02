@@ -28,7 +28,7 @@ function RewardCard({ imageUrl, description }: RewardCardProps) {
   );
 }
 
-export function Rewards() {
+export function RewardsSection() {
   const rewards = [
     { description: "Reward Description" },
     { description: "Reward Description" },
