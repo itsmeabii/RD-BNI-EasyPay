@@ -1,15 +1,5 @@
 import { useState, useRef } from "react";
-
-const chapters = [
-  "All-Star", "Catalyst", "Dauntless", "Dynamic", "Elite", "Empire",
-  "Gear", "GRiT", "Iconic", "RISE", "Trailblazer", "BNI Taguig Admin",
-  "Guests", "Sponsor",
-];
-
-const trainings = [
-  "Business Strategy and Training",
-  "Entrepreneurship Fundamentals",
-];
+import { CHAPTERS, TRAININGS } from "../../data/TrainerApplication";
 
 export default function TrainerApplication() {
   const [firstName, setFirstName] = useState("");
@@ -124,7 +114,7 @@ export default function TrainerApplication() {
                     className={`w-full h-[40px] rounded-[10px] border ${errors.chapter ? "border-red-500" : "border-[#999]"} bg-white shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)] px-3 text-[15px] appearance-none focus:outline-none cursor-pointer`}
                   >
                     <option value="">Select Chapter</option>
-                    {chapters.map((c) => <option key={c} value={c}>{c}</option>)}
+                    {CHAPTERS.map((c) => <option key={c} value={c}>{c}</option>)}
                   </select>
                   <ErrorMsg msg={errors.chapter} />
                 </div>
@@ -136,7 +126,7 @@ export default function TrainerApplication() {
                     className={`w-full h-[40px] rounded-[10px] border ${errors.training ? "border-red-500" : "border-[#999]"} bg-white px-3 text-[15px] appearance-none focus:outline-none cursor-pointer`}
                   >
                     <option value="">Select Training</option>
-                    {trainings.map((t) => <option key={t} value={t}>{t}</option>)}
+                    {TRAININGS.map((t) => <option key={t} value={t}>{t}</option>)}
                   </select>
                   <ErrorMsg msg={errors.training} />
                 </div>

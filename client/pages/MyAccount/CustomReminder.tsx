@@ -229,7 +229,7 @@ const CheckIcon = () => (
   </svg>
 );
 
-// ─── Sidebar ─────────────────────────────────────────────────────────────────
+//Sidebar
 
 interface CustomReminderSidebarProps {
   isOpen: boolean;

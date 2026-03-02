@@ -1,5 +1,4 @@
 import { useState } from "react";
-//import { ChevronDown } from "./ChevronDown";
 
 export const TrainerPersonalInfoSection = (): JSX.Element => {
   const [firstName, setFirstName] = useState("Jane Marie");
@@ -79,7 +78,6 @@ export const TrainerPersonalInfoSection = (): JSX.Element => {
         </select>
       </div>
 
-      {/* <ChevronDown className="!absolute !top-[178px] !left-[303px] !w-[31px] !h-[31px] !aspect-[1] pointer-events-none" /> */}
 
       <div className="absolute top-[230px] left-2 w-[111px] h-4 flex items-center justify-center">
         <label
@@ -101,8 +99,6 @@ export const TrainerPersonalInfoSection = (): JSX.Element => {
           <option value="">Select Training</option>
         </select>
       </div>
-
-      {/* <ChevronDown className="!absolute !top-[251px] !left-[303px] !w-[31px] !h-[31px] !aspect-[1] pointer-events-none" /> */}
 
       <button
         type="submit"

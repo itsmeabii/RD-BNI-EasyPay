@@ -20,7 +20,7 @@ export default {
       colors: {
         "bni-red": "#CF2031",
         "bni-yellow": "#FFD900",
-        "bni-gray-200":"#F0F0F0",
+        "bni-gray-200": "#F0F0F0",
         "bni-gray-300": "#E6E6E6",
         "bni-gray-400": "#D9D9D9",
         "bni-gray-500": "#817E7E",
@@ -74,27 +74,47 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        slant: "var(--slant)",
+      },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        "fade-in": {
+          "0%": { opacity: "0", transform: "translateY(-10px)" },
+          "to": { opacity: "1", transform: "none" },
+        },
+        "fade-up": {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "to": { opacity: "1", transform: "none" },
+        },
+        shimmer: {
+          "0%, 90%, to": { backgroundPosition: "calc(-100% - var(--shimmer-width)) 0" },
+          "30%, 60%": { backgroundPosition: "calc(100% + var(--shimmer-width)) 0" },
+        },
+        marquee: {
+          "0%": { transform: "translate(0)" },
+          "to": { transform: "translateX(calc(-100% - var(--gap)))" },
+        },
+        "marquee-vertical": {
+          "0%": { transform: "translateY(0)" },
+          "to": { transform: "translateY(calc(-100% - var(--gap)))" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in": "fade-in 1s var(--animation-delay, 0s) ease forwards",
+        "fade-up": "fade-up 1s var(--animation-delay, 0s) ease forwards",
+        marquee: "marquee var(--duration) infinite linear",
+        "marquee-vertical": "marquee-vertical var(--duration) linear infinite",
+        shimmer: "shimmer 8s infinite",
       },
     },
   },
