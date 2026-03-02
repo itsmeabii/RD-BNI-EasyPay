@@ -27,17 +27,20 @@ function TreasurePin({
   label,
   left,
   top,
+  onClick,
 }: {
   number: number;
   color: string;
   label: string;
   left: string;
   top: string;
+  onClick: () => void;
 }) {
   return (
     <div
       className="absolute flex items-start gap-1.5"
       style={{ left, top, transform: "translate(-50%, -100%)" }}
+      onClick={onClick}
     >
       <div className="flex flex-col items-center flex-shrink-0">
         <svg
@@ -90,7 +93,7 @@ export default function SuccessTreasureMap() {
               "url('https://api.builder.io/api/v1/image/assets/TEMP/56747f665c7ffb39e050d8f6bcf34d3cda136a5e?width=2127')",
           }}
         />
-        
+
         {/* BNI Logo */}
         <img
           src="https://api.builder.io/api/v1/image/assets/TEMP/ae73058432eb4af3969aac6ab283cae135b1c6f5?width=304"
@@ -132,6 +135,7 @@ export default function SuccessTreasureMap() {
             label={`${training.title}`}
             left={PIN_POSITIONS[i % PIN_POSITIONS.length].left}
             top={PIN_POSITIONS[i % PIN_POSITIONS.length].top}
+            onClick={() => navigate(`/success-treasure-map/${training.id}?month=${monthParam}`)}
           />
         ))}
       </div>

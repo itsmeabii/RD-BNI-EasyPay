@@ -1,7 +1,7 @@
 import { TotalProgressSection } from "./TotalProgressSection";
 import { InProgressSection } from "./InProgressSection";
 import { Mission } from "./Mission/MissionSection";
-import { SuccessMapSection } from "./SuccessMapSection";
+import { SuccessMapSection } from "./SuccessMap/SuccessMapSection";
 import { RewardsSection } from "./RewardsSection";
 
 export default function Journey() {
