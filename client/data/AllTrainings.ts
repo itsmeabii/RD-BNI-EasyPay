@@ -1,6 +1,4 @@
-/* =========================
-   Types
-========================= */
+/*Types*/
 
 export type SortOrder = "newest" | "oldest" | "";
 
@@ -17,9 +15,7 @@ export interface DropdownOption {
   value: string;
 }
 
-/* =========================
-   Trainings Data
-========================= */
+/*Trainings Data */
 
 export const ALL_TRAININGS: TrainingData[] = [
   {
@@ -59,9 +55,7 @@ export const ALL_TRAININGS: TrainingData[] = [
   },
 ];
 
-/* =========================
-   Filter Options
-========================= */
+/*Filter Options*/
 
 export const CATEGORY_OPTIONS: DropdownOption[] = [
   { label: "AWS", value: "AWS" },

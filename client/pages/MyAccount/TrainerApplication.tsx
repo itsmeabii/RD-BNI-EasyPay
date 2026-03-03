@@ -1,5 +1,6 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { CHAPTERS, TRAININGS } from "../../data/TrainerApplication";
+import { validateFile, validateForm, ValidationErrors } from "../../helper/TrainerApplicationValidation";
 
 export default function TrainerApplication() {
   const [firstName, setFirstName] = useState("");
@@ -8,7 +9,7 @@ export default function TrainerApplication() {
   const [training, setTraining] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<ValidationErrors>({});
   const [showModal, setShowModal] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -18,17 +19,10 @@ export default function TrainerApplication() {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const validateFile = (f: File) => {
-    if (!["image/jpeg", "image/jpg", "image/png"].includes(f.type))
-      return "Invalid file type. Only JPG, JPEG, and PNG are allowed.";
-    if (f.size > 2 * 1024 * 1024)
-      return "File is too large. Maximum size is 2MB.";
-    return null;
-  };
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (!selected) return;
+    
     const err = validateFile(selected);
     if (err) {
       setErrors((p) => ({ ...p, file: err }));
@@ -42,14 +36,16 @@ export default function TrainerApplication() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newErrors: { [key: string]: string } = {};
-    if (!firstName.trim()) newErrors.firstName = "First name is required";
-    if (!lastName.trim()) newErrors.lastName = "Last name is required";
-    if (!chapter) newErrors.chapter = "Please select a chapter";
-    if (!training) newErrors.training = "Please select a training";
-    if (!description.trim()) newErrors.description = "Description is required";
-    if (!file) newErrors.file = "Please upload a formal picture";
-    if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
+    
+    const newErrors = validateForm({
+      firstName, lastName, chapter, training, description, file
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     setErrors({});
     setShowModal(true);
   };
@@ -77,14 +73,11 @@ export default function TrainerApplication() {
       )}
 
       <div className="flex flex-col gap-4">
-        <h1 className="text-[#CF2031] text-[30px] font-bold">
-          Trainer Application
-        </h1>
+        <h1 className="text-[#CF2031] text-[30px] font-bold">Trainer Application</h1>
 
         <div className="bg-white rounded-[10px] border border-black shadow-[inset_0_0_0_4px_rgba(207,32,49,0.25)] p-6 md:p-8">
           <form onSubmit={handleSubmit} noValidate>
             <div className="flex flex-col lg:flex-row gap-8">
-
               {/* Left column */}
               <div className="flex-1 flex flex-col gap-4">
                 <div className="flex flex-col gap-1">
@@ -170,7 +163,6 @@ export default function TrainerApplication() {
                   <ErrorMsg msg={errors.description} />
                 </div>
               </div>
-
             </div>
           </form>
         </div>

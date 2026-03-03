@@ -13,96 +13,96 @@ export const TrainerPersonalInfoSection = (): JSX.Element => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="absolute top-[290px] left-[362px] w-[361px] h-[382px]"
+      className="w-full max-w-sm flex flex-col gap-5"
     >
-      <div className="absolute top-0 left-2 w-[69px] h-4 flex">
+      {/* First Name */}
+      <div className="flex flex-col gap-2">
         <label
           htmlFor="firstName"
-          className="flex items-center justify-center w-[67.23px] h-4 [font-family:'Inter-Regular',Helvetica] font-normal text-black text-xs text-center tracking-[0] leading-[15.6px]"
+          className="pl-1 text-xs text-black"
         >
           First Name
         </label>
+
+        <div className="bg-[#d9d9d9] rounded-lg border shadow-inner px-4 py-2">
+          <input
+            type="text"
+            id="firstName"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            className="w-full bg-transparent outline-none text-sm text-[#817d7d]"
+            placeholder="Jane Marie"
+          />
+        </div>
       </div>
 
-      <div className="absolute top-[19px] left-0 w-[347px] h-[42px] bg-[#d9d9d9] rounded-[10px] border border-solid shadow-[inset_0px_4px_4px_#00000040]">
-        <input
-          type="text"
-          id="firstName"
-          name="firstName"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          className="w-full h-full bg-transparent border-none outline-none px-[21px] [font-family:'Inter-Regular',Helvetica] font-normal text-[#817d7d] text-[15px] tracking-[0] leading-[normal]"
-          placeholder="Jane Marie"
-        />
-      </div>
-
-      <div className="absolute top-[76px] left-2 w-[68px] h-4 flex">
+      {/* Last Name */}
+      <div className="flex flex-col gap-2">
         <label
           htmlFor="lastName"
-          className="flex items-center justify-center w-[66.15px] h-4 [font-family:'Inter-Regular',Helvetica] font-normal text-black text-xs text-center tracking-[0] leading-[15.6px]"
+          className="pl-1 text-xs text-black"
         >
           Last Name
         </label>
+
+        <div className="bg-[#d9d9d9] rounded-lg border shadow-inner px-4 py-2">
+          <input
+            type="text"
+            id="lastName"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            className="w-full bg-transparent outline-none text-sm text-[#817d7d]"
+            placeholder="Doe"
+          />
+        </div>
       </div>
 
-      <div className="absolute top-24 left-0 w-[347px] h-[42px] bg-[#d9d9d9] rounded-[10px] border border-solid shadow-[inset_0px_4px_4px_#00000040]">
-        <input
-          type="text"
-          id="lastName"
-          name="lastName"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          className="w-full h-full bg-transparent border-none outline-none px-[21px] [font-family:'Inter-Regular',Helvetica] font-normal text-[#817d7d] text-[15px] tracking-[0] leading-[normal]"
-          placeholder="Doe"
-        />
-      </div>
-
-      <div className="absolute top-[153px] left-2 w-[50px] h-4 flex items-center justify-center">
+      {/* Chapter */}
+      <div className="flex flex-col gap-2">
         <label
           htmlFor="chapter"
-          className="[font-family:'Inter-Regular',Helvetica] font-normal text-black text-xs text-center tracking-[0] leading-[15.6px]"
+          className="pl-1 text-xs text-black"
         >
           Chapter
         </label>
+
+        <div className="rounded-lg border border-[#999999] shadow-inner px-3 py-2">
+          <select
+            id="chapter"
+            value={chapter}
+            onChange={(e) => setChapter(e.target.value)}
+            className="w-full bg-transparent outline-none text-sm text-[#817d7d] cursor-pointer"
+          >
+            <option value="">Select Chapter</option>
+          </select>
+        </div>
       </div>
 
-      <div className="absolute top-[175px] left-0 w-[347px] h-10 rounded-[10px] border border-solid border-[#999999] shadow-[inset_0px_4px_4px_#00000040]">
-        <select
-          id="chapter"
-          name="chapter"
-          value={chapter}
-          onChange={(e) => setChapter(e.target.value)}
-          className="w-full h-full bg-transparent border-none outline-none px-[13px] appearance-none [font-family:'Inter-Regular',Helvetica] font-normal text-[#817d7d] text-[15px] text-center tracking-[0] leading-[19.5px]"
-        >
-          <option value="">Select Chapter</option>
-        </select>
-      </div>
-
-
-      <div className="absolute top-[230px] left-2 w-[111px] h-4 flex items-center justify-center">
+      {/* Preferred Training */}
+      <div className="flex flex-col gap-2">
         <label
           htmlFor="training"
-          className="[font-family:'Inter-Regular',Helvetica] font-normal text-black text-xs text-center tracking-[0] leading-[15.6px]"
+          className="pl-1 text-xs text-black"
         >
           Preferred Training
         </label>
+
+        <div className="rounded-lg border border-[#999999] px-3 py-2">
+          <select
+            id="training"
+            value={training}
+            onChange={(e) => setTraining(e.target.value)}
+            className="w-full bg-transparent outline-none text-sm text-[#817d7d] cursor-pointer"
+          >
+            <option value="">Select Training</option>
+          </select>
+        </div>
       </div>
 
-      <div className="absolute top-[248px] left-0 w-[347px] h-10 rounded-[10px] border border-solid border-[#999999]">
-        <select
-          id="training"
-          name="training"
-          value={training}
-          onChange={(e) => setTraining(e.target.value)}
-          className="w-full h-full bg-transparent border-none outline-none px-[13px] appearance-none [font-family:'Inter-Regular',Helvetica] font-normal text-[#817d7d] text-[15px] text-center tracking-[0] leading-[19.5px]"
-        >
-          <option value="">Select Training</option>
-        </select>
-      </div>
-
+      {/* Submit Button */}
       <button
         type="submit"
-        className="absolute top-[334px] left-0 w-[347px] h-12 bg-[#cf2031] rounded-[10px] shadow-[4px_4px_4px_#00000040] flex items-center justify-center [font-family:'Inter-Bold',Helvetica] font-bold text-white text-[15px] text-center tracking-[0] leading-[19.5px] whitespace-nowrap cursor-pointer"
+        className="mt-4 py-3 bg-[#cf2031] rounded-lg shadow-md flex items-center justify-center font-bold text-white text-sm hover:bg-[#b01b2a] transition-colors"
       >
         Send Application
       </button>

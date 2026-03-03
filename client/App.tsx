@@ -24,6 +24,8 @@ import OrderHistory from "./pages/MyAccount/OrderHistory";
 import TrainerApplication from "./pages/MyAccount/TrainerApplication";
 import AuthPage from "./pages/Auth/AuthPage";
 import UpcomingTraining from "./pages/MyAccount/UpcomingTraining";
+import AdminLayout from "./pages/Admin/AdminLayout";
+import CustomTrainings from "./pages/UserNavigation/CustomTrainings";
 
 const queryClient = new QueryClient();
 
@@ -47,9 +49,8 @@ export default function App() {
                 <Route path="/membership" element={<Membership />} />
                 <Route path="/merchandise" element={<Merchandise />} />
                 <Route path="/checkout" element={<Checkout />} />
-                <Route path="*" element={<NotFound />} />
 
-                {/* My Account routes — all share the sidebar layout */}
+                {/* My Account routes (Nested) */}
                 <Route path="/my-account" element={<MyAccountLayout />}>
                   <Route path="AccountDetails" element={<AccountDetails />} />
                   <Route path="Addresses" element={<Addresses />} />
@@ -60,6 +61,14 @@ export default function App() {
                   <Route path="TrainerApplication" element={<TrainerApplication />} />
                   <Route path="UpcomingTraining" element={<UpcomingTraining />} />
                 </Route>
+
+                {/* Admin routes (Nested) */}
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route path="CustomTrainings" element={<CustomTrainings />} />
+                </Route>
+
+                {/* Catch-all route for 404s */}
+                <Route path="*" element={<NotFound />} />
               </Routes>
               <Cart />
             </BrowserRouter>

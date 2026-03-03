@@ -1,15 +1,17 @@
+// In Header.tsx — update the top right section only
 import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, User, ChevronDown } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 interface HeaderProps {
   className?: string;
-
 }
 
 export default function Header({ className }: HeaderProps) {
   const location = useLocation();
   const { user } = useAuth();
+
+  const isAdminRoute = location.pathname.startsWith("/admin");
 
   return (
     <header>
@@ -23,7 +25,14 @@ export default function Header({ className }: HeaderProps) {
           <span className="hidden sm:inline">Back to BNI Taguig Website</span>
           <span className="sm:hidden">Back</span>
         </Link>
-        {user ? (
+
+        {/* ✅ Show "Trainer Admin" on admin routes, otherwise Login / user */}
+        {isAdminRoute ? (
+          <div className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px]">
+            <User className="w-4 h-4 lg:w-5 lg:h-5" />
+            <span className="hidden sm:inline">Trainer Admin</span>
+          </div>
+        ) : user ? (
           <div className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px]">
             <User className="w-4 h-4 lg:w-5 lg:h-5" />
             <span className="hidden sm:inline">{user.userName}</span>
@@ -40,7 +49,7 @@ export default function Header({ className }: HeaderProps) {
         )}
       </div>
 
-      {/* White Navigation Bar */}
+      {/* White Navigation Bar — unchanged */}
       <div className="bg-white h-[90px] lg:h-[130px] flex items-center justify-between px-4 sm:px-6 lg:px-14">
         <Link to="/" className="flex-shrink-0">
           <img
@@ -50,28 +59,14 @@ export default function Header({ className }: HeaderProps) {
           />
         </Link>
         <nav className="flex items-center gap-3 sm:gap-6 lg:gap-12">
-          <Link
-            to="/training#top"
-            className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
-              location.pathname === "/training" ? "text-bni-red" : "text-black"
-            }`}
-          >
+          <Link to="/training#top" className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname === "/training" ? "text-bni-red" : "text-black"}`}>
             Training
           </Link>
-          <Link
-            to="/journey"
-            className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
-              location.pathname === "/journey" ? "text-bni-red" : "text-black"
-            }`}
-          >
+          <Link to="/journey" className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname === "/journey" ? "text-bni-red" : "text-black"}`}>
             Journey
           </Link>
           <div className="relative group">
-            <button
-              className={`flex items-center gap-1 text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
-                location.pathname.startsWith("/membership") ? "text-bni-red" : "text-black"
-              }`}
-            >
+            <button className={`flex items-center gap-1 text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname.startsWith("/membership") ? "text-bni-red" : "text-black"}`}>
               Membership
               <ChevronDown className="w-4 h-4" />
             </button>
@@ -81,13 +76,8 @@ export default function Header({ className }: HeaderProps) {
               <Link to="/membership/late-fee" className="block px-4 py-2.5 text-md hover:bg-red-50 hover:text-bni-red transition">Late Fee</Link>
               <Link to="/membership/admin-fee" className="block px-4 py-2.5 text-md hover:bg-red-50 hover:text-bni-red transition">Admin Fee</Link>
             </div>
-        </div>
-          <Link
-            to="/merchandise"
-            className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
-              location.pathname === "/merchandise" ? "text-bni-red" : "text-black"
-            }`}
-          >
+          </div>
+          <Link to="/merchandise" className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname === "/merchandise" ? "text-bni-red" : "text-black"}`}>
             Merchandise
           </Link>
         </nav>
