@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-
 import { useAuth } from "@/context/AuthContext";
+import { MissionMap } from "./MissionMap";
+import { AboutWorkshops } from "./AboutWorkshops";
 
 export function Mission() {
   const { user } = useAuth();
@@ -11,14 +12,14 @@ export function Mission() {
         Mission:
       </h2>
 
-      <div className="w-full h-[101px] relative border border-bni-gray-500">
-        <div className="absolute inset-0 flex items-center justify-center px-4 bg-bni-gray-300 shadow-[inset_0_4px_4px_0_rgba(0,0,0,0.25)]">
-          {user ? (
-            // TODO: Replace with Mission Map content
-            <p className="text-center text-[16px] md:text-[20px] font-semibold italic text-bni-gray">
-              Mission Map coming soon.
-            </p>
-          ) : (
+      {user ? (
+        <>
+          <MissionMap />
+          <AboutWorkshops />
+        </>
+      ) : (
+        <div className="w-full h-[101px] relative border border-bni-gray-500">
+          <div className="absolute inset-0 flex items-center justify-center px-4 bg-bni-gray-300 shadow-[inset_0_4px_4px_0_rgba(0,0,0,0.25)]">
             <p className="text-center text-[16px] md:text-[20px] font-semibold italic">
               <span className="text-bni-gray">Please </span>
               <Link to="/login" className="text-bni-red hover:underline">
@@ -30,9 +31,9 @@ export function Mission() {
               </Link>
               <span className="text-bni-gray"> with your BNI Account to see Mission Map</span>
             </p>
-          )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

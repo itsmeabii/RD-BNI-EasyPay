@@ -26,6 +26,8 @@ import AuthPage from "./pages/Auth/AuthPage";
 import UpcomingTraining from "./pages/MyAccount/UpcomingTraining";
 import AdminLayout from "./pages/Admin/AdminLayout";
 import CustomTrainings from "./pages/UserNavigation/CustomTrainings";
+import SuccessTreasureMap from "@/pages/Journey/SuccessMap/SuccessTreasureMap";
+import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWorkshopDetails";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +70,8 @@ export default function App() {
                 </Route>
 
                 {/* Catch-all route for 404s */}
+                <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
+                <Route path="/success-treasure-map/:id" element={<SuccessMapWorkshopDetails />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Cart />

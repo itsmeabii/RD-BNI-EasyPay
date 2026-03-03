@@ -1,8 +1,8 @@
-import { TotalProgress } from "./TotalProgressSection";
-import { InProgress } from "./InProgressSection";
-import { Mission } from "./MissionSection";
-import { SuccessMap } from "./SuccessMapSection";
-import { Rewards } from "./RewardsSection";
+import { TotalProgressSection } from "./TotalProgressSection";
+import { InProgressSection } from "./InProgressSection";
+import { Mission } from "./Mission/MissionSection";
+import { SuccessMapSection } from "./SuccessMap/SuccessMapSection";
+import { RewardsSection } from "./RewardsSection";
 
 export default function Journey() {
   return (
@@ -10,19 +10,19 @@ export default function Journey() {
       {/* Main Content */}
       <div className="flex flex-col items-center gap-[18px] px-4 md:px-8 py-8 md:py-6 relative">
         {/* Total Progress Section */}
-        <TotalProgress />
+        <TotalProgressSection />
 
         {/* In Progress Section */}
-        <InProgress />
+        <InProgressSection />
 
         {/* Mission Section */}
         <Mission />
 
         {/* Success Map Section */}
-        <SuccessMap />
+        <SuccessMapSection />
 
         {/* Rewards Section */}
-        <Rewards />
+        <RewardsSection />
       </div>
     </div>
   );

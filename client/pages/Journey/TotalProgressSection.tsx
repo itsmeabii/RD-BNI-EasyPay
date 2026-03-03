@@ -1,4 +1,4 @@
-import { Star } from "./StarSection";
+import { StarSection } from "./StarSection";
 
 const MILESTONES = [
   { label: "5 star", completed: true },
@@ -11,7 +11,7 @@ const MILESTONES = [
   { label: "50 star", completed: false },
 ];
 
-export function TotalProgress() {
+export function TotalProgressSection() {
   return (
     <div className="w-full flex flex-col gap-[18px]">
       <h2 className="text-[28px] md:text-[35px] font-semibold text-black mb-10">
@@ -29,7 +29,7 @@ export function TotalProgress() {
               <span className="absolute bottom-full mb-1 text-[13px] md:text-[18px] text-black whitespace-nowrap">
                 {milestone.label}
               </span>
-              <Star filled={milestone.completed} />
+              <StarSection filled={milestone.completed} />
             </div>
 
             {/* Connector line */}
