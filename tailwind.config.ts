@@ -20,6 +20,7 @@ export default {
       colors: {
         "bni-white": "#FFFFFF",
         "bni-red": "#CF2031",
+        "bni-red-700": "#a93226",
         "bni-yellow": "#FFD900",
         "bni-gray-200":"#F0F0F0",
         "bni-gray-300": "#E6E6E6",

@@ -9,7 +9,7 @@ type MapPinProps = {
 const PIN_STYLES: Record<WorkshopStatus, string> = {
   missed:    "bg-white text-gray-700 border-2 border-gray-400",
   completed: "bg-gray-400 text-white",
-  current:   "bg-[#CF2031] text-white border-[#FF0000]",
+  current:   "bg-bni-red text-white border-[#FF0000]",
   upcoming:  "bg-white text-gray-700 border-2 border-gray-400",
 };
 export function MapPin({ event, onClick }: MapPinProps) {

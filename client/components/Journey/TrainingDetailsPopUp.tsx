@@ -103,13 +103,13 @@ export default function TrainingDetailsPopUp({ training, event, onClose }: Detai
         <div className="flex gap-2 px-2 pb-4 pt-1">
           <button
             onClick={handleAddToCart}
-            className="flex-1 text-xs font-semibold border bg-bni-red border-bni-red text-bni-white rounded px-3 py-1.5 hover:bg-[#a93226] transition"
+            className="flex-1 text-xs font-semibold border bg-bni-red border-bni-red text-bni-white rounded px-3 py-1.5 hover:bg-bni-red-700 transition"
           >
             Add to Cart
           </button>
           <button
             onClick={handleCheckoutNow}
-            className="flex-1 text-xs font-semibold bg-bni-red text-white rounded px-3 py-1 hover:bg-[#a93226] transition"
+            className="flex-1 text-xs font-semibold bg-bni-red text-white rounded px-3 py-1 hover:bg-bni-red-700 transition"
           >
             Checkout Now
           </button>
