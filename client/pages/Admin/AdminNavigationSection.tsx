@@ -62,7 +62,7 @@ export const AdminNavigationSection = (): JSX.Element => {
               - Custom Trainings
             </NavLink>
             <NavLink to="/admin/TrainingManagement" className={subLinkClass}>
-              Training Management
+              - Training Management
             </NavLink>
           </div>
         )}
