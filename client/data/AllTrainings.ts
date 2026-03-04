@@ -82,11 +82,38 @@ export const ALL_CUSTOM_TRAININGS: CustomTraining[] = [
   },
 
   {
-    requestId: "RQ-005",
+    requestId: "RQ-004",
     trainingName: "Member Success Program",
     training: "ASWS",
     chapter: "GRiT",
     proposedDate: "06/21/2026",
+    noOfAttendees: 20,
+  },
+
+    {
+    requestId: "RQ-005",
+    trainingName: "BNI Taguig Training Certification Program",
+    training: "MSP",
+    chapter: "GRiT",
+    proposedDate: "06/21/2026",
+    noOfAttendees: 20,
+  },
+
+    {
+    requestId: "RQ-006",
+    trainingName: "Advance Presentation Workshop",
+    training: "ASWS",
+    chapter: "Dynamic",
+    proposedDate: "06/21/2026",
+    noOfAttendees: 20,
+  },
+
+    {
+    requestId: "RQ-007",
+    trainingName: "Member Success Program",
+    training: "AWS",
+    chapter: "Elite",
+    proposedDate: "02/04/2026",
     noOfAttendees: 20,
   },
 ];

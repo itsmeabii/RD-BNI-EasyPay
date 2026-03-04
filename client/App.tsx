@@ -28,6 +28,8 @@ import AdminLayout from "./pages/Admin/AdminLayout";
 import CustomTrainings from "./pages/UserNavigation/CustomTrainings";
 import SuccessTreasureMap from "@/pages/Journey/SuccessMap/SuccessTreasureMap";
 import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWorkshopDetails";
+//import TrainerList from "./pages/Admin/TrainerList";
+
 
 const queryClient = new QueryClient();
 
@@ -67,6 +69,7 @@ export default function App() {
                 {/* Admin routes (Nested) */}
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route path="CustomTrainings" element={<CustomTrainings />} />
+                  {/* <Route path="TrainerList" element={<TrainerList />} />  ← add this */}
                 </Route>
 
                 {/* Catch-all route for 404s */}

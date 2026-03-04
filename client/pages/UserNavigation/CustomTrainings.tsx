@@ -1,15 +1,16 @@
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { ChevronDown, Search } from "lucide-react";
 import {
-  ALL_CUSTOM_TRAININGS,
   CATEGORY_OPTIONS,
   CHAPTER_OPTIONS,
   DATE_SORT_OPTIONS,
   type CustomTraining,
 } from "../../data/AllTrainings";
+import { useFilteredTrainings } from "../../hooks/useFilteredTrainings";
 import { ConfirmModal, SuccessModal } from "./TrainerApplicationModals";
 
-// ─── Constants ────────────────────────────────────────────────────────────────
+// Constants 
 
 const TABLE_COLUMNS = [
   "Request ID",
@@ -21,9 +22,7 @@ const TABLE_COLUMNS = [
   "Trainer Application",
 ] as const;
 
-const GRID_COLS = "110px 1fr 130px 110px 160px 130px 150px";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Dropdown ─────────────────────────────────────────────────────────────────
 
 interface DropdownProps {
   value: string;
@@ -33,61 +32,24 @@ interface DropdownProps {
   width?: string;
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-const ChevronDown = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="#817d7d"
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="flex-shrink-0 pointer-events-none"
-  >
-    <polyline points="6 9 12 15 18 9" />
-  </svg>
-);
-
-const SearchIcon = () => (
-  <svg
-    width="18"
-    height="18"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="#817d7d"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    className="flex-shrink-0 opacity-60"
-  >
-    <circle cx="11" cy="11" r="8" />
-    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-  </svg>
-);
-
-// ─── Dropdown ─────────────────────────────────────────────────────────────────
-
 const Dropdown = ({
   value,
   onChange,
   options,
   placeholder,
-  width = "w-[140px]",
+  width = "w-36",
 }: DropdownProps) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
+    const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
         setOpen(false);
       }
     };
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   const selected = options.find((o) => o.value === value);
@@ -97,18 +59,23 @@ const Dropdown = ({
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center w-full h-[38px] bg-white rounded-[8px] border border-[#d9d9d9] px-3 gap-2"
+        className="flex items-center justify-between w-full h-10 bg-white rounded-lg border border-gray-300 px-3 gap-2 hover:border-gray-400 transition-colors"
       >
-        <span className="flex-1 text-left font-semibold text-[#817d7d] text-[13px] select-none">
+        <span className="flex-1 text-left font-semibold text-gray-500 text-sm select-none truncate">
           {selected?.label ?? placeholder}
         </span>
-        <ChevronDown />
+        <ChevronDown
+          size={14}
+          className={`text-gray-400 flex-shrink-0 transition-transform duration-200 ${
+            open ? "rotate-180" : ""
+          }`}
+        />
       </button>
 
       {open && (
-        <div className="absolute top-[42px] left-0 w-full bg-white border border-[#d9d9d9] rounded-[8px] shadow-lg z-50 overflow-hidden">
+        <div className="absolute top-11 left-0 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-50 overflow-y-auto max-h-56">
           <div
-            className="px-3 py-2 text-sm text-[#817d7d] hover:bg-gray-100 cursor-pointer"
+            className="p-2 text-sm text-gray-400 hover:bg-gray-50 cursor-pointer"
             onClick={() => { onChange(""); setOpen(false); }}
           >
             {placeholder}
@@ -116,7 +83,7 @@ const Dropdown = ({
           {options.map((opt) => (
             <div
               key={opt.value}
-              className={`px-3 py-2 text-sm cursor-pointer hover:bg-gray-100 ${
+              className={`p-2 text-sm cursor-pointer hover:bg-gray-50 transition-colors ${
                 value === opt.value
                   ? "text-[#cf2031] font-semibold"
                   : "text-gray-700"
@@ -132,52 +99,44 @@ const Dropdown = ({
   );
 };
 
-// ─── Table Row ────────────────────────────────────────────────────────────────
+// Training Row 
 
-const TrainingRow = ({
-  training,
-  isApplied,
-  isFirst,
-  onApply,
-}: {
+interface TrainingRowProps {
   training: CustomTraining;
   isApplied: boolean;
   isFirst: boolean;
   onApply: (id: string) => void;
-}) => (
+}
+
+const TrainingRow = ({ training, isApplied, isFirst, onApply }: TrainingRowProps) => (
   <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: GRID_COLS,
-      backgroundColor: "#fff",
-      borderTop: isFirst ? "none" : "1px solid #e5e7eb",
-      minHeight: "60px",
-      alignItems: "center",
-    }}
+    className={`grid grid-cols-[110px_1fr_130px_110px_160px_130px_150px] bg-white items-center min-h-[60px] ${
+      !isFirst && "border-t border-gray-200"
+    }`}
   >
-    <div className="px-3 text-xs text-center text-gray-600">{training.requestId}</div>
-    <div className="px-3 text-[13px] text-center text-gray-800">{training.trainingName}</div>
-    <div className="px-3 text-[13px] text-center">
+    <div className="p-3 text-xs text-center text-gray-500">{training.requestId}</div>
+    <div className="p-3 text-sm text-center text-gray-800">{training.trainingName}</div>
+    <div className="p-3 text-sm text-center">
       <Link
         to={`/training/${training.requestId}`}
-        className="text-[#cf2031] underline hover:opacity-75 font-medium"
+        className="text-[#cf2031] underline hover:opacity-75 font-medium transition-opacity"
       >
         View Training
       </Link>
     </div>
-    <div className="px-3 text-[13px] text-center text-gray-800">{training.chapter}</div>
-    <div className="px-3 text-[13px] text-center text-gray-800">{training.proposedDate}</div>
-    <div className="px-3 text-[13px] text-center text-gray-800">{training.noOfAttendees}</div>
-    <div className="px-3 flex justify-center items-center">
+    <div className="p-3 text-sm text-center text-gray-800">{training.chapter}</div>
+    <div className="p-3 text-sm text-center text-gray-800">{training.proposedDate}</div>
+    <div className="p-3 text-sm text-center text-gray-800">{training.noOfAttendees}</div>
+    <div className="p-3 flex justify-center items-center">
       {isApplied ? (
-        <span className="text-[13px] font-semibold text-green-600">Applied ✓</span>
+        <span className="text-sm font-semibold text-green-600">Applied ✓</span>
       ) : (
         <button
           onClick={() => onApply(training.requestId)}
-          className="flex items-center gap-1.5 text-[13px] font-bold text-gray-700 hover:text-[#cf2031] transition-colors"
+          className="flex items-center gap-1.5 text-sm font-bold text-gray-700 hover:text-[#cf2031] transition-colors"
         >
           Apply
-          <span className="w-5 h-5 rounded-full border-2 border-current flex items-center justify-center text-[11px] font-bold leading-none">
+          <span className="w-5 h-5 rounded-full border-2 border-current flex items-center justify-center text-xs font-bold leading-none">
             +
           </span>
         </button>
@@ -185,42 +144,6 @@ const TrainingRow = ({
     </div>
   </div>
 );
-
-// ─── Hooks ────────────────────────────────────────────────────────────────────
-
-const useFilteredTrainings = (
-  searchQuery: string,
-  selectedCategory: string,
-  selectedChapter: string,
-  selectedDate: string
-) =>
-  useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-
-    let results = ALL_CUSTOM_TRAININGS.filter((t) => {
-      const matchesCategory = !selectedCategory || t.training === selectedCategory;
-      const matchesChapter  = !selectedChapter  || t.chapter  === selectedChapter;
-      const matchesSearch   =
-        !q ||
-        t.trainingName.toLowerCase().includes(q) ||
-        t.training.toLowerCase().includes(q) ||
-        t.requestId.toLowerCase().includes(q) ||
-        t.chapter.toLowerCase().includes(q);
-      return matchesCategory && matchesChapter && matchesSearch;
-    });
-
-    if (selectedDate === "newest") {
-      results = results
-        .slice()
-        .sort((a, b) => new Date(b.proposedDate).getTime() - new Date(a.proposedDate).getTime());
-    } else if (selectedDate === "oldest") {
-      results = results
-        .slice()
-        .sort((a, b) => new Date(a.proposedDate).getTime() - new Date(b.proposedDate).getTime());
-    }
-
-    return results;
-  }, [searchQuery, selectedCategory, selectedChapter, selectedDate]);
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -240,7 +163,9 @@ export default function CustomTrainings() {
     selectedDate
   );
 
-  const handleApplyClick = (requestId: string) => setPendingId(requestId);
+  const handleApplyClick   = (id: string) => setPendingId(id);
+  const handleCancel       = () => setPendingId(null);
+  const handleSuccessClose = () => setShowSuccess(false);
 
   const handleConfirm = () => {
     if (pendingId) setAppliedIds((prev) => new Set(prev).add(pendingId));
@@ -248,63 +173,67 @@ export default function CustomTrainings() {
     setShowSuccess(true);
   };
 
-  const handleCancel      = () => setPendingId(null);
-  const handleSuccessClose = () => setShowSuccess(false);
-
   return (
     <>
-      {pendingId  && <ConfirmModal onConfirm={handleConfirm} onCancel={handleCancel} />}
+      {pendingId   && <ConfirmModal onConfirm={handleConfirm} onCancel={handleCancel} />}
       {showSuccess && <SuccessModal onClose={handleSuccessClose} />}
 
-      <div className="flex flex-col gap-4">
-        <h1 className="text-[#cf2031] text-[22px] font-bold">Custom Trainings</h1>
+      <div className="flex flex-col gap-6">
+        <h1 className="text-[#cf2031] text-2xl font-bold">Custom Trainings</h1>
 
         {/* Search & Filters */}
-        <div className="flex items-center gap-3">
-          <div className="flex flex-1 items-center h-[38px] bg-white rounded-[8px] border border-[#d9d9d9] px-4 gap-2">
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-1 min-w-48 items-center h-10 bg-white rounded-lg border border-gray-300 px-4 gap-2 hover:border-gray-400 transition-colors">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for categories, chapter, registrant ID"
-              className="flex-1 bg-transparent border-none outline-none text-[#333] text-[13px] placeholder:text-[#817d7d] placeholder:italic"
+              className="flex-1 bg-transparent outline-none text-gray-800 text-sm placeholder:text-gray-400 placeholder:italic"
               autoComplete="off"
             />
-            <SearchIcon />
+            <Search size={18} className="text-gray-400 flex-shrink-0" />
           </div>
 
-          <Dropdown value={selectedCategory} onChange={setSelectedCategory} placeholder="Categories" width="w-[140px]" options={CATEGORY_OPTIONS} />
-          <Dropdown value={selectedChapter}  onChange={setSelectedChapter}  placeholder="Chapter"    width="w-[120px]" options={CHAPTER_OPTIONS} />
-          <Dropdown value={selectedDate}     onChange={setSelectedDate}     placeholder="Date"       width="w-[100px]" options={DATE_SORT_OPTIONS} />
+          <div className="flex items-center gap-3 flex-wrap">
+            <Dropdown value={selectedCategory} onChange={setSelectedCategory} placeholder="Categories" width="w-36" options={CATEGORY_OPTIONS} />
+            <Dropdown value={selectedChapter}  onChange={setSelectedChapter}  placeholder="Chapter"    width="w-32" options={CHAPTER_OPTIONS} />
+            <Dropdown value={selectedDate}     onChange={setSelectedDate}     placeholder="Date"       width="w-28" options={DATE_SORT_OPTIONS} />
+          </div>
         </div>
 
-        {/* Table */}
-        <div className="w-full rounded-[8px] overflow-hidden" style={{ border: "1px solid #d9d9d9" }}>
+        {/* Table — horizontal scroll on small screens */}
+        <div className="w-full rounded-lg overflow-x-auto border border-gray-300">
           {/* Header */}
-          <div style={{ display: "grid", gridTemplateColumns: GRID_COLS, backgroundColor: "#cf2031" }}>
+          <div className="grid grid-cols-[110px_1fr_130px_110px_160px_130px_150px] bg-[#cf2031] min-w-[900px]">
             {TABLE_COLUMNS.map((col) => (
-              <div key={col} className="py-[14px] px-3 text-center text-white font-extrabold text-[11px] leading-tight">
+              <div
+                key={col}
+                className="py-4 px-3 text-center text-white font-extrabold text-xs leading-tight"
+              >
                 {col}
               </div>
             ))}
           </div>
 
           {/* Body */}
-          {filteredTrainings.length === 0 ? (
-            <div className="bg-white py-16 text-center text-gray-400 text-sm">
-              No trainings match your search or filter.
-            </div>
-          ) : (
-            filteredTrainings.map((training, index) => (
-              <TrainingRow
-                key={training.requestId}
-                training={training}
-                isApplied={appliedIds.has(training.requestId)}
-                isFirst={index === 0}
-                onApply={handleApplyClick}
-              />
-            ))
-          )}
+          <div className="min-w-[900px]">
+            {filteredTrainings.length === 0 ? (
+              <div className="bg-white py-16 text-center text-gray-400 text-sm">
+                No trainings match your search or filter.
+              </div>
+            ) : (
+              filteredTrainings.map((training, index) => (
+                <TrainingRow
+                  key={training.requestId}
+                  training={training}
+                  isApplied={appliedIds.has(training.requestId)}
+                  isFirst={index === 0}
+                  onApply={handleApplyClick}
+                />
+              ))
+            )}
+          </div>
         </div>
       </div>
     </>
