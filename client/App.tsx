@@ -8,15 +8,28 @@ import { CartProvider } from "./context/CartContext";
 import Header from "./components/Header";
 import Cart from "./pages/CartDrawer";
 import Home from "./pages/Home";
-import Journey from "./pages/Journey/JourneyPage";
-import AuthPage from "./pages/Auth/AuthPage";
 import Membership from "./pages/Membership/NewMembershipPage";
 import Merchandise from "./pages/Merchandise";
 import Checkout from "./pages/Checkout/Checkout";
 import TrainingDetail from "./pages/Training/[id]/page";
 import NotFound from "./pages/NotFound";
+import Journey from "./pages/Journey/JourneyPage";
+import MyAccountLayout from "./pages/MyAccount/MyAccountLayout";
+import AccountDetails from "./pages/MyAccount/AccountDetails";
+import Addresses from "./pages/MyAccount/Addresses";
+import Downloads from "./pages/MyAccount/Downloads";
+import Logout from "./pages/MyAccount/Logout";
+import MyWallet from "./pages/MyAccount/MyWallet";
+import OrderHistory from "./pages/MyAccount/OrderHistory";
+import TrainerApplication from "./pages/MyAccount/TrainerApplication";
+import AuthPage from "./pages/Auth/AuthPage";
+import UpcomingTraining from "./pages/MyAccount/UpcomingTraining";
+import AdminLayout from "./pages/Admin/AdminLayout";
+import CustomTrainings from "./pages/UserNavigation/CustomTrainings";
 import SuccessTreasureMap from "@/pages/Journey/SuccessMap/SuccessTreasureMap";
 import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWorkshopDetails";
+//import TrainerList from "./pages/Admin/TrainerList";
+
 
 const queryClient = new QueryClient();
 
@@ -31,6 +44,7 @@ export default function App() {
             <BrowserRouter>
               <Header />
               <Routes>
+                {/* Public routes */}
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<AuthPage />} />
                 <Route path="/journey" element={<Journey />} />
@@ -39,6 +53,26 @@ export default function App() {
                 <Route path="/membership" element={<Membership />} />
                 <Route path="/merchandise" element={<Merchandise />} />
                 <Route path="/checkout" element={<Checkout />} />
+
+                {/* My Account routes (Nested) */}
+                <Route path="/my-account" element={<MyAccountLayout />}>
+                  <Route path="AccountDetails" element={<AccountDetails />} />
+                  <Route path="Addresses" element={<Addresses />} />
+                  <Route path="Downloads" element={<Downloads />} />
+                  <Route path="Logout" element={<Logout />} />
+                  <Route path="MyWallet" element={<MyWallet />} />
+                  <Route path="OrderHistory" element={<OrderHistory />} />
+                  <Route path="TrainerApplication" element={<TrainerApplication />} />
+                  <Route path="UpcomingTraining" element={<UpcomingTraining />} />
+                </Route>
+
+                {/* Admin routes (Nested) */}
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route path="CustomTrainings" element={<CustomTrainings />} />
+                  {/* <Route path="TrainerList" element={<TrainerList />} />  ← add this */}
+                </Route>
+
+                {/* Catch-all route for 404s */}
                 <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
                 <Route path="/success-treasure-map/:id" element={<SuccessMapWorkshopDetails />} />
                 <Route path="*" element={<NotFound />} />
