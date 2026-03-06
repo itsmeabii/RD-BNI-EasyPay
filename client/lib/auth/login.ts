@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase/CreateClient"
+import { supabase } from "@/lib/supabase/Client"
 
 type LoginPayload = {
   email: string;
@@ -10,7 +10,7 @@ type LoginResult = {
   email: string;
 };
 
-export async function loginWithEmail({ email, password }: LoginPayload): Promise<LoginResult> {
+export async function LoginWithEmail({ email, password }: LoginPayload): Promise<LoginResult> {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) throw new Error("Invalid username or password. Please try again.");

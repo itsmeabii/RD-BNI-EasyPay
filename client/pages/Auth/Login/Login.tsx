@@ -1,9 +1,8 @@
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MOCK_USER } from "@/data/Login";
 import { useAuth } from "@/context/AuthContext";
-import { loginWithEmail } from "@/lib/auth/login";
+import { LoginWithEmail } from "@/lib/auth/Login";
 
 
 type LoginSuccessPayload = {
@@ -31,16 +30,13 @@ export default function LoginSection({ onSuccess, onLoadingChange }: LoginSectio
   };
 
   const handleSubmit = async (e) => {
-    console.log("submit triggered", formData);
     e.preventDefault();
     onLoadingChange?.(true);
     setError("");
 
     try {
-      const result = await loginWithEmail(formData);
-      console.log("submit triggered", formData);
+      const result = await LoginWithEmail(formData);
       login(result);
-      console.log("login result", result);
       onSuccess?.(result);
       navigate("/");
     } catch (err) {
