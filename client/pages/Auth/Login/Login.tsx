@@ -1,10 +1,10 @@
-"use client";
-
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { MOCK_USER } from "@/data/Login";
 import { useAuth } from "@/context/AuthContext";
+import { loginWithEmail } from "@/lib/auth/login";
+
 
 type LoginSuccessPayload = {
   userName: string;
@@ -30,24 +30,24 @@ export default function LoginSection({ onSuccess, onLoadingChange }: LoginSectio
     setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+    console.log("submit triggered", formData);
     e.preventDefault();
     onLoadingChange?.(true);
+    setError("");
 
-    // TODO: Replace with real API call
-    setTimeout(() => {
-      if (
-        formData.email === MOCK_USER.email &&
-        formData.password === MOCK_USER.password
-      ) {
-        login({ userName: MOCK_USER.username, email: formData.email });
-        onSuccess?.({ userName: MOCK_USER.username, email: formData.email });
-        navigate("/");
-      } else {
-        setError("Invalid username or password. Please try again.");
-        onLoadingChange?.(false);
-      }
-    }, 300);
+    try {
+      const result = await loginWithEmail(formData);
+      console.log("submit triggered", formData);
+      login(result);
+      console.log("login result", result);
+      onSuccess?.(result);
+      navigate("/");
+    } catch (err) {
+      console.log("error:", err);
+      setError(err.message);
+      onLoadingChange?.(false);
+    }
   };
 
   return (
@@ -109,6 +109,7 @@ export default function LoginSection({ onSuccess, onLoadingChange }: LoginSectio
         <div className="flex items-center gap-4">
           <button
             type="submit"
+            onClick={handleSubmit}
             className="bg-bni-red hover:bg-[#a93226] disabled:opacity-70 disabled:cursor-not-allowed text-white text-sm font-semibold px-5 py-2.5 rounded transition"
           >
             Login
