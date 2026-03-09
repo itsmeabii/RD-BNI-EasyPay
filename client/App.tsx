@@ -19,6 +19,10 @@ import Cart from "./pages/Cart";
 import Membership from "./pages/Membership/NewMembership";
 import Checkout from "./pages/Checkout/Checkout";
 import Index from './pages/ProductDetailedDescription';
+import TrainerApplication from "./pages/TrainerApplication";
+import TrainingRequest from "./pages/TrainingRequest";
+
+
 
 const queryClient = new QueryClient();
 
@@ -40,6 +44,8 @@ export const App = () => (
             <Route path="/signup" element={<Signup />} />
             <Route path="/membership" element={<Membership />} />
             <Route path="/merchandise" element={<Merchandise />} />
+            <Route path="/trainerapplication" element={<TrainerApplication />} />
+            <Route path="/trainingrequest" element={<TrainingRequest />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

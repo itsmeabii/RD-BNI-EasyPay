@@ -1,6 +1,13 @@
-import { X, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Product } from "./ProductCard";
+import { useEffect } from "react";
+import { ShoppingCart, X } from "lucide-react";
+import { useCart } from "@/context/CartContext";
+import { formatPrice } from "@/data/Training";
+import CartItemRow from "@/components/Cart/CartItemRow";
+import YouMightAlsoLike from "@/components/Cart/YouMightAlsoLike";
+import { Link, useNavigate } from "react-router-dom";
 
 export interface CartItem extends Product {
   color?: any;

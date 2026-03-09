@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Search, ShoppingCart, ChevronLeft, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import CartSidebar, { CartItem } from "@/components/CartSidebar";
 import ProductCard, { Product } from "@/components/ProductCard";
 
@@ -52,6 +53,7 @@ export default function Index() {
   const [cartOpen, setCartOpen] = useState(false);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   const totalCartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -86,129 +88,29 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-white font-inter">
-      {/* Top Bar */}
-      <div className="bg-[#8B0D12] w-full">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[50px] sm:h-[69px] flex items-center justify-between">
-          <a
-            href="https://bnitaguig.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-white text-xs sm:text-sm font-medium hover:opacity-80 transition-opacity"
-          >
-            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span>Back to BNI Taguig Website</span>
-          </a>
-          <div className="flex items-center gap-2 text-white text-xs sm:text-sm font-medium cursor-pointer hover:opacity-80 transition-opacity">
-            <User className="w-5 h-5 sm:w-6 sm:h-6" />
-            <span className="hidden sm:inline">Login / Register</span>
-          </div>
-        </div>
-      </div>
 
-      {/* Header / Nav */}
-      <div className="bg-white border-b border-gray-100 sticky top-0 z-30 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-20 md:h-24">
-            {/* Logo */}
-            <div className="flex items-center gap-0 flex-shrink-0">
-              <img
-                src="https://api.builder.io/api/v1/image/assets/TEMP/d8989a6823edfcb2dc5a69bf9845044ab5544316?width=798"
-                alt="BNI Taguig EasyPay"
-                className="h-10 sm:h-12 md:h-14 w-auto object-contain"
-                onError={(e) => {
-                  // Fallback if image doesn't load
-                  const target = e.currentTarget;
-                  target.style.display = "none";
-                  const next = target.nextElementSibling as HTMLElement;
-                  if (next) next.style.display = "flex";
-                }}
-              />
-              {/* Fallback Logo (hidden by default) */}
-              <div className="hidden items-center gap-2">
-                <div className="bg-[#CF2031] rounded px-2 py-1">
-                  <span className="text-white font-bold text-lg">BNi</span>
-                  <div className="text-white text-[8px] font-medium">TAGUIG</div>
-                </div>
-                <div className="w-px h-10 bg-gray-300 mx-2" />
-                <span className="text-[#CF2031] text-3xl font-black italic tracking-tight">
-                  EASYPAY
-                </span>
-              </div>
-            </div>
+        {/* Welcome Banner with Background Graphics */}
+        <div className="relative mb-12">
+          {/* Left decorative graphic */}
+          <img
+            src="https://api.builder.io/api/v1/image/assets/TEMP/585a34a93c99dcced92026388a0f58f15c865e38?width=642"
+            alt=""
+            className="absolute left-60 top-0 w-[321px] h-[160px] pointer-events-none opacity-80"
+          />
+          
 
-            {/* Nav */}
-            <nav className="flex items-center gap-4 sm:gap-6 md:gap-8">
-              {navItems.map((item) => (
-                <button
-                  key={item.label}
-                  className={`text-sm sm:text-base md:text-lg font-semibold whitespace-nowrap transition-colors ${
-                    item.active ? "text-[#B11A17]" : "text-black hover:text-[#B11A17]"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-              {/* Cart Icon */}
-              <button
-                onClick={() => setCartOpen(true)}
-                className="relative text-black hover:text-[#B11A17] transition-colors ml-1"
-                aria-label="Open cart"
-              >
-                <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6" />
-                {totalCartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-[#CF2031] text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-                    {totalCartCount}
-                  </span>
-                )}
-              </button>
-            </nav>
-          </div>
-        </div>
-      </div>
-
-      {/* Hero Section */}
-      <div className="relative bg-white overflow-hidden py-10 sm:py-14 md:py-16">
-        {/* Decorative arcs - left */}
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/3 pointer-events-none select-none">
-          <svg width="300" height="300" viewBox="0 0 300 300" fill="none">
-            {[120, 95, 70, 48, 28].map((r, i) => (
-              <circle
-                key={i}
-                cx="150"
-                cy="150"
-                r={r}
-                stroke="#CF2031"
-                strokeWidth="2"
-                fill="none"
-                opacity={0.12 + i * 0.08}
-              />
-            ))}
-          </svg>
-        </div>
-
-        {/* Decorative arcs - right */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/3 pointer-events-none select-none">
-          <svg width="260" height="260" viewBox="0 0 260 260" fill="none">
-            {[100, 78, 57, 38, 20].map((r, i) => (
-              <circle
-                key={i}
-                cx="130"
-                cy="130"
-                r={r}
-                stroke="#CF2031"
-                strokeWidth="2"
-                fill="none"
-                opacity={0.08 + i * 0.06}
-              />
-            ))}
-          </svg>
-        </div>
+          {/* Right decorative graphic */}
+          <img
+            src="https://api.builder.io/api/v1/image/assets/TEMP/42269f5251381fbd4214ef6404bdef6b8a4bb433?width=310"
+            alt=""
+            className="absolute right-60 top-0 w-[155px] h-[220px] pointer-events-none opacity-80"
+          />
 
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-black leading-snug">
+          <h1 className="text-xl sm:text-2xl md:text-3xl pt-9 lg:text-4xl font-bold text-black leading-snug">
             Welcome to the BNI Taguig Merchandise Shop!
           </h1>
-          <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg lg:text-xl text-black max-w-3xl mx-auto">
+          <p className="mt-3 sm:mt-4 text-sm sm:text-base md:text-lg lg:text-xl text-black max-w-5xl mx-auto">
             Explore our official merchandise designed to represent professionalism, connection, and success.
             Thank you for supporting BNI Taguig.
           </p>
@@ -218,18 +120,21 @@ export default function Index() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         {/* Search Bar */}
-        <div className="mb-8">
-          <div className="relative w-full max-w-sm">
-            <input
-              type="text"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full border border-gray-300 rounded px-4 py-2 pr-10 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#CF2031] focus:border-[#CF2031]"
-            />
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          </div>
-        </div>
+<div className="mb-8">
+  <div className="relative w-full max-w-sm">
+    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+      <Search className="h-5 w-5 text-gray-400" />
+    </div>
+    
+    <input
+      type="text"
+      placeholder="Search"
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      className="w-full bg-[#F3F4F6] border-none rounded-lg py-3 pl-11 pr-4 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all"
+    />
+  </div>
+</div>
 
         {/* Product Grid */}
         {filteredProducts.length > 0 ? (
