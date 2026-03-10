@@ -29,7 +29,7 @@ import SuccessTreasureMap from "@/pages/Journey/SuccessMap/SuccessTreasureMap";
 import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWorkshopDetails";
 import MembershipRenewal from "./pages/Membership/MembershipRenewalPage";
 import NewMembership from "./pages/Membership/NewMembershipPage";
-
+import ProtectedRoute from "./components/Protectedroute";
 
 const queryClient = new QueryClient();
 
@@ -55,16 +55,18 @@ export default function App() {
                 <Route path="/merchandise" element={<Merchandise />} />
                 <Route path="/checkout" element={<Checkout />} />
 
-                {/* My Account routes (Nested) */}
-                <Route path="/my-account" element={<MyAccountLayout />}>
-                  <Route path="AccountDetails" element={<AccountDetails />} />
-                  <Route path="Addresses" element={<Addresses />} />
-                  <Route path="Downloads" element={<Downloads />} />
-                  <Route path="Logout" element={<Logout />} />
-                  <Route path="MyWallet" element={<MyWallet />} />
-                  <Route path="OrderHistory" element={<OrderHistory />} />
-                  <Route path="TrainerApplication" element={<TrainerApplication />} />
-                  <Route path="UpcomingTrainings" element={<UpcomingTraining />} />
+                {/* Protected: My Account routes (Nested) */}
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/my-account" element={<MyAccountLayout />}>
+                    <Route path="AccountDetails" element={<AccountDetails />} />
+                    <Route path="Addresses" element={<Addresses />} />
+                    <Route path="Downloads" element={<Downloads />} />
+                    <Route path="Logout" element={<Logout />} />
+                    <Route path="MyWallet" element={<MyWallet />} />
+                    <Route path="OrderHistory" element={<OrderHistory />} />
+                    <Route path="TrainerApplication" element={<TrainerApplication />} />
+                    <Route path="UpcomingTrainings" element={<UpcomingTraining />} />
+                  </Route>
                 </Route>
 
                 {/* Admin routes (Nested) */}

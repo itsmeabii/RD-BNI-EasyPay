@@ -1,29 +1,21 @@
 import React, { FC, useState, useMemo } from "react";
 import { TrainingListSection } from "../pages/MyAccount/TrainingListSection";
-import {
-  ALL_TRAININGS,
-  CATEGORY_OPTIONS,
-  MONTH_OPTIONS,
-  SortOrder,
-} from "../data/AllTrainings";
+import { CATEGORY_OPTIONS, MONTH_OPTIONS, SortOrder } from "../data/AllTrainings";
 import { SearchInput, Dropdown } from "../components/SearchControls";
+import { useTrainings } from "../hooks/useTrainings";
 
 export const SearchAndFilters: FC = () => {
+  const { trainings, loading } = useTrainings();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [sortOrder, setSortOrder] = useState<SortOrder>("");
-
   const filteredTrainings = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
 
-    let results = ALL_TRAININGS.filter((training) => {
-      const matchesCategory =
-        !selectedCategory || training.category === selectedCategory;
-
-      const matchesMonth =
-        !selectedMonth || training.trainingDate.includes(selectedMonth);
-
+    let results = trainings.filter((training) => {
+      const matchesCategory = !selectedCategory || training.category === selectedCategory;
+      const matchesMonth = !selectedMonth || training.trainingDate.includes(selectedMonth);
       const matchesSearch =
         !query ||
         training.trainingName.toLowerCase().includes(query) ||
@@ -42,7 +34,7 @@ export const SearchAndFilters: FC = () => {
     }
 
     return results;
-  }, [searchQuery, selectedCategory, selectedMonth, sortOrder]);
+  }, [searchQuery, selectedCategory, selectedMonth, sortOrder, trainings]);
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -52,7 +44,6 @@ export const SearchAndFilters: FC = () => {
           onChange={setSearchQuery}
           placeholder="Search for categories, training name, training ID"
         />
-
         <Dropdown
           value={selectedCategory}
           onChange={setSelectedCategory}
@@ -60,7 +51,6 @@ export const SearchAndFilters: FC = () => {
           width="w-[155px]"
           options={CATEGORY_OPTIONS}
         />
-
         <Dropdown
           value={selectedMonth}
           onChange={setSelectedMonth}
@@ -71,11 +61,17 @@ export const SearchAndFilters: FC = () => {
         />
       </div>
 
-      <TrainingListSection
-        trainings={filteredTrainings}
-        sortOrder={sortOrder}
-        onSortChange={setSortOrder}
-      />
+      {loading ? (
+        <div className="bg-white rounded-[8px] border border-gray-300 py-16 text-center text-gray-400 text-sm">
+          Loading trainings...
+        </div>
+      ) : (
+        <TrainingListSection
+          trainings={filteredTrainings}
+          sortOrder={sortOrder}
+          onSortChange={setSortOrder}
+        />
+      )}
     </div>
   );
 };

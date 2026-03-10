@@ -1,7 +1,4 @@
-/* ─── Types ─────────────────────────────────────────────────────────────── */
-
 export type SortOrder = "newest" | "oldest" | "";
-
 export type TrainingCategory = "AWS" | "MSP" | "MSS" | "ASWS";
 
 export interface TrainingData {
@@ -17,8 +14,6 @@ export interface DropdownOption {
   value: string;
 }
 
-/* ─── Table Column Labels ────────────────────────────────────────────────── */
-
 export const TRAINING_TABLE_COLUMNS = [
   "Order ID",
   "Training Name",
@@ -27,48 +22,6 @@ export const TRAINING_TABLE_COLUMNS = [
   "Reminders",
   "Action",
 ];
-
-/* ─── Trainings Data ─────────────────────────────────────────────────────── */
-
-export const ALL_TRAININGS: TrainingData[] = [
-  {
-    orderId: "RQ-001",
-    trainingName: "Business Strategy & Planning",
-    trainingDate: "February 22, 2026",
-    reminder: "1 week before",
-    category: "AWS",
-  },
-  {
-    orderId: "RQ-002",
-    trainingName: "Sales Techniques That Close Deals",
-    trainingDate: "February 22, 2026",
-    reminder: "No reminder",
-    category: "AWS",
-  },
-  {
-    orderId: "RQ-003",
-    trainingName: "Entrepreneurship Fundamentals",
-    trainingDate: "January 26, 2026",
-    reminder: "1 week before",
-    category: "AWS",
-  },
-  {
-    orderId: "RQ-004",
-    trainingName: "Entrepreneurship Fundamentals",
-    trainingDate: "February 21, 2026",
-    reminder: "1 week before",
-    category: "MSP",
-  },
-  {
-    orderId: "RQ-005",
-    trainingName: "Entrepreneurship Fundamentals",
-    trainingDate: "February 22, 2026",
-    reminder: "1 week before",
-    category: "AWS",
-  },
-];
-
-/* ─── Filter / Sort Options ──────────────────────────────────────────────── */
 
 export const CATEGORY_OPTIONS: DropdownOption[] = [
   { label: "AWS", value: "AWS" },
@@ -89,9 +42,4 @@ export const MONTH_OPTIONS: DropdownOption[] = [
   { label: "October", value: "October" },
   { label: "November", value: "November" },
   { label: "December", value: "December" },
-];
-
-export const DATE_SORT_OPTIONS: DropdownOption[] = [
-  { label: "Newest", value: "newest" },
-  { label: "Oldest", value: "oldest" },
 ];

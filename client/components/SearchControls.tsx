@@ -1,8 +1,7 @@
 import React, { FC, useState, useRef, useEffect, useCallback } from "react";
 import { ChevronDown, Search } from "lucide-react";
 
-/* ─── Search Input ───────────────────────────────────────────────────────── */
-
+/*Search Input*/
 interface SearchInputProps {
   value: string;
   onChange: (value: string) => void;
@@ -27,15 +26,14 @@ export const SearchInput: FC<SearchInputProps> = ({
   </div>
 );
 
-/* ─── Dropdown ───────────────────────────────────────────────────────────── */
-
+/*Dropdown */
 interface DropdownProps {
   value: string;
   onChange: (val: string) => void;
   options: { label: string; value: string }[];
   placeholder: string;
   width: string;
-  scrollable?: boolean; // enables scrollbar for long lists (e.g. months)
+  scrollable?: boolean; 
 }
 
 export const Dropdown: FC<DropdownProps> = ({
@@ -48,9 +46,7 @@ export const Dropdown: FC<DropdownProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
   const handleToggle = useCallback(() => setIsOpen((prev) => !prev), []);
-
   const handleSelect = useCallback(
     (val: string) => {
       onChange(val);

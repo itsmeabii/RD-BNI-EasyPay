@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { TrainingData } from "../../data/AllTrainings";
 import ReminderDropdown from "./ReminderDropdown";
 
@@ -21,6 +21,8 @@ const TrainingRow = ({
   onSelectOption,
   isLast,
 }: TrainingRowProps) => {
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
   return (
     <div
       className={`grid grid-cols-[130px_1fr_180px_110px_160px_170px] bg-white border-t border-gray-200 min-h-[68px] items-center ${
@@ -38,20 +40,20 @@ const TrainingRow = ({
       <div className="px-4 text-[14px] text-center text-gray-800">{reminderValue}</div>
       <div className="px-4 flex justify-center relative">
         <button
+          ref={buttonRef}
           onClick={onOpenDropdown}
-          className="w-[130px] h-[34px] bg-[#cf2031] rounded-[6px] text-white text-sm font-bold hover:bg-[#b51c2b] transition-colors"
-        >
+          className="w-[130px] h-[34px] bg-[#cf2031] rounded-[6px] text-white text-sm font-bold hover:bg-[#b51c2b] transition-colors">
           Set Reminders
         </button>
         {isOpen && (
           <ReminderDropdown
             options={reminderOptions}
             onSelect={(option) => onSelectOption(training.orderId, option)}
+            buttonRef={buttonRef}
           />
         )}
       </div>
     </div>
   );
 };
-
 export default TrainingRow;

@@ -21,30 +21,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-  console.log("AuthContext mounted");
-  
-  supabase.auth.getSession().then(({ data: { session } }) => {
-    console.log("getSession result:", session);
-    
-    if (session?.user) {
-      setUser({
-        id: session.user.id,
-        email: session.user.email ?? "",
-        userName: session.user.user_metadata?.username ?? "",
-      });
-    }
-    
-    setIsLoading(false);
-  });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        const email = session.user.email ?? "";
+        setUser({
+          id: session.user.id,
+          email,
+          // Use username from metadata
+          userName:
+            session.user.user_metadata?.username ??
+            session.user.user_metadata?.userName ??
+            email.split("@")[0],
+        });
+      }
+      setIsLoading(false);
+    });
 
-  const { data: { subscription } } = supabase.auth.onAuthStateChange(
-    (_event, session) => {
-      console.log("onAuthStateChange:", _event, session);
-    }
-  );
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session?.user) {
+          const email = session.user.email ?? "";
+          setUser({
+            id: session.user.id,
+            email,
+            userName:
+              session.user.user_metadata?.username ??
+              session.user.user_metadata?.userName ??
+              email.split("@")[0],
+          });
+        } else {
+          setUser(null);
+        }
+      }
+    );
 
-  return () => subscription.unsubscribe();
-}, []);
+    return () => subscription.unsubscribe();
+  }, []);
 
   const login = (user: AuthUser) => setUser(user);
   const logout = async () => {

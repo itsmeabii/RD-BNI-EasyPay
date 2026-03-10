@@ -6,9 +6,6 @@ interface WheelPickerProps<T extends string | number> {
   onChange: (val: T) => void;
 }
 
-// ITEM_HEIGHT = 44px, VISIBLE = 5, containerHeight = 220px
-// These are hardcoded as Tailwind classes since dynamic classes get purged
-
 export function WheelPicker<T extends string | number>({
   items,
   value,
