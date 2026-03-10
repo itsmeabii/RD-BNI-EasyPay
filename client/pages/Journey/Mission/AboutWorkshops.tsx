@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { WORKSHOP_GROUPS, WorkshopItem, WorkshopGroupProps } from "@/data/Journey";
+import { WorkshopItem, WorkshopGroupProps } from "@/types/JourneyTypes";
+import { useWorkshopGroups } from "@/lib/utils/Training/TrainingSeriesUtils"; 
 
 function AccordionItem({ item }: { item: WorkshopItem }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,17 +45,24 @@ function WorkshopGroup({ group }: { group: WorkshopGroupProps }) {
 }
 
 export function AboutWorkshops() {
+  const { groups, loading, error } = useWorkshopGroups(); // 👈 fetch from Supabase
+
   return (
     <div className="w-full flex flex-col gap-5">
       <h2 className="text-[28px] md:text-[35px] font-semibold text-black">
         About the Workshops:
       </h2>
 
-      <div className="flex flex-col gap-6">
-        {WORKSHOP_GROUPS.map((group, i) => (
-          <WorkshopGroup key={i} group={group} />
-        ))}
-      </div>
+      {loading && <p className="text-sm text-gray-400">Loading workshops...</p>}
+      {error && <p className="text-sm text-red-500">Failed to load: {error}</p>}
+
+      {!loading && !error && (
+        <div className="flex flex-col gap-6">
+          {groups.map((group, i) => (
+            <WorkshopGroup key={i} group={group} /> // 👈 use groups from hook
+          ))}
+        </div>
+      )}
     </div>
   );
 }

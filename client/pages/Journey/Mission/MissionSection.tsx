@@ -3,8 +3,10 @@ import { useAuth } from "@/context/AuthContext";
 import { MissionMap } from "./MissionMap";
 import { AboutWorkshops } from "./AboutWorkshops";
 
-export function Mission() {
-  const { user } = useAuth();
+export function MissionSection() {
+  const { user, isLoading } = useAuth();
+
+  if (isLoading) return null; 
 
   return (
     <div className="w-full flex flex-col gap-[6px]">
@@ -14,7 +16,7 @@ export function Mission() {
 
       {user ? (
         <>
-          <MissionMap />
+          <MissionMap userId={user.id} />
           <AboutWorkshops />
         </>
       ) : (
@@ -22,13 +24,9 @@ export function Mission() {
           <div className="absolute inset-0 flex items-center justify-center px-4 bg-bni-gray-300 shadow-[inset_0_4px_4px_0_rgba(0,0,0,0.25)]">
             <p className="text-center text-[16px] md:text-[20px] font-semibold italic">
               <span className="text-bni-gray">Please </span>
-              <Link to="/login" className="text-bni-red hover:underline">
-                Login
-              </Link>
+              <Link to="/login" className="text-bni-red hover:underline">Login</Link>
               <span className="text-bni-gray"> or </span>
-              <Link to="/login" className="text-bni-red hover:underline">
-                Sign Up
-              </Link>
+              <Link to="/login" className="text-bni-red hover:underline">Sign Up</Link>
               <span className="text-bni-gray"> with your BNI Account to see Mission Map</span>
             </p>
           </div>

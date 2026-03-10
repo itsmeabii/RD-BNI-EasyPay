@@ -8,10 +8,10 @@ import ShoppingCartButton from "@/components/ShoppingCartButton";
 import Footer from "@/components/Footer";
 import { useCart } from "@/context/CartContext";
 
-export default function NewMembership() {
+export default function MembershipRenewal() {
   const navigate = useNavigate();
   const { addToCart, openCart, checkoutSingle } = useCart();
-  const { plans, loading, error } = useMembershipPlans("new");
+  const { plans, loading, error } = useMembershipPlans("renewal");
 
   const handleAddToCart = (plan: MembershipPlan) => {
     addToCart({
@@ -61,26 +61,13 @@ export default function NewMembership() {
         {/* Page header */}
         <div className="text-center mb-6">
           <h1 className="text-3xl font-extrabold text-gray-900 mb-4">
-            New BNI Membership
+            Membership Renewal
           </h1>
           <p className="text-gray-600 text-sm leading-relaxed max-w-xl mx-auto">
-            Your BNI Membership is your gateway to a thriving business network.
-            Gain exclusive access to a community of like-minded entrepreneurs,
-            collaborate, and grow your business.
+            Your renewal is subject to the approval of your chapter’s Membership Committee. As part of the 
+            membership renewal process, the Membership Committee will carry out a Participation Review to 
+            assess your eligibility for the 2nd year renewal.
           </p>
-        </div>
-
-        {/* Note */}
-        <div className="text-center mb-10">
-          <p className="text-sm text-gray-600">
-            Note: This is for new/incoming BNI Members only.
-          </p>
-          <Link
-            to="/membership/renewal"
-            className="text-sm text-bni-red hover:underline"
-          >
-            Click here if you would like to access membership renewals.
-          </Link>
         </div>
 
         {/* Loading & Error states */}

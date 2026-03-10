@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, User, ChevronDown } from "lucide-react";
 import { GetUser } from "@/lib/auth/GetUser";
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase/Client";
+import { supabase } from "@/lib/supabase/Client"; 
 
 interface HeaderProps {
   className?: string;
@@ -10,24 +10,7 @@ interface HeaderProps {
 
 export default function Header({ className }: HeaderProps) {
   const location = useLocation();
-  const [userName, setUserName] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const user = await GetUser();
-      setUserName(user?.userName ?? user?.firstName ?? null);
-    };
-
-    fetchUser();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-      fetchUser();
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const isAdminRoute = location.pathname.startsWith("/admin");
+  const { user, isLoading } = useAuth(); 
 
   return (
     <header>
@@ -42,13 +25,9 @@ export default function Header({ className }: HeaderProps) {
           <span className="sm:hidden">Back</span>
         </Link>
 
-        {/* Show "Trainer Admin" on admin routes, username if logged in, otherwise Login */}
-        {isAdminRoute ? (
-          <div className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px]">
-            <User className="w-4 h-4 lg:w-5 lg:h-5" />
-            <span className="hidden sm:inline">Trainer Admin</span>
-          </div>
-        ) : userName ? (
+        {isLoading ? (
+          <div className="w-20 h-4 bg-white/30 rounded animate-pulse" /> 
+        ) : user ? (
           <div className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px]">
             <User className="w-4 h-4 lg:w-5 lg:h-5" />
             <span className="hidden sm:inline">{userName}</span>
@@ -92,7 +71,12 @@ export default function Header({ className }: HeaderProps) {
               <Link to="/membership/admin-fee" className="block px-4 py-2.5 text-md hover:bg-red-50 hover:text-bni-red transition">Admin Fee</Link>
             </div>
           </div>
-          <Link to="/merchandise" className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname === "/merchandise" ? "text-bni-red" : "text-black"}`}>
+          <Link
+            to="/merchandise"
+            className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
+              location.pathname === "/merchandise" ? "text-bni-red" : "text-black"
+            }`}
+          >
             Merchandise
           </Link>
         </nav>

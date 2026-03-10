@@ -1,18 +1,59 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { trainings, formatPrice } from "@/data/Training";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { fetchTrainingById, fetchUserCompletions } from "@/lib/utils/Training/TrainingUtils";
+import { formatPrice } from "@/lib/utils/Formatter";
+import { GetUser } from "@/lib/auth/GetUser";
 import { useCart } from "@/context/CartContext";
 import ShoppingCartButton from "@/components/ShoppingCartButton";
+import type { Training } from "@/types/TrainingTypes";
 
 export default function TrainingDetail() {
-  const [dateError, setDateError] = useState(false);
   const { id } = useParams<{ id: string }>();
-  const training = trainings.find((t) => t.id === Number(id));
+  const [training, setTraining] = useState<Training | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const [completedAt, setCompletedAt] = useState<string | null>(null);
   const [activeImage, setActiveImage] = useState(0);
   const [selectedDate, setSelectedDate] = useState("");
+  const [dateError, setDateError] = useState(false);
   const { addToCart, checkoutSingle } = useCart();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!id) return;
+
+    const load = async () => {
+      const [data, user] = await Promise.all([
+        fetchTrainingById(Number(id)),
+        GetUser(),
+      ]);
+
+      setTraining(data);
+
+      if (user?.id && data) {
+        const completions = await fetchUserCompletions(user.id);
+        const match = completions.find((c) => c.trainingId === data.id);
+        if (match) {
+          setIsCompleted(true);
+          setCompletedAt(match.completedAt);
+        }
+      }
+
+      setLoading(false);
+    };
+
+    load();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-400">
+        <Loader2 className="animate-spin w-8 h-8 mr-2" />
+        <span className="text-sm">Loading training...</span>
+      </div>
+    );
+  }
 
   if (!training) {
     return (
@@ -30,11 +71,10 @@ export default function TrainingDetail() {
   const selectedDateObj = training.dates.find((d) => d.date === selectedDate);
 
   const prevImage = () =>
-    setActiveImage((i) => (i === 0 ? training.images.length - 1 : i - 1));
+    setActiveImage((i) => (i === 0 ? (training.images?.length ?? 1) - 1 : i - 1));
   const nextImage = () =>
-    setActiveImage((i) => (i === training.images.length - 1 ? 0 : i + 1));
+    setActiveImage((i) => (i === (training.images?.length ?? 1) - 1 ? 0 : i + 1));
 
-  // ── Shared validation ───────────────────────────────────────────────────────
   const buildCartItem = () => {
     if (!selectedDate) {
       setDateError(true);
@@ -61,7 +101,7 @@ export default function TrainingDetail() {
   const handleCheckoutNow = () => {
     const item = buildCartItem();
     if (!item) return;
-    const selected = checkoutSingle(item); // bypass cart selection entirely
+    const selected = checkoutSingle(item);
     navigate("/checkout", { state: { checkoutItems: selected } });
   };
 
@@ -74,7 +114,7 @@ export default function TrainingDetail() {
           <div className="w-full lg:w-[420px] flex-shrink-0">
             <div className="relative overflow-hidden rounded-sm bg-gray-100 mb-3">
               <img
-                src={training.images[activeImage]}
+                src={training.images?.[activeImage]}
                 alt={training.title}
                 width={420}
                 height={380}
@@ -96,7 +136,7 @@ export default function TrainingDetail() {
 
             {/* Thumbnail strip */}
             <div className="flex gap-2">
-              {training.images.map((img, i) => (
+              {training.images?.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveImage(i)}
@@ -126,9 +166,13 @@ export default function TrainingDetail() {
               <span className="text-xl font-bold text-gray-900">
                 {formatPrice(training.price)}
               </span>
-              {training.completed && training.completedDate && (
+              {isCompleted && completedAt && (
                 <span className="text-green-600 font-semibold text-md">
-                  Completed Last {training.completedDate}
+                  Completed on {new Date(completedAt).toLocaleDateString("en-PH", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
                 </span>
               )}
             </div>
