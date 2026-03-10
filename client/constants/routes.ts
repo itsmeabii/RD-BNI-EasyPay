@@ -5,11 +5,10 @@ export const USER_PATHS = {
   MY_WALLET: "/my-account/MyWallet",
   ORDER_HISTORY: "/my-account/OrderHistory",
   TRAINER_APPLICATION: "/my-account/TrainerApplication",
-  UPCOMING_TRAINING: "/my-account/UpcomingTraining",
+  UPCOMING_TRAINING: "/my-account/UpcomingTrainings",
   LOGOUT: "/my-account/Logout",
 } as const;
 
-// Define the navigation structure
 export const NAV_ITEMS = [
   { label: "Account Details", to: USER_PATHS.ACCOUNT_DETAILS },
   { label: "Addresses", to: USER_PATHS.ADDRESSES },

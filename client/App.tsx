@@ -63,7 +63,7 @@ export default function App() {
                   <Route path="MyWallet" element={<MyWallet />} />
                   <Route path="OrderHistory" element={<OrderHistory />} />
                   <Route path="TrainerApplication" element={<TrainerApplication />} />
-                  <Route path="UpcomingTraining" element={<UpcomingTraining />} />
+                  <Route path="UpcomingTrainings" element={<UpcomingTraining />} />
                 </Route>
 
                 {/* Admin routes (Nested) */}

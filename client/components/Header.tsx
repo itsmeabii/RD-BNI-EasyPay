@@ -3,6 +3,7 @@ import { ArrowLeft, User, ChevronDown } from "lucide-react";
 import { GetUser } from "@/lib/auth/GetUser";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/Client"; 
+import { useAuth } from "@/context/AuthContext";
 
 interface HeaderProps {
   className?: string;
@@ -10,7 +11,7 @@ interface HeaderProps {
 
 export default function Header({ className }: HeaderProps) {
   const location = useLocation();
-  const { user, isLoading } = useAuth(); 
+  const { user, isLoading, } = useAuth(); 
 
   return (
     <header>
@@ -30,7 +31,7 @@ export default function Header({ className }: HeaderProps) {
         ) : user ? (
           <div className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px]">
             <User className="w-4 h-4 lg:w-5 lg:h-5" />
-            <span className="hidden sm:inline">{userName}</span>
+            <span className="hidden sm:inline">{user.userName}</span>
           </div>
         ) : (
           <Link
