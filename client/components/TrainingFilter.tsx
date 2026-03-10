@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MONTHS } from "@/data/Training";
+import { MONTHS } from "@/constants/Training";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
 export type FilterStatus = "all" | "completed" | "upcoming";

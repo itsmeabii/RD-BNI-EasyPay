@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { ShoppingCart, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
-import { formatPrice } from "@/data/Training";
+import { formatPrice } from "@/lib/utils/Formatter";
 import CartItemRow from "@/components/Cart/CartItemRow";
 import YouMightAlsoLike from "@/components/Cart/YouMightAlsoLike";
 import { Link, useNavigate } from "react-router-dom";

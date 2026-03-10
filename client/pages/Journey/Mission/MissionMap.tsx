@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight} from "lucide-react";
-import { MONTHS, trainings } from "@/data/Training";
+import { MONTHS } from "@/constants/Training";
+import { fetchTrainingById } from "@/lib/utils/Training/TrainingUtils";
 import { EventType, getUserStatus, WorkshopEvent, WorkshopStatus } from "@/data/Journey";
 import TrainingDetailsPopUp  from "@/components/Journey/TrainingDetailsPopUp";
 import { MapPin } from "@/components/Journey/MapPin";
@@ -30,13 +31,13 @@ function buildMonths(): MonthData[] {
   const map = new Map<string, WorkshopEvent[]>();
 
   const lastOfMonth = new Map<string, number>();
-  trainings.forEach((training) => {
+  Trainings.forEach((training) => {
     training.months.forEach((month) => {
       lastOfMonth.set(month, training.id);
     });
   });
 
-  trainings.forEach((training) => {
+  Trainings.forEach((training) => {
     training.months.forEach((month) => {
       if (!map.has(month)) map.set(month, []);
       const existingEvents = map.get(month)!;
@@ -72,7 +73,7 @@ export function MissionMap() {
 
   const current = MONTHS[currentIndex];
   const selectedEvent = current.events.find((e) => e.trainingId === selectedId) ?? null;
-  const selectedTraining = selectedEvent ? trainings.find((t) => t.id === selectedEvent.trainingId) ?? null : null;
+  const selectedTraining = selectedEvent ? Trainings.find((t) => t.id === selectedEvent.trainingId) ?? null : null;
 
   return (
     <div className="w-full flex flex-col gap-[6px]">

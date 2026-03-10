@@ -1,5 +1,5 @@
 import { WorkshopEvent } from "@/data/Journey";
-import { Training } from "@/data/Training";
+import { Training } from "@/types/TrainingTypes";
 import { Star, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart, CartItem } from "@/context/CartContext";
