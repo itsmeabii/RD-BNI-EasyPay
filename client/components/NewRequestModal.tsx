@@ -1,22 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient";
 import { X } from "lucide-react";
 
-const CHAPTERS = [
-  "All-Star",
-  "Catalyst",
-  "Dauntless",
-  "Dynamic",
-  "Elite",
-  "Empire",
-  "Gear",
-  "GRiT",
-  "Iconic",
-  "RISE",
-  "Trailblazer",
-  "BNI Taguig Admin",
-  "Guests",
-  "Sponsor",
-];
+
 
 interface NewRequestModalProps {
   onClose: () => void;
@@ -49,6 +35,20 @@ const labelClass = "block text-[12.5px] font-semibold text-gray-800 mb-[6px]";
 export default function NewRequestModal({ onClose, onSubmit, nextId }: NewRequestModalProps) {
   const [form, setForm] = useState(INITIAL_FORM);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [chapters, setChapters] = useState<string[]>([]);
+  const [trainingNames, setTrainingNames] = useState<string[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const [chaptersRes, trainingsRes] = await Promise.all([
+        supabase.from("chapters").select("name").order("name"),
+        supabase.from("tr_trainings").select("name").order("name"),
+      ]);
+      if (chaptersRes.data) setChapters(chaptersRes.data.map((c: { name: string }) => c.name));
+      if (trainingsRes.data) setTrainingNames(trainingsRes.data.map((t: { name: string }) => t.name));
+    }
+    fetchData();
+  }, []);
   const [pendingData, setPendingData] = useState<typeof form | null>(null);
 
   const handleChange = (
@@ -189,7 +189,7 @@ export default function NewRequestModal({ onClose, onSubmit, nextId }: NewReques
                   className={`${fieldClass} appearance-none cursor-pointer ${form.chapter === "" ? "text-gray-400" : "text-gray-700"}`}
                 >
                   <option value="" disabled>Chapter</option>
-                  {CHAPTERS.map((c) => (
+                  {chapters.map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
                 </select>

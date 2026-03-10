@@ -1,5 +1,14 @@
-import { useState } from "react";
-import { Search, ChevronDown, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { Search, ChevronDown, X, ArrowUp, ArrowDown } from "lucide-react";
+
+function formatDate(dateStr: string): string {
+  if (!dateStr || dateStr === "—") return "—";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" }) +
+    " " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase();
+}
 
 export type RequestStatus = "Approved" | "Declined" | "Pending";
 
@@ -19,63 +28,9 @@ export interface TrainingRequest {
   timeApproved: string;
 }
 
-const TRAINING_DATA: Record<string, { category: string; description: string; image: string }> = {
-  "Presentation Skills": {
-    category: "ASWS",
-    description: "Master the art of delivering impactful presentations. Learn storytelling techniques, slide design principles, and public speaking skills to engage and persuade any audience.",
-    image: "/Easypay/ASWS Presentation Skills.png",
-  },
-  "Member Success Program": {
-    category: "MSP",
-    description: "Unlock the full potential of your BNI membership. Discover proven strategies to maximize referrals, build strong business relationships, and accelerate your business growth.",
-    image: "/Easypay/Member Success Program.png",
-  },
-  "BNI Taguig Training Certification Program": {
-    category: "MSP",
-    description: "Comprehensive certification covering MSP TCP, MSWS TCP, and ASWS TCP. Gain official BNI certification and deepen your expertise across all core training modules.",
-    image: "/Easypay/BNI Taguig Training Certification Program.png",
-  },
-  "Member Success Workshop Series": {
-    category: "MSWS",
-    description: "An intensive workshop series designed to help members build lasting habits for BNI success. Includes hands-on exercises, group discussions, and personalized action plans.",
-    image: "/Easypay/MSWS Member Success Workshop Series .png",
-  },
-  "Advanced Presentation Workshop": {
-    category: "ASWS",
-    description: "Take your presentation skills to the next level. This advanced workshop covers complex storytelling, handling tough Q&A sessions, and presenting to C-suite executives.",
-    image: "/Easypay/ASWS Advanced Presentation Workshop.png",
-  },
-  "Networking Mastery Program": {
-    category: "ASWS",
-    description: "Learn the science and art of professional networking. Build genuine connections, nurture relationships, and create a referral engine that fuels exponential business growth.",
-    image: "/Easypay/Networking Mastery Program.png",
-  },
-  "Leadership Excellence Training": {
-    category: "ASWS",
-    description: "Develop the leadership qualities that drive chapter success. From running effective meetings to inspiring your team, this training equips you with essential leadership tools.",
-    image: "/Easypay/Leadership Excellence Training.png",
-  },
-  "MSP Advanced Member Strategies": {
-    category: "MSP",
-    description: "An advanced continuation of the Member Success Program, focusing on high-level referral strategies, chapter leadership techniques, and long-term membership retention.",
-    image: "/Easypay/MSP Advanced Member Strategies .png",
-  },
-};
 
-function lookupTraining(name: string) {
-  const trimmed = name.trim();
-  if (TRAINING_DATA[trimmed]) return TRAINING_DATA[trimmed];
-  const key = Object.keys(TRAINING_DATA).find(
-    (k) => k.toLowerCase() === trimmed.toLowerCase()
-  );
-  return key ? TRAINING_DATA[key] : undefined;
-}
 
-const CHAPTERS = [
-  "All-Star", "Catalyst", "Dauntless", "Dynamic", "Elite",
-  "Empire", "Gear", "GRiT", "Iconic", "RISE", "Trailblazer",
-  "BNI Taguig Admin", "Guests", "Sponsor",
-];
+
 
 function StatusBadge({ status }: { status: RequestStatus }) {
   const styles: Record<RequestStatus, string> = {
@@ -109,12 +64,21 @@ function TrainerCell({ trainer }: { trainer: string | null }) {
 }
 
 function TrainingDetailsPanel({ req, onClose }: { req: TrainingRequest; onClose: () => void }) {
-  console.log("🔍 training name from row:", JSON.stringify(req.training));
-  console.log("🔍 TRAINING_DATA keys:", Object.keys(TRAINING_DATA));
-  const matched = lookupTraining(req.training);
-  console.log("🔍 matched:", matched);
-  const description = matched?.description ?? "—";
-  const image = matched?.image ?? null;
+  const [image, setImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchImage() {
+      const { data } = await supabase
+        .from("tr_trainings")
+        .select("image_path")
+        .eq("name", req.training.trim())
+        .maybeSingle();
+      if (data?.image_path) setImage(data.image_path);
+    }
+    fetchImage();
+  }, [req.training]);
+
+  const description = req.trainingDescription || "—";
 
   return (
     <div className="fixed inset-0 z-50 flex">
@@ -222,17 +186,17 @@ export default function TrainingTable({ requests, onNewRequest }: TrainingTableP
   const [showChapterDropdown, setShowChapterDropdown] = useState(false);
   const [showDateDropdown, setShowDateDropdown] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<TrainingRequest | null>(null);
-
-  const TRAINING_MONTH: Record<string, string> = {
-    "Advanced Presentation Workshop": "January",
-    "Presentation Skills": "January",
-    "BNI Taguig Training Certification Program": "January",
-    "Leadership Excellence Training": "February",
-    "Member Success Program": "February",
-    "MSP Advanced Member Strategies": "March",
-    "Member Success Workshop Series": "March",
-    "Networking Mastery Program": "April",
-  };
+  const [dateSort, setDateSort] = useState<"" | "asc" | "desc">("");
+  const [chapters, setChapters] = useState<string[]>([]);
+  useEffect(() => {
+    async function fetchDropdownData() {
+      const [chaptersRes] = await Promise.all([
+        supabase.from("chapters").select("name").order("name"),
+      ]);
+      if (chaptersRes.data) setChapters(chaptersRes.data.map((c: { name: string }) => c.name));
+    }
+    fetchDropdownData();
+  }, []);
 
   const filtered = requests.filter((r) => {
     const searchLower = search.toLowerCase();
@@ -244,22 +208,30 @@ export default function TrainingTable({ requests, onNewRequest }: TrainingTableP
       r.ltName.toLowerCase().includes(searchLower);
     const matchesCategory = !categoryFilter || r.category === categoryFilter;
     const matchesChapter = !chapterFilter || r.chapter === chapterFilter;
-    const matchesDate = !dateFilter || TRAINING_MONTH[r.training.trim()] === dateFilter;
+    const matchesDate = !dateFilter || (() => {
+      const d = new Date(r.proposedDate);
+      if (isNaN(d.getTime())) return false;
+      return d.toLocaleString("default", { month: "long" }) === dateFilter;
+    })();
     return matchesSearch && matchesCategory && matchesChapter && matchesDate;
   });
 
-  const sorted = [...filtered];
+  const sorted = [...filtered].sort((a, b) => {
+    if (!dateSort) return 0;
+    const dateA = new Date(a.proposedDate).getTime();
+    const dateB = new Date(b.proposedDate).getTime();
+    return dateSort === "asc" ? dateA - dateB : dateB - dateA;
+  });
 
-  const MONTHS = ["January", "February", "March", "April"];
+  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
   const categories = ["ASWS", "CDWS", "MSP", "MSWS", "NO"];
-  const chapters = CHAPTERS;
 
   return (
     <div className="flex-1 min-w-0">
       {/* Search and filters */}
-      <div className="flex items-center gap-3 mb-4 flex-wrap">
-        <div className="relative flex-1 min-w-[200px]">
+      <div className="flex items-center gap-2 mb-4 w-full">
+        <div className="relative flex-1 min-w-0">
           <input
             type="text"
             placeholder="Search for categories, chapter, registrant ID"
@@ -297,7 +269,7 @@ export default function TrainingTable({ requests, onNewRequest }: TrainingTableP
             <ChevronDown className="w-4 h-4" />
           </button>
           {showChapterDropdown && (
-            <div className="absolute top-full left-0 mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-20">
+            <div className="absolute top-full left-0 mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-20 max-h-60 overflow-y-auto">
               <button className="block w-full text-left px-4 py-2 text-sm text-[#817E7E] hover:bg-gray-50" onClick={() => { setChapterFilter(""); setShowChapterDropdown(false); }}>All</button>
               {chapters.map((c) => (
                 <button key={c} className="block w-full text-left px-4 py-2 text-sm text-[#817E7E] hover:bg-gray-50" onClick={() => { setChapterFilter(c); setShowChapterDropdown(false); }}>{c}</button>
@@ -336,7 +308,17 @@ export default function TrainingTable({ requests, onNewRequest }: TrainingTableP
                 <th className="text-white font-[500] text-xs py-4 px-3 text-center border-r border-[#817E7E] whitespace-nowrap">Category</th>
                 <th className="text-white font-extrabold text-xs py-4 px-3 text-center border-r border-[#817E7E] whitespace-nowrap">Training</th>
                 <th className="text-white font-extrabold text-xs py-4 px-3 text-center border-r border-[#817E7E] whitespace-nowrap">Chapter</th>
-                <th className="text-white font-extrabold text-xs py-4 px-3 text-center border-r border-[#817E7E] whitespace-nowrap">Proposed Date</th>
+                <th className="text-white font-extrabold text-xs py-4 px-3 text-center border-r border-[#817E7E] whitespace-nowrap">
+                  <button
+                    className="flex items-center gap-1 mx-auto hover:opacity-70 transition-opacity"
+                    onClick={() => setDateSort((v) => v === "" ? "desc" : v === "desc" ? "asc" : "")}
+                  >
+                    Proposed Date
+                    {dateSort === "" && <span className="flex flex-col"><ArrowUp className="w-2.5 h-2.5 -mb-0.5" /><ArrowDown className="w-2.5 h-2.5" /></span>}
+                    {dateSort === "desc" && <ArrowDown className="w-3 h-3" />}
+                    {dateSort === "asc" && <ArrowUp className="w-3 h-3" />}
+                  </button>
+                </th>
                 <th className="text-white font-extrabold text-xs py-4 px-3 text-center border-r border-[#817E7E] whitespace-nowrap">No. of Attendees</th>
                 <th className="text-white font-extrabold text-xs py-4 px-3 text-center border-r border-[#817E7E] whitespace-nowrap">Trainer</th>
                 <th className="text-white font-extrabold text-xs py-4 px-3 text-center whitespace-nowrap">Request Status</th>
@@ -368,7 +350,7 @@ export default function TrainingTable({ requests, onNewRequest }: TrainingTableP
                       </button>
                     </td>
                     <td className="py-4 px-3 text-center text-xs text-[#212121] border-r border-[#817E7E] whitespace-nowrap">{req.chapter}</td>
-                    <td className="py-4 px-3 text-center text-xs text-[#212121] border-r border-[#817E7E] whitespace-nowrap">{req.proposedDate}</td>
+                    <td className="py-4 px-3 text-center text-xs text-[#212121] border-r border-[#817E7E] whitespace-nowrap">{formatDate(req.proposedDate)}</td>
                     <td className="py-4 px-3 text-center text-xs text-[#212121] border-r border-[#817E7E] whitespace-nowrap">{req.attendees}</td>
                     <td className="py-4 px-3 text-center border-r border-[#817E7E] whitespace-nowrap"><TrainerCell trainer={req.trainer} /></td>
                     <td className="py-4 px-3 text-center whitespace-nowrap"><StatusBadge status={req.status} /></td>
