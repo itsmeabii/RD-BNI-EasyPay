@@ -30,6 +30,7 @@ import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWork
 import MembershipRenewal from "./pages/Membership/MembershipRenewalPage";
 import NewMembership from "./pages/Membership/NewMembershipPage";
 
+
 const queryClient = new QueryClient();
 
 export default function App() {
@@ -49,6 +50,8 @@ export default function App() {
                 <Route path="/journey" element={<Journey />} />
                 <Route path="/training" element={<Home />} />
                 <Route path="/training/:id" element={<TrainingDetail />} />
+                <Route path="/membership" element={<NewMembership />} />
+                <Route path="/membership/renewal" element={<MembershipRenewal />} />
                 <Route path="/membership" element={<NewMembership />} />
                 <Route path="/membership/renewal" element={<MembershipRenewal />} />
                 <Route path="/merchandise" element={<Merchandise />} />
