@@ -10,13 +10,14 @@ import Cart from "./pages/CartDrawer";
 import Home from "./pages/Home";
 import Journey from "./pages/Journey/JourneyPage";
 import AuthPage from "./pages/Auth/AuthPage";
-import Membership from "./pages/Membership/NewMembershipPage";
 import Merchandise from "./pages/Merchandise";
 import Checkout from "./pages/Checkout/Checkout";
 import TrainingDetail from "./pages/Training/[id]/page";
 import NotFound from "./pages/NotFound";
 import SuccessTreasureMap from "@/pages/Journey/SuccessMap/SuccessTreasureMap";
 import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWorkshopDetails";
+import MembershipRenewal from "./pages/Membership/MembershipRenewalPage";
+import NewMembership from "./pages/Membership/NewMembershipPage";
 
 const queryClient = new QueryClient();
 
@@ -36,7 +37,8 @@ export default function App() {
                 <Route path="/journey" element={<Journey />} />
                 <Route path="/training" element={<Home />} />
                 <Route path="/training/:id" element={<TrainingDetail />} />
-                <Route path="/membership" element={<Membership />} />
+                <Route path="/membership" element={<NewMembership />} />
+                <Route path="/membership/renewal" element={<MembershipRenewal />} />
                 <Route path="/merchandise" element={<Merchandise />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
