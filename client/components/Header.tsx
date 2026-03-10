@@ -1,8 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, User, ChevronDown } from "lucide-react";
-import { GetUser } from "@/lib/auth/GetUser";
-import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase/Client"; 
 import { useAuth } from "@/context/AuthContext";
 
 interface HeaderProps {
@@ -11,10 +8,10 @@ interface HeaderProps {
 
 export default function Header({ className }: HeaderProps) {
   const location = useLocation();
-  const { user, isLoading, } = useAuth(); 
+  const { user, isLoading } = useAuth();
 
   return (
-    <header>
+    <header className={className}>
       {/* Top Red Bar */}
       <div className="bg-bni-red h-[60px] lg:h-[77px] flex items-center justify-between px-4 sm:px-6 lg:px-16">
         <Link
@@ -27,7 +24,7 @@ export default function Header({ className }: HeaderProps) {
         </Link>
 
         {isLoading ? (
-          <div className="w-20 h-4 bg-white/30 rounded animate-pulse" /> 
+          <div className="w-20 h-4 bg-white/30 rounded animate-pulse" />
         ) : user ? (
           <div className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px]">
             <User className="w-4 h-4 lg:w-5 lg:h-5" />
@@ -45,6 +42,7 @@ export default function Header({ className }: HeaderProps) {
         )}
       </div>
 
+      {/* Main Navigation Bar */}
       <div className="bg-white h-[90px] lg:h-[130px] flex items-center justify-between px-4 sm:px-6 lg:px-14">
         <Link to="/" className="flex-shrink-0">
           <img
@@ -53,13 +51,23 @@ export default function Header({ className }: HeaderProps) {
             className="h-8 sm:h-10 lg:h-12 w-auto"
           />
         </Link>
+
         <nav className="flex items-center gap-3 sm:gap-6 lg:gap-12">
-          <Link to="/training#top" className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname === "/training" ? "text-bni-red" : "text-black"}`}>
+          <Link 
+            to="/training#top" 
+            className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname === "/training" ? "text-bni-red" : "text-black"}`}
+          >
             Training
           </Link>
-          <Link to="/journey" className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname === "/journey" ? "text-bni-red" : "text-black"}`}>
+
+          <Link 
+            to="/journey" 
+            className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname === "/journey" ? "text-bni-red" : "text-black"}`}
+          >
             Journey
           </Link>
+
+          {/* Membership Dropdown */}
           <div className="relative group">
             <button className={`flex items-center gap-1 text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname.startsWith("/membership") ? "text-bni-red" : "text-black"}`}>
               Membership
@@ -72,6 +80,7 @@ export default function Header({ className }: HeaderProps) {
               <Link to="/membership/admin-fee" className="block px-4 py-2.5 text-md hover:bg-red-50 hover:text-bni-red transition">Admin Fee</Link>
             </div>
           </div>
+
           <Link
             to="/merchandise"
             className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${

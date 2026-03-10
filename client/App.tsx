@@ -52,8 +52,6 @@ export default function App() {
                 <Route path="/training/:id" element={<TrainingDetail />} />
                 <Route path="/membership" element={<NewMembership />} />
                 <Route path="/membership/renewal" element={<MembershipRenewal />} />
-                <Route path="/membership" element={<NewMembership />} />
-                <Route path="/membership/renewal" element={<MembershipRenewal />} />
                 <Route path="/merchandise" element={<Merchandise />} />
                 <Route path="/checkout" element={<Checkout />} />
 
