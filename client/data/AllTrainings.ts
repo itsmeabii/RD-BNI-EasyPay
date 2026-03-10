@@ -28,7 +28,7 @@ export const TRAINING_TABLE_COLUMNS = [
   "Action",
 ];
 
-/* ─── Trainings Data ─────────────────────────────────────────────────────── */
+/*Trainings Data  */
 
 export const ALL_TRAININGS: TrainingData[] = [
   {
