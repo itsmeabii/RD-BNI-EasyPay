@@ -1,17 +1,19 @@
-import React, { FC, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { TrainingListSection } from "../pages/MyAccount/TrainingListSection";
 import {
   ALL_TRAININGS,
   CATEGORY_OPTIONS,
   DATE_SORT_OPTIONS,
-  SortOrder,
 } from "../data/AllTrainings";
 import { SearchInput, Dropdown } from "../components/SearchControls";
 
-export const SearchAndFilters: FC = () => {
+export type SortOrder = "newest" | "oldest" | null;
+
+export const SearchAndFilters = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedDate, setSelectedDate] = useState<SortOrder>("");
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [sortOrder, setSortOrder] = useState<SortOrder>(null);
 
   const filteredTrainings = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -26,22 +28,25 @@ export const SearchAndFilters: FC = () => {
         training.category.toLowerCase().includes(query) ||
         training.orderId.toLowerCase().includes(query);
 
-      return matchesCategory && matchesSearch;
+      const trainingMonth = new Date(training.trainingDate).toLocaleString(
+        "default",
+        { month: "long" }
+      );
+      const matchesMonth = !selectedMonth || trainingMonth === selectedMonth;
+
+      return matchesCategory && matchesSearch && matchesMonth;
     });
 
-    if (selectedDate) {
+    if (sortOrder) {
       results = results.slice().sort((a, b) => {
         const dateA = new Date(a.trainingDate).getTime();
         const dateB = new Date(b.trainingDate).getTime();
-
-        return selectedDate === "newest"
-          ? dateB - dateA
-          : dateA - dateB;
+        return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
       });
     }
 
     return results;
-  }, [searchQuery, selectedCategory, selectedDate]);
+  }, [searchQuery, selectedCategory, selectedMonth, sortOrder]);
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -61,15 +66,19 @@ export const SearchAndFilters: FC = () => {
         />
 
         <Dropdown
-          value={selectedDate}
-          onChange={(val) => setSelectedDate(val as SortOrder)}
+          value={selectedMonth}
+          onChange={setSelectedMonth}
           placeholder="Date"
-          width="w-[105px]"
+          width="w-[145px]"
           options={DATE_SORT_OPTIONS}
         />
       </div>
 
-      <TrainingListSection trainings={filteredTrainings} />
+      <TrainingListSection
+        trainings={filteredTrainings}
+        sortOrder={sortOrder}
+        onSortChange={setSortOrder}
+      />
     </div>
   );
 };

@@ -1,4 +1,3 @@
-// In Header.tsx — update the top right section only
 import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, User, ChevronDown } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -49,7 +48,6 @@ export default function Header({ className }: HeaderProps) {
         )}
       </div>
 
-      {/* White Navigation Bar — unchanged */}
       <div className="bg-white h-[90px] lg:h-[130px] flex items-center justify-between px-4 sm:px-6 lg:px-14">
         <Link to="/" className="flex-shrink-0">
           <img

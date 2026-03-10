@@ -104,8 +104,7 @@ export const Dropdown: FC<DropdownProps> = ({
       {isOpen && (
         <div
           role="listbox"
-          className="absolute top-11 left-0 w-full bg-white border border-bni-gray-400 rounded-md shadow-lg z-50 overflow-hidden"
-        >
+          className="absolute top-11 left-0 w-full bg-white border border-bni-gray-400 rounded-md shadow-lg z-50 overflow-y-auto max-h-48"        >
           <div
             className="px-4 py-2 text-sm text-bni-gray-500 hover:bg-bni-gray-200 cursor-pointer"
             onClick={() => handleSelect("")}

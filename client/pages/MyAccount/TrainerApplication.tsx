@@ -53,6 +53,12 @@ export default function TrainerApplication() {
   const ErrorMsg = ({ msg }: { msg?: string }) =>
     msg ? <span className="text-[#CF2031] text-[10px] font-bold mt-1 pl-2">{msg}</span> : null;
 
+  const RequiredLabel = ({ children }: { children: React.ReactNode }) => (
+    <label className="text-black text-[12px] pl-2">
+      {children} <span className="text-[#CF2031]">*</span>
+    </label>
+  );
+
   return (
     <>
       {/* Success Modal */}
@@ -73,15 +79,13 @@ export default function TrainerApplication() {
       )}
 
       <div className="flex flex-col gap-4">
-        <h1 className="text-[#CF2031] text-[30px] font-bold">Trainer Application</h1>
-
         <div className="bg-white rounded-[10px] border border-black shadow-[inset_0_0_0_4px_rgba(207,32,49,0.25)] p-6 md:p-8">
           <form onSubmit={handleSubmit} noValidate>
             <div className="flex flex-col lg:flex-row gap-8">
               {/* Left column */}
               <div className="flex-1 flex flex-col gap-4">
                 <div className="flex flex-col gap-1">
-                  <label className="text-black text-[12px] pl-2">First Name</label>
+                  <RequiredLabel>First Name</RequiredLabel>
                   <input
                     type="text" placeholder="Jane Marie" value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
@@ -91,7 +95,7 @@ export default function TrainerApplication() {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label className="text-black text-[12px] pl-2">Last Name</label>
+                  <RequiredLabel>Last Name</RequiredLabel>
                   <input
                     type="text" placeholder="Doe" value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
@@ -101,7 +105,7 @@ export default function TrainerApplication() {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label className="text-black text-[12px] pl-2">Chapter</label>
+                  <RequiredLabel>Chapter</RequiredLabel>
                   <select
                     value={chapter} onChange={(e) => setChapter(e.target.value)}
                     className={`w-full h-[40px] rounded-[10px] border ${errors.chapter ? "border-red-500" : "border-[#999]"} bg-white shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)] px-3 text-[15px] appearance-none focus:outline-none cursor-pointer`}
@@ -113,7 +117,7 @@ export default function TrainerApplication() {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label className="text-black text-[12px] pl-2">Preferred Training</label>
+                  <RequiredLabel>Preferred Training</RequiredLabel>
                   <select
                     value={training} onChange={(e) => setTraining(e.target.value)}
                     className={`w-full h-[40px] rounded-[10px] border ${errors.training ? "border-red-500" : "border-[#999]"} bg-white px-3 text-[15px] appearance-none focus:outline-none cursor-pointer`}
@@ -134,7 +138,7 @@ export default function TrainerApplication() {
               {/* Right column */}
               <div className="flex-1 flex flex-col gap-4">
                 <div className="flex flex-col gap-1">
-                  <label className="text-black text-[12px] pl-2">Upload a Formal Picture</label>
+                  <RequiredLabel>Upload a Formal Picture</RequiredLabel>
                   <div className={`w-full h-[196px] rounded-[5px] border-2 border-dashed ${errors.file ? "border-red-500 bg-red-50" : "border-[#999] bg-white"} flex flex-col items-center justify-center gap-3`}>
                     <div className="text-[#817E7E] text-[10px] text-center">
                       <p>Max file size: 2MB</p>
@@ -151,7 +155,7 @@ export default function TrainerApplication() {
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <label className="text-black text-[12px] pl-2">Brief Description</label>
+                  <RequiredLabel>Brief Description</RequiredLabel>
                   <div className="relative">
                     <textarea
                       value={description}

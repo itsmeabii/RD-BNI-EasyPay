@@ -9,6 +9,17 @@ export interface DropdownOption {
   value: string;
 }
 
+/* ───────────────── TABLE HEADERS ───────────────── */
+
+export const TRAINING_TABLE_HEADERS: string[] = [
+  "Order ID",
+  "Training Name",
+  "Training Date",
+  "Categories",
+  "Reminders",
+  "Action",
+];
+
 /* ───────────────── REGULAR TRAININGS ───────────────── */
 
 export interface TrainingData {
@@ -30,14 +41,22 @@ export const ALL_TRAININGS: TrainingData[] = [
   {
     orderId: "RQ-002",
     trainingName: "Sales Techniques That Close Deals",
-    trainingDate: "February 22, 2026",
+    trainingDate: "February 11, 2026",
     reminder: "No reminder",
     category: "AWS",
   },
   {
     orderId: "RQ-003",
     trainingName: "Entrepreneurship Fundamentals",
-    trainingDate: "February 22, 2026",
+    trainingDate: "February 2, 2026",
+    reminder: "1 week before",
+    category: "MSP",
+  },
+
+    {
+    orderId: "RQ-004",
+    trainingName: "Advanced Presentation Skills",
+    trainingDate: "July 12, 2026",
     reminder: "1 week before",
     category: "MSP",
   },
@@ -57,7 +76,7 @@ export interface CustomTraining {
 export const ALL_CUSTOM_TRAININGS: CustomTraining[] = [
   {
     requestId: "RQ-001",
-    trainingName: "MSP Fundamentals",
+    trainingName: "Fundamentals",
     training: "MSP",
     chapter: "All-Star",
     proposedDate: "03/19/2026",
@@ -65,22 +84,20 @@ export const ALL_CUSTOM_TRAININGS: CustomTraining[] = [
   },
   {
     requestId: "RQ-002",
-    trainingName: "MSP Advanced",
+    trainingName: "Advanced Presentation Skills",
     training: "MSP",
     chapter: "All-Star",
     proposedDate: "06/20/2026",
     noOfAttendees: 15,
   },
-
-    {
+  {
     requestId: "RQ-003",
-    trainingName: "ASWS Presentation Training",
+    trainingName: "Presentation Training",
     training: "ASWS",
     chapter: "Trailblazer",
     proposedDate: "06/21/2026",
     noOfAttendees: 15,
   },
-
   {
     requestId: "RQ-004",
     trainingName: "Member Success Program",
@@ -89,8 +106,7 @@ export const ALL_CUSTOM_TRAININGS: CustomTraining[] = [
     proposedDate: "06/21/2026",
     noOfAttendees: 20,
   },
-
-    {
+  {
     requestId: "RQ-005",
     trainingName: "BNI Taguig Training Certification Program",
     training: "MSP",
@@ -98,8 +114,7 @@ export const ALL_CUSTOM_TRAININGS: CustomTraining[] = [
     proposedDate: "06/21/2026",
     noOfAttendees: 20,
   },
-
-    {
+  {
     requestId: "RQ-006",
     trainingName: "Advance Presentation Workshop",
     training: "ASWS",
@@ -107,8 +122,7 @@ export const ALL_CUSTOM_TRAININGS: CustomTraining[] = [
     proposedDate: "06/21/2026",
     noOfAttendees: 20,
   },
-
-    {
+  {
     requestId: "RQ-007",
     trainingName: "Member Success Program",
     training: "AWS",
@@ -128,9 +142,19 @@ export const CATEGORY_OPTIONS: DropdownOption[] = [
   { label: "ASWS", value: "ASWS" },
 ];
 
-export const DATE_SORT_OPTIONS: DropdownOption[] = [
-  { label: "Newest", value: "newest" },
-  { label: "Oldest", value: "oldest" },
+  export const DATE_SORT_OPTIONS: DropdownOption[] = [
+  { label: "January", value: "January" },
+  { label: "February", value: "February" },
+  { label: "March", value: "March" },
+  { label: "April", value: "April" },
+  { label: "May", value: "May" },
+  { label: "June", value: "June" },
+  { label: "July", value: "July" },
+  { label: "August", value: "August" },
+  { label: "September", value: "September" },
+  { label: "October", value: "October" },
+  { label: "November", value: "November" },
+  { label: "December", value: "December" },
 ];
 
 export const CHAPTER_OPTIONS: DropdownOption[] = [

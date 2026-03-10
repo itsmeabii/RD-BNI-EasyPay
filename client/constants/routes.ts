@@ -1,4 +1,3 @@
-// Define paths as a single source of truth
 export const USER_PATHS = {
   ACCOUNT_DETAILS: "/my-account/AccountDetails",
   ADDRESSES: "/my-account/Addresses",
