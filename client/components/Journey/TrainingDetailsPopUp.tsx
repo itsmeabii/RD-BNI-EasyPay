@@ -1,5 +1,5 @@
-import { WorkshopEvent } from "@/data/Journey";
-import { Training } from "@/data/Training";
+import { WorkshopEvent } from "@/types/JourneyTypes";
+import { Training } from "@/types/TrainingTypes";
 import { Star, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useCart, CartItem } from "@/context/CartContext";
@@ -16,16 +16,14 @@ export default function TrainingDetailsPopUp({ training, event, onClose }: Detai
   const firstDate = training.dates[0]?.date ?? "TBD";
   const year = firstDate !== "TBD" ? new Date(firstDate).getFullYear() : "";
   const firstTime = training.dates[0]?.time ?? "";
-  const today = new Date();
-  const trainingDate = firstDate !== "TBD" ? new Date(firstDate) : null;
 
-  const derivedStatus = training.completed
-    ? "Done"
-    : trainingDate && trainingDate.getTime() === today.getTime()
-    ? "Ongoing"
-    : trainingDate && trainingDate < today
-    ? "Missed"
-    : "Pending";
+  const derivedStatus = event.status === "completed"
+  ? "Done"
+  : event.status === "current"
+  ? "Ongoing"
+  : event.status === "missed"
+  ? "Missed"
+  : "Pending";
 
   const isOngoingOrDone = derivedStatus === "Ongoing" || derivedStatus === "Done";
 
@@ -71,15 +69,9 @@ export default function TrainingDetailsPopUp({ training, event, onClose }: Detai
           <p className="text-sm text-gray-700">{firstDate}</p>
         </div>
 
-        <div className="flex gap-0.5">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <Star key={i} className="w-3.5 h-3.5 text-gray-300" />
-          ))}
-        </div>
-
         <div>
           <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-1">Status</p>
-          <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+          <span className={`text-xs font-semibold py-0.5 rounded-full ${
             derivedStatus === "Done" ? "bg-green-100 text-green-700"
             : derivedStatus === "Ongoing" ? "bg-blue-100 text-blue-700"
             : "bg-gray-100 text-gray-500"

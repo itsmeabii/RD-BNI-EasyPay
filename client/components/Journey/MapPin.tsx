@@ -1,4 +1,4 @@
-import { WorkshopEvent, WorkshopStatus } from "@/data/Journey";
+import { WorkshopEvent, WorkshopStatus } from "@/types/JourneyTypes";
 import { Trophy } from "lucide-react";
 
 type MapPinProps = {
