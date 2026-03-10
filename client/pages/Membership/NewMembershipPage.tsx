@@ -12,15 +12,14 @@ export default function NewMembership() {
   const { addToCart, openCart, checkoutSingle } = useCart();
 
   const handleAddToCart = (plan: MembershipPlan) => {
-    addToCart({
-      id: plan.price, 
-      title: plan.label,
-      price: plan.price,
-      thumbnail: plan.image,
-    });
-    openCart();
+  addToCart({
+    id: plan.id,
+    title: plan.label,
+    price: plan.price,
+    thumbnail: plan.image,
+  }, "membership"); 
+  openCart();
   };
-
 
   const handleCheckout = (plan: MembershipPlan) => {
     const items = checkoutSingle({

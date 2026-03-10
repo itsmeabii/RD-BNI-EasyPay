@@ -14,7 +14,7 @@ export async function loadCartFromDB(userId: string): Promise<CartItem[]> {
   }
 
   return data.map((row) => ({
-    id: row.training_id,
+    id: row.item_id,          
     title: row.title,
     price: row.price,
     thumbnail: row.thumbnail ?? "",
@@ -24,11 +24,16 @@ export async function loadCartFromDB(userId: string): Promise<CartItem[]> {
   }));
 }
 
-export async function upsertCartItem(userId: string, item: CartItem): Promise<void> {
+export async function upsertCartItem(
+  userId: string,
+  item: CartItem,
+  itemType: "training" | "membership" 
+): Promise<void> {
   const { error } = await supabase.from("cart_items").upsert(
     {
       user_id: userId,
-      training_id: item.id,
+      item_id: item.id,              
+      item_type: itemType,          
       title: item.title,
       price: item.price,
       thumbnail: item.thumbnail,
@@ -36,18 +41,18 @@ export async function upsertCartItem(userId: string, item: CartItem): Promise<vo
       selected_date: item.selectedDate ?? null,
       selected_time: item.selectedTime ?? null,
     },
-    { onConflict: "user_id,training_id" }
+    { onConflict: "user_id,item_id" } 
   );
 
   if (error) console.error("upsertCartItem:", error.message);
 }
 
-export async function deleteCartItem(userId: string, trainingId: number): Promise<void> {
+export async function deleteCartItem(userId: string, itemId: number): Promise<void> {
   const { error } = await supabase
     .from("cart_items")
     .delete()
     .eq("user_id", userId)
-    .eq("training_id", trainingId);
+    .eq("item_id", itemId);          
 
   if (error) console.error("deleteCartItem:", error.message);
 }

@@ -18,8 +18,9 @@ export interface CartItem {
 }
 
 interface CartContextType {
+  isLoading: boolean;
   items: CartItem[];
-  addToCart: (item: CartItem) => void;
+  addToCart: (item: CartItem, itemType?: "training" | "membership") => void;
   removeFromCart: (id: number) => void;
   clearCart: () => void;
   totalCount: number;
@@ -43,24 +44,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [checkoutItems, setCheckoutItems] = useState<CartItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Load cart from Supabase on mount / refresh
   useEffect(() => {
     const init = async () => {
       const user = await GetUser();
-      if (!user?.id) return;
+      if (!user?.id) {
+        setIsLoading(false); 
+        return;
+      }
       setUserId(user.id);
       const cartData = await loadCartFromDB(user.id);
       setItems(cartData);
+      setIsLoading(false); 
     };
     init();
   }, []);
 
-  const addToCart = async (item: CartItem) => {
+  const addToCart = async (item: CartItem, itemType: "training" | "membership" = "training") => {
     if (items.some((i) => i.id === item.id)) return;
     const newItem = { ...item, qty: item.qty ?? 1 };
     setItems((prev) => [...prev, newItem]);
-    if (userId) await upsertCartItem(userId, newItem);
+    if (userId) await upsertCartItem(userId, newItem, itemType);
   };
 
   const removeFromCart = async (id: number) => {
@@ -117,6 +122,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   return (
     <CartContext.Provider
       value={{
+        isLoading,
         items,
         addToCart,
         removeFromCart,
