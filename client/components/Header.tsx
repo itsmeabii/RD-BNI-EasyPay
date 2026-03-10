@@ -1,7 +1,8 @@
-// In Header.tsx — update the top right section only
 import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, User, ChevronDown } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
+import { GetUser } from "@/lib/auth/GetUser";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase/Client";
 
 interface HeaderProps {
   className?: string;
@@ -9,7 +10,22 @@ interface HeaderProps {
 
 export default function Header({ className }: HeaderProps) {
   const location = useLocation();
-  const { user } = useAuth();
+  const [userName, setUserName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await GetUser();
+      setUserName(user?.userName ?? user?.firstName ?? null);
+    };
+
+    fetchUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      fetchUser();
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const isAdminRoute = location.pathname.startsWith("/admin");
 
@@ -26,16 +42,16 @@ export default function Header({ className }: HeaderProps) {
           <span className="sm:hidden">Back</span>
         </Link>
 
-        {/* ✅ Show "Trainer Admin" on admin routes, otherwise Login / user */}
+        {/* Show "Trainer Admin" on admin routes, username if logged in, otherwise Login */}
         {isAdminRoute ? (
           <div className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px]">
             <User className="w-4 h-4 lg:w-5 lg:h-5" />
             <span className="hidden sm:inline">Trainer Admin</span>
           </div>
-        ) : user ? (
+        ) : userName ? (
           <div className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px]">
             <User className="w-4 h-4 lg:w-5 lg:h-5" />
-            <span className="hidden sm:inline">{user.userName}</span>
+            <span className="hidden sm:inline">{userName}</span>
           </div>
         ) : (
           <Link
@@ -49,7 +65,6 @@ export default function Header({ className }: HeaderProps) {
         )}
       </div>
 
-      {/* White Navigation Bar — unchanged */}
       <div className="bg-white h-[90px] lg:h-[130px] flex items-center justify-between px-4 sm:px-6 lg:px-14">
         <Link to="/" className="flex-shrink-0">
           <img

@@ -7,9 +7,7 @@ export default function AdminLayout() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Header / Top Section (Optional: add user info here using the 'user' variable) */}
-      
+    <div className="min-h-screen bg-white">      
       <div className="px-4 sm:px-6 lg:px-14 pt-6 pb-12">
         <div className="flex gap-6 items-start">
           {/* Admin Sidebar */}

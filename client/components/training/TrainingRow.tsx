@@ -1,5 +1,6 @@
 import React from "react";
 import { TrainingData } from "../../data/AllTrainings";
+import ReminderDropdown from "./ReminderDropdown";
 
 interface TrainingRowProps {
   training: TrainingData;
@@ -8,9 +9,8 @@ interface TrainingRowProps {
   reminderValue: string;
   onOpenDropdown: () => void;
   onSelectOption: (orderId: string, option: string) => void;
+  isLast?: boolean;
 }
-
-import ReminderDropdown from "./ReminderDropdown";
 
 const TrainingRow = ({
   training,
@@ -19,10 +19,13 @@ const TrainingRow = ({
   reminderValue,
   onOpenDropdown,
   onSelectOption,
+  isLast,
 }: TrainingRowProps) => {
   return (
     <div
-      className={`grid grid-cols-[130px_1fr_180px_110px_160px_170px] bg-white border-t border-gray-200 min-h-[68px] items-center`}
+      className={`grid grid-cols-[130px_1fr_180px_110px_160px_170px] bg-white border-t border-gray-200 min-h-[68px] items-center ${
+        isLast ? "rounded-b-[8px]" : ""
+      }`}
     >
       <div className="px-4 text-xs text-center text-gray-600">{training.orderId}</div>
       <div className="px-4 text-[14px] text-center text-gray-800">{training.trainingName}</div>

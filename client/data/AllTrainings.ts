@@ -1,13 +1,15 @@
-/*Types*/
+/* ─── Types ─────────────────────────────────────────────────────────────── */
 
 export type SortOrder = "newest" | "oldest" | "";
+
+export type TrainingCategory = "AWS" | "MSP" | "MSS" | "ASWS";
 
 export interface TrainingData {
   orderId: string;
   trainingName: string;
   trainingDate: string;
   reminder: string;
-  category: "AWS" | "MSP" | "MSS" | "ASWS";
+  category: TrainingCategory;
 }
 
 export interface DropdownOption {
@@ -15,7 +17,18 @@ export interface DropdownOption {
   value: string;
 }
 
-/*Trainings Data */
+/* ─── Table Column Labels ────────────────────────────────────────────────── */
+
+export const TRAINING_TABLE_COLUMNS = [
+  "Order ID",
+  "Training Name",
+  "Training Date",
+  "Categories",
+  "Reminders",
+  "Action",
+];
+
+/* ─── Trainings Data ─────────────────────────────────────────────────────── */
 
 export const ALL_TRAININGS: TrainingData[] = [
   {
@@ -35,14 +48,14 @@ export const ALL_TRAININGS: TrainingData[] = [
   {
     orderId: "RQ-003",
     trainingName: "Entrepreneurship Fundamentals",
-    trainingDate: "February 22, 2026",
+    trainingDate: "January 26, 2026",
     reminder: "1 week before",
     category: "AWS",
   },
   {
     orderId: "RQ-004",
     trainingName: "Entrepreneurship Fundamentals",
-    trainingDate: "February 22, 2026",
+    trainingDate: "February 21, 2026",
     reminder: "1 week before",
     category: "MSP",
   },
@@ -55,7 +68,7 @@ export const ALL_TRAININGS: TrainingData[] = [
   },
 ];
 
-/*Filter Options*/
+/* ─── Filter / Sort Options ──────────────────────────────────────────────── */
 
 export const CATEGORY_OPTIONS: DropdownOption[] = [
   { label: "AWS", value: "AWS" },
@@ -63,34 +76,22 @@ export const CATEGORY_OPTIONS: DropdownOption[] = [
   { label: "MSP", value: "MSP" },
 ];
 
+export const MONTH_OPTIONS: DropdownOption[] = [
+  { label: "January", value: "January" },
+  { label: "February", value: "February" },
+  { label: "March", value: "March" },
+  { label: "April", value: "April" },
+  { label: "May", value: "May" },
+  { label: "June", value: "June" },
+  { label: "July", value: "July" },
+  { label: "August", value: "August" },
+  { label: "September", value: "September" },
+  { label: "October", value: "October" },
+  { label: "November", value: "November" },
+  { label: "December", value: "December" },
+];
+
 export const DATE_SORT_OPTIONS: DropdownOption[] = [
   { label: "Newest", value: "newest" },
   { label: "Oldest", value: "oldest" },
-];
-
-export interface TrainingData {
-  orderId: string;
-  trainingName: string;
-  trainingDate: string;
-  reminder: string;
-  category: "AWS" | "MSP" | "MSS" | "ASWS";
-}
-
-// Example trainings
-export const trainingsData: TrainingData[] = [
-  {
-    orderId: "TR001",
-    trainingName: "React Basics",
-    trainingDate: "2026-03-10",
-    reminder: "1 day before",
-    category: "AWS",
-  },
-  {
-    orderId: "TR002",
-    trainingName: "Advanced JS",
-    trainingDate: "2026-03-15",
-    reminder: "1 week before",
-    category: "MSP",
-  },
-  // Add more trainings here
 ];
