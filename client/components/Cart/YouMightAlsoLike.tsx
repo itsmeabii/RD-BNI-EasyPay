@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { trainings } from "@/data/Training";
+import type { Training } from "@/types/TrainingTypes";
+import { fetchTrainings } from "@/lib/utils/Training/TrainingUtils";
+import { formatPrice } from "@/lib/utils/Formatter";
 import { useCart } from "@/context/CartContext";
-import { formatPrice } from "@/data/Training";
 
 export default function YouMightAlsoLike() {
   const { items } = useCart();
   const navigate = useNavigate();
+  const [trainings, setTrainings] = useState<Training[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Show trainings not already in cart
+  useEffect(() => {
+    fetchTrainings().then(setTrainings);
+  }, []);
+
   const suggestions = trainings.filter(
     (t) => !items.some((i) => i.id === t.id)
   );
@@ -41,7 +46,7 @@ export default function YouMightAlsoLike() {
           <p className="text-xs text-gray-600">{formatPrice(suggestion.price)}</p>
         </div>
         <button
-          onClick={() => { navigate(`/training/${suggestion.id}`); }}
+          onClick={() => navigate(`/training/${suggestion.id}`)}
           className="text-xs font-semibold text-bni-red border border-bni-red rounded px-3 py-1.5 hover:bg-red-50 transition whitespace-nowrap flex-shrink-0"
         >
           Select Options

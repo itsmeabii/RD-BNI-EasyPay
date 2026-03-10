@@ -1,16 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, User, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useAuth } from "@/context/AuthContext"; 
 
 interface HeaderProps {
-  userName?: string;
   className?: string;
-
 }
 
-export default function Header({ userName }: HeaderProps) {
+export default function Header({ className }: HeaderProps) {
   const location = useLocation();
-  const [isLoggedIn] = useState(!!userName);
+  const { user, isLoading } = useAuth(); 
 
   return (
     <header>
@@ -24,10 +22,13 @@ export default function Header({ userName }: HeaderProps) {
           <span className="hidden sm:inline">Back to BNI Taguig Website</span>
           <span className="sm:hidden">Back</span>
         </Link>
-        {isLoggedIn ? (
+
+        {isLoading ? (
+          <div className="w-20 h-4 bg-white/30 rounded animate-pulse" /> 
+        ) : user ? (
           <div className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px]">
             <User className="w-4 h-4 lg:w-5 lg:h-5" />
-            <span className="hidden sm:inline">{userName}</span>
+            <span className="hidden sm:inline">{user.userName}</span>
           </div>
         ) : (
           <Link
@@ -82,7 +83,7 @@ export default function Header({ userName }: HeaderProps) {
               <Link to="/membership/late-fee" className="block px-4 py-2.5 text-md hover:bg-red-50 hover:text-bni-red transition">Late Fee</Link>
               <Link to="/membership/admin-fee" className="block px-4 py-2.5 text-md hover:bg-red-50 hover:text-bni-red transition">Admin Fee</Link>
             </div>
-        </div>
+          </div>
           <Link
             to="/merchandise"
             className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
