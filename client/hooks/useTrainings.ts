@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase/Client";
-import { TrainingData } from "../data/AllTrainings";
+import type { TrainingData } from "@/types/TrainingTypes";
 
 export function useTrainings() {
   const [trainings, setTrainings] = useState<TrainingData[]>([]);

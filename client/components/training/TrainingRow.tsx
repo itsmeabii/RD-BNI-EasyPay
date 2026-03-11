@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { TrainingData } from "../../data/AllTrainings";
+import type { TrainingData } from "@/types/TrainingTypes";
 import ReminderDropdown from "./ReminderDropdown";
 
 interface TrainingRowProps {

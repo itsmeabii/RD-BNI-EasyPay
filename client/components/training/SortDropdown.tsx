@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
-import { SortOrder } from "../../data/AllTrainings";
+import type { SortOrder } from "@/types/TrainingTypes";
 
 interface SortDropdownProps {
   sortOrder: SortOrder;

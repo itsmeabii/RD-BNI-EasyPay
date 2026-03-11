@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TrainingData, SortOrder } from "../../data/AllTrainings";
+import type { TrainingData, SortOrder } from "@/types/TrainingTypes";
 import TrainingRow from "../../components/training/TrainingRow";
 import CustomReminderSidebar from "./CustomReminder";
 import { TrainingTableHeader } from "../../components/training/TrainingTableHeader";

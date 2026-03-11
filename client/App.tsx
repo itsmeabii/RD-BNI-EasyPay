@@ -29,7 +29,7 @@ import SuccessTreasureMap from "@/pages/Journey/SuccessMap/SuccessTreasureMap";
 import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWorkshopDetails";
 import MembershipRenewal from "./pages/Membership/MembershipRenewalPage";
 import NewMembership from "./pages/Membership/NewMembershipPage";
-import ProtectedRoute from "./components/Protectedroute";
+import ProtectedRoute from "./lib/utils/Protectedroute";
 
 const queryClient = new QueryClient();
 

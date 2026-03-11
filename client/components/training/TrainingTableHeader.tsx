@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { TRAINING_TABLE_COLUMNS, SortOrder } from "../../data/AllTrainings";
 import { SortDropdown } from "./SortDropdown";
+import { TRAINING_TABLE_COLUMNS } from "@/constants/Training";
+import type { SortOrder } from "@/types/TrainingTypes";
 
 interface TrainingTableHeaderProps {
   sortOrder: SortOrder;

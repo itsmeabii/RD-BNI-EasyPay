@@ -12,7 +12,7 @@ interface CustomTraining {
   noOfAttendees: number;
 }
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
+// Mock Data 
 
 const ALL_CUSTOM_TRAININGS: CustomTraining[] = [
   { requestId: "RQ-001", trainingName: "MSP Fundamentals",  training: "MSP", chapter: "All-Star", proposedDate: "03/19/2026", noOfAttendees: 20 },
