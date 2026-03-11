@@ -18,7 +18,7 @@ import SuccessTreasureMap from "@/pages/Journey/SuccessMap/SuccessTreasureMap";
 import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWorkshopDetails";
 import MembershipRenewal from "./pages/Membership/MembershipRenewalPage";
 import NewMembership from "./pages/Membership/NewMembershipPage";
-import TrainerListPreview from "./pages/Admin/preview"; 
+import TrainerListPage from "./pages/Admin/TrainerListPage";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +33,7 @@ export default function App() {
             <BrowserRouter>
               <Header />
               <Routes>
-                <Route path="/admin/trainer-list" element={<TrainerListPreview />} />
+                <Route path="/admin/trainer-list" element={<TrainerListPage />} />
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<AuthPage />} />
                 <Route path="/journey" element={<Journey />} />

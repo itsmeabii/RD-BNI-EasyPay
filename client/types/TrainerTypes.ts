@@ -1,8 +1,11 @@
 export type Trainer = {
   id: number;
-  name: string;
+  trainerId: string;
+  firstName: string;
+  lastName: string;
   chapter: string;
   preferredCategory: string;
+  availability: string | null; 
   image: string;
 };
 

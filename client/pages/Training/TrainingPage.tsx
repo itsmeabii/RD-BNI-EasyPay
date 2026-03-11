@@ -1,5 +1,3 @@
-// src/pages/TrainingPage.tsx
-
 import { useState, useMemo, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Search, Loader2 } from "lucide-react";

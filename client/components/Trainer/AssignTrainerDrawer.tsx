@@ -1,10 +1,10 @@
 import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Trainer, TrainerListDrawerProps } from "@/types/TrainerTypes";
-import TrainerCard from "@/components/TrainerCard";
+import TrainerCard from "@/components/Trainer/TrainerCard";
 import { fetchTrainers } from "@/lib/utils/TrainerUtils";
 
-export function TrainerListDrawer({ isOpen, onClose, onAssign }: TrainerListDrawerProps) {
+export function AssignTrainerDrawer({ isOpen, onClose, onAssign }: TrainerListDrawerProps) {
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [trainers, setTrainers] = useState<Trainer[]>([]);
     const [loading, setLoading] = useState(false);

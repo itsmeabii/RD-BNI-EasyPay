@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { TrainerListDrawer } from "@/pages/Admin/TrainerList";
+import { AssignTrainerDrawer } from "@/components/Trainer/AssignTrainerDrawer";
+import {TrainerListTable} from "../../components/Trainer/TrainingListTable";
 
 export default function TrainerListPreview() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +14,7 @@ export default function TrainerListPreview() {
         Assign Trainer
       </button>
 
-      <TrainerListDrawer
+      <AssignTrainerDrawer
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
         onAssign={(trainer) => {
@@ -21,6 +22,8 @@ export default function TrainerListPreview() {
           setIsOpen(false);
         }}
       />
+
+      <TrainerListTable />
     </div>
   );
 }
