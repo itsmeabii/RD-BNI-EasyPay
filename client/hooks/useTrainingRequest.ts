@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase/Client";
 
 export type RequestStatus = "Approved" | "Declined" | "Pending";
 

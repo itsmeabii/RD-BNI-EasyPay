@@ -10,7 +10,6 @@ import Cart from "./pages/CartDrawer";
 import Home from "./pages/Home";
 import Journey from "./pages/Journey/JourneyPage";
 import AuthPage from "./pages/Auth/AuthPage";
-import Merchandise from "./pages/Merchandise";
 import Checkout from "./pages/Checkout/Checkout";
 import TrainingDetail from "./pages/Training/[id]/page";
 import NotFound from "./pages/NotFound";
@@ -18,8 +17,6 @@ import SuccessTreasureMap from "@/pages/Journey/SuccessMap/SuccessTreasureMap";
 import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWorkshopDetails";
 import MembershipRenewal from "./pages/Membership/MembershipRenewalPage";
 import NewMembership from "./pages/Membership/NewMembershipPage";
-import Index from './pages/ProductDetailedDescription';
-import TrainerApplication from "./pages/TrainerApplication";
 import TrainingRequest from "./pages/TrainingRequest";
 
 
@@ -37,7 +34,6 @@ export default function App() {
             <BrowserRouter>
               <Header />
               <Routes>
-                <Route path="/ProductDetailedDescription" element={<Index />} />
           <Route path="/" element={<Home />} />
                 <Route path="/login" element={<AuthPage />} />
                 <Route path="/journey" element={<Journey />} />
@@ -45,8 +41,6 @@ export default function App() {
                 <Route path="/training/:id" element={<TrainingDetail />} />
                 <Route path="/membership" element={<NewMembership />} />
                 <Route path="/membership/renewal" element={<MembershipRenewal />} />
-                <Route path="/merchandise" element={<Merchandise />} />
-                <Route path="/trainerapplication" element={<TrainerApplication />} />
             <Route path="/trainingrequest" element={<TrainingRequest />} />
             <Route path="/checkout" element={<Checkout />} />
                 <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
