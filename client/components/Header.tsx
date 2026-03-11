@@ -2,16 +2,12 @@ import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, User, ChevronDown } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
-interface HeaderProps {
-  className?: string;
-}
-
-export default function Header({ className }: HeaderProps) {
+export default function Header() {
   const location = useLocation();
   const { user, isLoading } = useAuth();
 
   return (
-    <header className={className}>
+    <header>
       {/* Top Red Bar */}
       <div className="bg-bni-red h-[60px] lg:h-[77px] flex items-center justify-between px-4 sm:px-6 lg:px-16">
         <Link
@@ -42,7 +38,7 @@ export default function Header({ className }: HeaderProps) {
         )}
       </div>
 
-      {/* Main Navigation Bar */}
+      {/* White Navigation Bar */}
       <div className="bg-white h-[90px] lg:h-[130px] flex items-center justify-between px-4 sm:px-6 lg:px-14">
         <Link to="/" className="flex-shrink-0">
           <img
@@ -53,15 +49,15 @@ export default function Header({ className }: HeaderProps) {
         </Link>
 
         <nav className="flex items-center gap-3 sm:gap-6 lg:gap-12">
-          <Link 
-            to="/training#top" 
+          <Link
+            to="/training#top"
             className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname === "/training" ? "text-bni-red" : "text-black"}`}
           >
             Training
           </Link>
 
-          <Link 
-            to="/journey" 
+          <Link
+            to="/journey"
             className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname === "/journey" ? "text-bni-red" : "text-black"}`}
           >
             Journey
@@ -83,9 +79,7 @@ export default function Header({ className }: HeaderProps) {
 
           <Link
             to="/merchandise"
-            className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
-              location.pathname === "/merchandise" ? "text-bni-red" : "text-black"
-            }`}
+            className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname === "/merchandise" ? "text-bni-red" : "text-black"}`}
           >
             Merchandise
           </Link>

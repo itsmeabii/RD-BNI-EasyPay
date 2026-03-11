@@ -61,3 +61,12 @@ export interface DropdownOption {
   label: string;
   value: string;
 }
+
+export interface CustomTraining {
+  requestId: string;
+  trainingName: string;
+  training: string;
+  chapter: string;
+  proposedDate: string;
+  noOfAttendees: number;
+}

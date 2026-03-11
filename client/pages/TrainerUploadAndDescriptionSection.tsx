@@ -1,30 +1,27 @@
 import { ChangeEvent, useRef, useState } from "react";
+import { validateFile } from "../helper/TrainerApplicationValidation";
 
 export const TrainerUploadAndDescriptionSection = (): JSX.Element => {
   const [description, setDescription] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const maxDescriptionLength = 500;
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const validTypes = ["image/jpeg", "image/jpg", "image/png"];
-      const maxSize = 2 * 1024 * 1024;
+    if (!file) return;
 
-      if (!validTypes.includes(file.type)) {
-        alert("Please upload a valid image file (.jpg, .jpeg, .png)");
-        return;
-      }
-
-      if (file.size > maxSize) {
-        alert("File size must be less than 2MB");
-        return;
-      }
-
-      setSelectedFile(file);
+    const err = validateFile(file);
+    if (err) {
+      setFileError(err);
+      setSelectedFile(null);
+      return;
     }
+
+    setFileError(null);
+    setSelectedFile(file);
   };
 
   const handleBrowseClick = () => {
@@ -73,9 +70,13 @@ export const TrainerUploadAndDescriptionSection = (): JSX.Element => {
           aria-label="Browse file to upload"
         >
           <span className="flex items-center justify-center w-full h-full [font-family:'Inter-Italic',Helvetica] font-normal italic text-black text-[13px] text-center tracking-[0] leading-[16.9px]">
-            Browse File
+            {selectedFile ? selectedFile.name : "Browse File"}
           </span>
         </button>
+
+        {fileError && (
+          <p className="absolute top-[180px] left-[40px] text-red-500 text-[10px]">{fileError}</p>
+        )}
       </div>
 
       <div className="absolute top-[229px] left-[7px] h-4 flex items-center justify-center [font-family:'Inter-Regular',Helvetica] font-normal text-black text-xs text-center tracking-[0] leading-[15.6px] whitespace-nowrap">

@@ -1,4 +1,4 @@
-import { DropdownOption } from "@/types/TrainingTypes";
+import type { DropdownOption } from "@/types/TrainingTypes";
 
 export const MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -29,6 +29,16 @@ export const TRAINING_TABLE_COLUMNS = [
   "Action",
 ];
 
+export const CUSTOM_TRAINING_TABLE_COLUMNS = [
+  "Request ID",
+  "Training Name",
+  "Training",
+  "Chapter",
+  "Proposed Date / Time",
+  "No. of Attendees",
+  "Trainer Application",
+];
+
 export const CATEGORY_OPTIONS: DropdownOption[] = [
   { label: "AWS", value: "AWS" },
   { label: "AMS", value: "AMS" },
@@ -48,4 +58,26 @@ export const MONTH_OPTIONS: DropdownOption[] = [
   { label: "October", value: "October" },
   { label: "November", value: "November" },
   { label: "December", value: "December" },
+];
+
+export const CHAPTERS = [
+  "All-Star",
+  "Catalyst",
+  "Dauntless",
+  "Dynamic",
+  "Elite",
+  "Empire",
+  "Gear",
+  "GRiT",
+  "Iconic",
+  "RISE",
+  "Trailblazer",
+  "BNI Taguig Admin",
+  "Guests",
+  "Sponsor",
+];
+
+export const TRAININGS = [
+  "Business Strategy and Training",
+  "Entrepreneurship Fundamentals",
 ];

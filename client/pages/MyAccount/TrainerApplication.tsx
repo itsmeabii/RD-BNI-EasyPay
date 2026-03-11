@@ -1,67 +1,14 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
-import { ChevronDown } from "lucide-react";
-import { CHAPTERS, TRAININGS } from "../../data/TrainerApplication";
+import { Dropdown } from "@/components/SearchControls";
+import { CHAPTERS, TRAININGS } from "@/constants/Training";
 import { validateFile, validateForm, ValidationErrors } from "../../helper/TrainerApplicationValidation";
 
-/* ─── Reusable custom dropdown ───────────────────────────────────────────── */
-interface SelectProps {
-  value: string;
-  onChange: (val: string) => void;
-  onBlur?: () => void;
-  options: string[];
-  placeholder: string;
-  hasError?: boolean;
-  scrollable?: boolean;
-}
+const toOptions = (arr: string[]) => arr.map((s) => ({ label: s, value: s }));
 
-function CustomSelect({ value, onChange, onBlur, options, placeholder, hasError, scrollable }: SelectProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+const CHAPTER_OPTIONS = toOptions(CHAPTERS);
+const TRAINING_OPTIONS = toOptions(TRAININGS);
 
-  const handleClickOutside = useCallback((e: MouseEvent) => {
-    if (ref.current && !ref.current.contains(e.target as Node)) {
-      setIsOpen(false);
-      onBlur?.();
-    }
-  }, [onBlur]);
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [handleClickOutside]);
-
-  return (
-    <div ref={ref} className="relative w-full">
-      <button
-        type="button"
-        onClick={() => setIsOpen((p) => !p)}
-        className={`w-full h-[40px] rounded-[10px] border ${hasError ? "border-red-500" : "border-[#999]"} bg-white px-3 text-[15px] flex items-center justify-between focus:outline-none cursor-pointer`}
-      >
-        <span className={value ? "text-gray-900" : "text-gray-400"}>{value || placeholder}</span>
-        <ChevronDown size={16} className={`text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`} />
-      </button>
-
-      {isOpen && (
-        <div className="absolute top-[42px] left-0 w-full bg-white border border-[#999] rounded-[8px] shadow-lg z-50 overflow-hidden">
-          <div className={scrollable ? "max-h-48 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent" : ""}>
-            {options.map((opt) => (
-              <div
-                key={opt}
-                onClick={() => { onChange(opt); setIsOpen(false); }}
-                className={`px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 ${value === opt ? "text-[#CF2031] font-semibold" : "text-gray-700"}`}
-              >
-                {opt}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ─── TrainerApplication ─────────────────────────────────────────────────── */
 export default function TrainerApplication() {
   const context = useOutletContext<{ setPageTitle?: (t: string) => void }>();
 
@@ -135,7 +82,6 @@ export default function TrainerApplication() {
       <div className="bg-white rounded-[10px] border border-black shadow-[inset_0_0_0_4px_rgba(207,32,49,0.25)] p-6 md:p-8">
         <form onSubmit={handleSubmit} noValidate>
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Left column */}
             <div className="flex-1 flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <label className="text-black text-[12px] pl-2">First Name <span className="text-[#CF2031]">*</span></label>
@@ -161,13 +107,12 @@ export default function TrainerApplication() {
 
               <div className="flex flex-col gap-1">
                 <label className="text-black text-[12px] pl-2">Chapter <span className="text-[#CF2031]">*</span></label>
-                <CustomSelect
+                <Dropdown
                   value={chapter}
                   onChange={(v) => { setChapter(v); clearError("chapter"); }}
-                  onBlur={() => { if (!chapter) setError("chapter", "Please select a chapter"); }}
-                  options={CHAPTERS}
+                  options={CHAPTER_OPTIONS}
                   placeholder="Select Chapter"
-                  hasError={!!errors.chapter}
+                  width="w-full"
                   scrollable
                 />
                 <ErrorMsg msg={errors.chapter} />
@@ -175,13 +120,12 @@ export default function TrainerApplication() {
 
               <div className="flex flex-col gap-1">
                 <label className="text-black text-[12px] pl-2">Preferred Training <span className="text-[#CF2031]">*</span></label>
-                <CustomSelect
+                <Dropdown
                   value={training}
                   onChange={(v) => { setTraining(v); clearError("training"); }}
-                  onBlur={() => { if (!training) setError("training", "Please select a training"); }}
-                  options={TRAININGS}
+                  options={TRAINING_OPTIONS}
                   placeholder="Select Training"
-                  hasError={!!errors.training}
+                  width="w-full"
                 />
                 <ErrorMsg msg={errors.training} />
               </div>
@@ -193,7 +137,6 @@ export default function TrainerApplication() {
               </div>
             </div>
 
-            {/* Right column */}
             <div className="flex-1 flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <label className="text-black text-[12px] pl-2">Upload a Formal Picture <span className="text-[#CF2031]">*</span></label>
