@@ -1,140 +1,193 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search } from "lucide-react";
-import {
-  CATEGORY_OPTIONS, CHAPTER_OPTIONS, DATE_SORT_OPTIONS,
-  type CustomTraining,
-} from "../../data/AllTrainings";
-import { useFilteredTrainings } from "../../hooks/useFilteredTrainings";
-import { ConfirmModal, SuccessModal } from "./TrainerApplicationModals";
-import { formatDate, parseDate } from "../../helper/AdminCustomTrainings";
-import { SearchInput, Dropdown } from "../../components/SearchControls";
+import { Pencil } from "lucide-react";
+import { SearchAndFilters } from "@/constants/routes";
+import { CATEGORY_OPTIONS, CHAPTERS, MONTH_OPTIONS } from "@/constants";
+import { TrainingRequest, useCustomTrainings } from "@/hooks/useCustomTraining";
+import { TrainerListModal } from "@/components/TrainerListModal";
+import { ProposedDateModal } from "@/components/ProposedDateModal";
+import { EditTrainerModal } from "@/components/EditTrainerModal";
 
-const GRID = "grid-cols-[100px_1fr_110px_110px_110px_180px_120px_150px]";
-const COLUMNS = [
-  "Request ID", "Training Name", "Training", "Categories",
-  "Chapter", "Proposed Date / Time", "No. of Attendees", "Trainer Application",
-] as const;
-const SORTABLE_COL = "Proposed Date / Time";
+const CHAPTER_OPTIONS = CHAPTERS.map((c) => ({ label: c, value: c }));
 
-// ─── Training Row ─────────────────────────────────────────────────────────────
+const TABLE_COLUMNS = [
+  "Request ID",
+  "Chapter",
+  "Category",
+  "Training",
+  "No. of Attendees",
+  "Proposed Date",
+  "Trainer",
+  "Manage Request",
+];
 
-const TrainingRow = ({
-  training, isApplied, isFirst, onApply,
-}: {
-  training: CustomTraining;
-  isApplied: boolean;
-  isFirst: boolean;
-  onApply: (id: string) => void;
-}) => (
-  <div className={`grid ${GRID} bg-white items-center min-h-[60px] ${!isFirst && "border-t border-gray-200"}`}>
-    <div className="p-3 text-xs text-center text-gray-500">{training.requestId}</div>
-    <div className="p-3 text-sm text-center text-gray-800">{training.trainingName}</div>
-    <div className="p-3 text-sm text-center">
-      <Link to={`/training/${training.requestId}`} className="text-[#cf2031] underline hover:opacity-75 font-medium transition-opacity">
-        View Training
-      </Link>
-    </div>
-    <div className="p-3 text-sm text-center text-gray-800">{training.training}</div>
-    <div className="p-3 text-sm text-center text-gray-800">{training.chapter}</div>
-    <div className="p-3 text-sm text-center text-gray-800">{formatDate(training.proposedDate)}</div>
-    <div className="p-3 text-sm text-center text-gray-800">{training.noOfAttendees}</div>
-    <div className="p-3 flex justify-center items-center">
-      {isApplied
-        ? <span className="text-sm font-semibold text-green-600">Applied ✓</span>
-        : (
-          <button onClick={() => onApply(training.requestId)} className="flex items-center gap-1.5 text-sm font-bold text-gray-700 hover:text-[#cf2031] transition-colors">
-            Apply
-            <span className="w-5 h-5 rounded-full border-2 border-current flex items-center justify-center text-xs font-bold">+</span>
-          </button>
-        )}
-    </div>
-  </div>
-);
+const GRID_COLS = "110px 140px 100px 1fr 70px 220px 200px 140px";
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+const FULL_MONTHS = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
 
-type SortDir = "asc" | "desc" | null;
+function formatProposedDate(dateStr: string): string {
+  if (!dateStr) return "—";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  const month = FULL_MONTHS[d.getMonth()];
+  const day = d.getDate();
+  const year = d.getFullYear();
+  let hours = d.getHours();
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+  const ampm = hours >= 12 ? "pm" : "am";
+  hours = hours % 12 || 12;
+  return `${month} ${day}, ${year} ${hours}:${minutes}${ampm}`;
+}
 
 export default function CustomTrainings() {
   const [searchQuery, setSearchQuery]           = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedChapter, setSelectedChapter]   = useState("");
-  const [selectedDate, setSelectedDate]         = useState("");
-  const [appliedIds, setAppliedIds]             = useState<Set<string>>(new Set());
-  const [pendingId, setPendingId]               = useState<string | null>(null);
-  const [showSuccess, setShowSuccess]           = useState(false);
-  const [sortDir, setSortDir]                   = useState<SortDir>(null);
+  const [selectedChapter, setSelectedChapter] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [activeRequestId, setActiveRequestId] = useState<string | null>(null);
+  const [activeDateRequestId, setActiveDateRequestId] = useState<string | null>(null);
+  const [activeDateRequest, setActiveDateRequest] = useState<TrainingRequest | null>(null);
+  const [editTrainerRequestId, setEditTrainerRequestId] = useState<string | null>(null);
 
-  const filtered = useFilteredTrainings(searchQuery, selectedCategory, selectedChapter, selectedDate);
+  const { trainings, isLoading, error, refetch } = useCustomTrainings();
 
-  const trainings = [...filtered].sort((a, b) => {
-    if (!sortDir) return 0;
-    const diff = parseDate(a.proposedDate) - parseDate(b.proposedDate);
-    return sortDir === "asc" ? diff : -diff;
-  });
-
-  const handleConfirm = () => {
-    if (pendingId) setAppliedIds((prev) => new Set(prev).add(pendingId));
-    setPendingId(null);
-    setShowSuccess(true);
-  };
+  const filteredTrainings = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return trainings.filter((t) => {
+      const matchesCategory = !selectedCategory || t.category === selectedCategory;
+      const matchesChapter  = !selectedChapter  || t.chapter  === selectedChapter;
+      const matchesMonth    = !selectedMonth    || t.proposed_date.includes(selectedMonth);
+      const matchesSearch   =
+        !q ||
+        t.training.toLowerCase().includes(q) ||
+        t.category.toLowerCase().includes(q) ||
+        t.id.toLowerCase().includes(q) ||
+        t.chapter.toLowerCase().includes(q) ||
+        t.lt_name.toLowerCase().includes(q);
+      return matchesCategory && matchesChapter && matchesMonth && matchesSearch;
+    });
+  }, [searchQuery, selectedCategory, selectedChapter, selectedMonth, trainings]);
 
   return (
-    <>
-      {pendingId   && <ConfirmModal onConfirm={handleConfirm} onCancel={() => setPendingId(null)} />}
-      {showSuccess && <SuccessModal onClose={() => setShowSuccess(false)} />}
+    <div className="flex flex-col gap-4">
+      <SearchAndFilters
+        searchValue={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Search for categories, chapter, request ID"
+        dropdowns={[
+          { value: selectedCategory, onChange: setSelectedCategory, placeholder: "Categories", width: "w-[140px]", options: CATEGORY_OPTIONS },
+          { value: selectedChapter, onChange: setSelectedChapter, placeholder: "Chapter", width: "w-[120px]", options: CHAPTER_OPTIONS, scrollable: true },
+          { value: selectedMonth, onChange: setSelectedMonth, placeholder: "Month", width: "w-[120px]", options: MONTH_OPTIONS, scrollable: true },
+        ]}
+      />
 
-      <div className="flex flex-col gap-6">
-        <h1 className="text-[#cf2031] text-2xl font-bold">Custom Trainings</h1>
-
-        {/* Search & Filters */}
-        <div className="flex flex-wrap items-center gap-3">
-          <SearchInput
-            value={searchQuery}
-            onChange={setSearchQuery}
-            placeholder="Search for categories, chapter, registrant ID"
-          />
-          <div className="flex items-center gap-3 flex-wrap">
-            <Dropdown value={selectedCategory} onChange={setSelectedCategory} placeholder="Categories" width="w-36"  options={CATEGORY_OPTIONS} />
-            <Dropdown value={selectedChapter}  onChange={setSelectedChapter}  placeholder="Chapter"    width="w-32"  options={CHAPTER_OPTIONS} />
-            <Dropdown value={selectedDate}     onChange={setSelectedDate}     placeholder="Date"       width="w-28"  options={DATE_SORT_OPTIONS} />
-          </div>
+      <div className="w-full rounded-[8px] overflow-hidden border border-[#d9d9d9]">
+        <div className="grid bg-[#cf2031]" style={{ gridTemplateColumns: GRID_COLS }}>
+          {TABLE_COLUMNS.map((col) => (
+            <div key={col} className="py-[14px] px-3 text-center text-white font-extrabold text-[11px] leading-tight">
+              {col}
+            </div>
+          ))}
         </div>
 
-        {/* Table */}
-        <div className="w-full rounded-lg overflow-x-auto border border-gray-300">
-          <div className={`grid ${GRID} bg-[#cf2031] min-w-[1000px]`}>
-            {COLUMNS.map((col) => {
-              const sortable = col === SORTABLE_COL;
-              return (
-                <div
-                  key={col}
-                  onClick={sortable ? () => setSortDir((p) => p === null ? "asc" : p === "asc" ? "desc" : null) : undefined}
-                  className={`py-4 px-3 text-center text-white font-extrabold text-xs leading-tight ${sortable ? "cursor-pointer hover:bg-[#b01c2a] transition-colors select-none" : ""}`}
+        {isLoading ? (
+          <div className="bg-white py-16 text-center text-gray-400 text-sm">Loading...</div>
+        ) : error ? (
+          <div className="bg-white py-16 text-center text-red-400 text-sm">{error}</div>
+        ) : filteredTrainings.length === 0 ? (
+          <div className="bg-white py-16 text-center text-gray-400 text-sm">No trainings match your search or filter.</div>
+        ) : (
+          filteredTrainings.map((t, index) => (
+            <div
+              key={t.id}
+              className="grid bg-white items-center"
+              style={{
+                gridTemplateColumns: GRID_COLS,
+                borderTop: index === 0 ? "none" : "1px solid #e5e7eb",
+                minHeight: "60px",
+              }}
+            >
+              <div className="px-3 text-xs text-center text-gray-600">{t.id}</div>
+              <div className="px-3 text-[13px] text-center text-gray-800">{t.chapter}</div>
+              <div className="px-3 text-[13px] text-center text-gray-800">{t.category}</div>
+              <div className="px-3 text-[13px] text-center">
+                <Link to={`/training/${t.id}`} className="text-[#cf2031] underline hover:opacity-75 font-medium">
+                  View Training
+                </Link>
+              </div>
+              <div className="px-3 text-[13px] text-center text-gray-800">{t.attendees}</div>
+              <div className="px-3 text-[13px] text-center text-gray-800 flex items-center justify-center gap-1">
+                <span className="text-[12px]">{formatProposedDate(t.proposed_date)}</span>
+                <button
+                  onClick={() => {
+                    setActiveDateRequestId(t.id);
+                    setActiveDateRequest(t);
+                  }}
+                  className="text-[#cf2031] hover:opacity-75 transition-opacity ml-1 flex-shrink-0"
                 >
-                  {col}
-                  {sortable && <span className="ml-1">{sortDir === "asc" ? "↑" : sortDir === "desc" ? "↓" : "↑↓"}</span>}
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="min-w-[1000px]">
-            {trainings.length === 0
-              ? <div className="bg-white py-16 text-center text-gray-400 text-sm">No trainings match your search or filter.</div>
-              : trainings.map((t, i) => (
-                  <TrainingRow
-                    key={t.requestId}
-                    training={t}
-                    isApplied={appliedIds.has(t.requestId)}
-                    isFirst={i === 0}
-                    onApply={setPendingId}
-                  />
-                ))}
-          </div>
-        </div>
+                  <Pencil className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="px-3 text-[13px] text-center">
+                {t.trainer ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-[13px] text-gray-800">{t.trainer}</span>
+                    <button
+                      onClick={() => setEditTrainerRequestId(t.id)}
+                      className="text-gray-400 hover:text-[#cf2031] transition-colors"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setActiveRequestId(t.id)}
+                    className="flex items-center gap-1 text-[13px] text-[#cf2031] font-semibold hover:opacity-75 transition-opacity mx-auto"
+                  >
+                    <span className="w-5 h-5 rounded-full bg-[#cf2031] text-white flex items-center justify-center text-[14px] leading-none">+</span>
+                    Assign Trainer
+                  </button>
+                )}
+              </div>
+              <div className="px-3 text-[13px] text-center text-gray-500">{t.status}</div>
+            </div>
+          ))
+        )}
       </div>
-    </>
+
+      {activeRequestId && (
+        <TrainerListModal
+          requestId={activeRequestId}
+          onClose={() => setActiveRequestId(null)}
+          onAssigned={() => refetch()}
+        />
+      )}
+
+      {activeDateRequestId && activeDateRequest && (
+        <ProposedDateModal
+          requestId={activeDateRequestId}
+          requestedAt={activeDateRequest.requested_at}
+          currentDate={activeDateRequest.proposed_date}
+          onClose={() => {
+            setActiveDateRequestId(null);
+            setActiveDateRequest(null);
+          }}
+          onUpdated={() => refetch()}
+        />
+      )}
+
+      {editTrainerRequestId && (
+        <EditTrainerModal
+          onEdit={() => {
+            setActiveRequestId(editTrainerRequestId);
+            setEditTrainerRequestId(null);
+          }}
+          onClose={() => setEditTrainerRequestId(null)}
+        />
+      )}
+    </div>
   );
 }

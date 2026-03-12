@@ -1,7 +1,11 @@
 import { NavLink } from "react-router-dom";
 import { NAV_ITEMS } from "../../constants/routes";
 
-export const UserNavigationSection = (): JSX.Element => {
+interface UserNavigationSectionProps {
+  basePath?: string;
+}
+
+export const UserNavigationSection = ({ basePath = "/my-account" }: UserNavigationSectionProps): JSX.Element => {
   return (
     <nav
       className="w-[248px] flex-shrink-0"
@@ -16,7 +20,7 @@ export const UserNavigationSection = (): JSX.Element => {
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.to}
-            to={item.to}
+            to={item.to.replace("/my-account", basePath)}
             className={({ isActive }) =>
               `block pl-8 pr-4 py-[14px] text-[17px] font-semibold ${
                 isActive ? "text-[#cf2031] font-bold" : "text-[#817d7d]"
