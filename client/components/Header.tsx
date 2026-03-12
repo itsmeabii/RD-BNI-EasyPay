@@ -5,7 +5,6 @@ import { useAuth } from "@/context/AuthContext";
 export default function Header() {
   const location = useLocation();
   const { user, isLoading } = useAuth();
-  console.log(user)
 
   return (
     <header>

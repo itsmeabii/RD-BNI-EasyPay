@@ -31,6 +31,7 @@ import MembershipRenewal from "./pages/Membership/MembershipRenewalPage";
 import NewMembership from "./pages/Membership/NewMembershipPage";
 import TrainerListPage from "./pages/Admin/TrainerListPage";
 import ProtectedRoute from "./lib/utils/Protectedroute";
+import ViewRecordsPage from "./pages/Admin/ViewRecordsPage";
 
 const queryClient = new QueryClient();
 
@@ -74,11 +75,15 @@ export default function App() {
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route path="custom-trainings" element={<CustomTrainings />} />
                   <Route path="trainer-list" element={<TrainerListPage />} />
+                  <Route path="/admin/view-records/:id" element={<ViewRecordsPage />} />
+                  <Route path="/admin/view-records" element={<ViewRecordsPage />} />
                 </Route>
 
                 {/* Catch-all route for 404s */}
                 <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
                 <Route path="/success-treasure-map/:id" element={<SuccessMapWorkshopDetails />} />
+                <Route path="/my-account/view-records" element={<ViewRecordsPage />} />
+                <Route path="/my-account/view-records/:id" element={<ViewRecordsPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Cart />
