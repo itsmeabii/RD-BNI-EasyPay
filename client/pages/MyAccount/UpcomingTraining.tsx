@@ -48,7 +48,7 @@ export default function UpcomingTraining() {
         searchValue={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search for categories, training name, training ID"
-        dropdowns={[
+        filters={[
           {
             value: selectedCategory,
             onChange: setSelectedCategory,
