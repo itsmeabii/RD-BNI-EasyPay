@@ -34,7 +34,7 @@ export const UserNavigationSection = ({ menu_items }: UserNavigationSectionProps
 
   return (
     <nav className="w-[248px] flex-shrink-0" role="navigation">
-      <p className="text-[#817d7d] text-[10px] font-semibold mb-[6px] pl-[9px]">Menu</p>
+      <p className="text-[#817d7d] text-md font-semibold mb-[6px] pl-[9px]">Menu</p>
       <div className="w-[230px] rounded-[5px] border border-[#817d7d] bg-white">
         {menu_items.map((item) =>
           item.children ? (
