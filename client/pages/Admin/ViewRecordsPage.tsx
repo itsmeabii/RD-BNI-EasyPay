@@ -37,6 +37,7 @@ export default function ViewRecordsPage() {
     );
     if (found) {
       setTrainer(found);
+      navigate(`/admin/view-records/${found.id}`);
     }
   }
 

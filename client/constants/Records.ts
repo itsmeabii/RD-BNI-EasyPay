@@ -1,5 +1,6 @@
 export const VIEW_RECORDS_COLUMNS = [
-    "Request ID", 
+    "ID", 
+    "Type",
     "Proposed Date", 
     "Training",
     "Category", 

@@ -67,7 +67,14 @@ export function ViewRecordsTable({ trainerId, trainerName, trainerCode }: ViewRe
               )}
               {filtered.map((record, index) => (
                 <tr key={record.id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                  <td className="px-4 py-3">{record.requestId}</td>
+                  <td className="px-4 py-3">
+                    {record.trainingType === "custom" ? record.requestId : `TR-${String(record.trainingId).padStart(3, '0')}`}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span >
+                      {record.trainingType === "custom" ? "Custom" : "Regular"}
+                    </span>
+                  </td>
                   <td className="px-4 py-3">{record.proposedDate}</td>
                   <td className="px-4 py-3">{record.trainingTitle}</td>
                   <td className="px-4 py-3">{record.trainingCode}</td>
