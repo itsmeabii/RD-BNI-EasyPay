@@ -8,6 +8,7 @@ type LoginPayload = {
 type LoginResult = {
   userName: string;
   email: string;
+  role: string;
 };
 
 export async function LoginWithEmail({ email, password }: LoginPayload): Promise<LoginResult> {
@@ -17,6 +18,7 @@ export async function LoginWithEmail({ email, password }: LoginPayload): Promise
 
   const user = data.user;
   const userName = user.user_metadata?.username ?? user.email ?? "";
+  const role = user.user_metadata?.role ?? "";
 
-  return { userName, email: user.email ?? "" };
+  return { userName: userName, email: user.email ?? "", role: role };
 }

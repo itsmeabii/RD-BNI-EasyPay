@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useOutletContext } from "react-router-dom";
-import { SearchAndFilters } from "@/constants/SearchAndFilter";
+import { SearchAndFilters } from "@/components/SearchAndFilter";
 import { TrainingListSection } from "@/pages/MyAccount/TrainingListSection";
 import { useTrainings } from "@/hooks/useTrainings";
 import { CATEGORY_OPTIONS, MONTH_OPTIONS } from "@/constants/Training";

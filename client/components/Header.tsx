@@ -5,9 +5,9 @@ import { useAuth } from "@/context/AuthContext";
 export default function Header() {
   const location = useLocation();
   const { user, isLoading } = useAuth();
+  console.log(user)
 
   return (
-    console.log(user),
     <header>
       {/* Top Red Bar */}
       <div className="bg-bni-red h-[60px] lg:h-[77px] flex items-center justify-between px-4 sm:px-6 lg:px-16">

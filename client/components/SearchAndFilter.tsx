@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { SearchInput, Dropdown } from "../components/SearchControls";
+import { SearchInput, Dropdown } from "./SearchControls";
 
 interface FilterOption {
   label: string;
@@ -19,14 +19,14 @@ interface SearchAndFiltersProps {
   searchValue: string;
   onSearchChange: (val: string) => void;
   searchPlaceholder?: string;
-  dropdowns?: DropdownConfig[];
+  filters?: DropdownConfig[];
 }
 
 export const SearchAndFilters: FC<SearchAndFiltersProps> = ({
   searchValue,
   onSearchChange,
   searchPlaceholder = "Search...",
-  dropdowns = [],
+  filters = [],
 }) => {
   return (
     <div className="flex items-center gap-3">
@@ -35,7 +35,7 @@ export const SearchAndFilters: FC<SearchAndFiltersProps> = ({
         onChange={onSearchChange}
         placeholder={searchPlaceholder}
       />
-      {dropdowns.map((dropdown, index) => (
+      {filters.map((dropdown, index) => (
         <Dropdown
           key={index}
           value={dropdown.value}

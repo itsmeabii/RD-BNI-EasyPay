@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SearchAndFilters } from "@/constants/SearchAndFilter";
+import { SearchAndFilters } from "@/components/SearchAndFilter";
 import { MONTH_OPTIONS } from "@/constants/Training";
 
 

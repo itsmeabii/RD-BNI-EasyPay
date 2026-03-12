@@ -4,6 +4,8 @@ import { approveTrainer, fetchTrainers, rejectTrainer } from "@/lib/utils/Traine
 import { Trainer } from "@/types/TrainerTypes";
 import { TrainerEditModal } from "@/components/Trainer/TrainerEditModal";
 import { TrainerListSkeleton } from "./TrainerListSkeleton";
+import { SearchAndFilters } from "../SearchAndFilter";
+import { CHAPTERS, CATEGORY_OPTIONS } from "@/constants/Training";
 
 function AvailabilityBadge({ availability }: { availability: string | null }) {
   if (availability === "Fully Booked")
@@ -62,6 +64,8 @@ export const TrainerListTable = forwardRef((_, ref) => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [editingTrainer, setEditingTrainer] = useState<Trainer | null>(null);
+  const [selectedChapter, setSelectedChapter] = useState("");
+  const [selectedPreferredTraining, setSelectedPreferredTraining] = useState("");
 
   async function loadTrainers() {
     setLoading(true);
@@ -97,18 +101,49 @@ export const TrainerListTable = forwardRef((_, ref) => {
     }
 
   const filtered = trainers.filter((t) => {
-    const q = search.toLowerCase();
-    return (
-      t.trainerId.toLowerCase().includes(q) ||
-      t.firstName.toLowerCase().includes(q) ||
-      t.lastName.toLowerCase().includes(q) ||
-      t.chapter.toLowerCase().includes(q) ||
-      t.preferredCategory.toLowerCase().includes(q)
-    );
-  });
+  const q = search.toLowerCase();
+  const matchesSearch =
+    t.trainerId.toLowerCase().includes(q) ||
+    t.firstName.toLowerCase().includes(q) ||
+    t.lastName.toLowerCase().includes(q) ||
+    t.chapter.toLowerCase().includes(q) ||
+    t.preferredCategory.toLowerCase().includes(q);
+
+  const matchesCategory = selectedPreferredTraining
+    ? t.preferredCategory === selectedPreferredTraining
+    : true;
+
+  const matchesChapter = selectedChapter
+    ? t.chapter === selectedChapter
+    : true;
+
+  return matchesSearch && matchesCategory && matchesChapter;
+});
 
   return (
     <div className="w-full flex flex-col gap-4">
+      <SearchAndFilters
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Search trainers..."
+        filters={[
+          {
+            value: selectedPreferredTraining,
+            onChange: setSelectedPreferredTraining,
+            placeholder: "Preferred Training",
+            width: "w-[200px]",
+            options: CATEGORY_OPTIONS
+          },
+          {
+            value: selectedChapter,
+            onChange: setSelectedChapter,
+            placeholder: "Chapter",
+            width: "w-[130px]",
+            options: CHAPTERS.map((c) => ({ label: c, value: c })),
+            scrollable: true,
+          },
+        ]}
+      />
       {loading ? (
         <TrainerListSkeleton />
       ) : (

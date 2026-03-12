@@ -12,23 +12,22 @@ export function subscribeToAuthChanges(
   setIsLoading: (value: boolean) => void
 ) {
   const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    if (_event === "INITIAL_SESSION") return;
+    
     if (_event === "SIGNED_OUT") {
       setUser(null);
       return;
     }
 
-    if (_event === "SIGNED_IN") {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("username, first_name, email, role")
-        .eq("id", session!.user.id)
-        .single();
-
+    if (_event === "SIGNED_IN" && session?.user) {
+      const { data: { user } } = await supabase.auth.getUser(); 
+      console.log("SIGNED_IN user_metadata:", user?.user_metadata);
+      console.log("SIGNED_IN session user_metadata:", session.user.user_metadata);
       setUser({
-        id: session!.user.id,
-        email: session!.user.email ?? "",
-        userName: profile?.username ?? "",
-        role: profile?.role ?? "",
+        id: user!.id,
+        email: user!.email ?? "",
+        userName: user!.user_metadata?.username ?? "",
+        role: user!.user_metadata?.role ?? "",
       });
     }
   });

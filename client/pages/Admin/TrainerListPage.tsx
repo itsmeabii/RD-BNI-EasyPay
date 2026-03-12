@@ -10,8 +10,8 @@ export default function TrainerListPage() {
   const context = useOutletContext<{ setPageTitle?: (t: string) => void }>();
 
   useEffect(() => {
-      context?.setPageTitle?.("Trainer List");
-    }, []);
+    context?.setPageTitle?.("Trainer List");
+  }, []);
 
   return (
     <div className="flex flex-col gap-6">
@@ -29,9 +29,9 @@ export default function TrainerListPage() {
       {showAdd && (
         <AddTrainerModal
           onClose={() => setShowAdd(false)}
-          onAdd={(trainer) => {
+          onAdd={() => {
             setShowAdd(false);
-            tableRef.current?.refetch(); 
+            tableRef.current?.refetch();
           }}
         />
       )}
