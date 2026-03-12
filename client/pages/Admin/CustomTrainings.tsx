@@ -1,8 +1,12 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
+import { Pencil } from "lucide-react";
 import { SearchAndFilters } from "@/constants/SearchAndFilter";
 import { CATEGORY_OPTIONS, CHAPTERS, MONTH_OPTIONS } from "@/constants/Training";
-import { useCustomTrainings } from "@/hooks/useCustomTraining";
+import { TrainingRequest, useCustomTrainings } from "@/hooks/useCustomTraining";
+import { TrainerListModal } from "@/components/TrainerListModal";
+import { ProposedDateModal } from "@/components/ProposedDateModal";
+import { EditTrainerModal } from "@/components/EditTrainerModal";
 
 const CHAPTER_OPTIONS = CHAPTERS.map((c) => ({ label: c, value: c }));
 
@@ -13,10 +17,11 @@ const TABLE_COLUMNS = [
   "Training",
   "No. of Attendees",
   "Proposed Date",
-  "Status",
+  "Trainer",
+  "Manage Request",
 ];
 
-const GRID_COLS = "110px 140px 100px 1fr 130px 220px 120px";
+const GRID_COLS = "110px 140px 100px 1fr 130px 220px 150px 140px";
 
 const FULL_MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -42,8 +47,12 @@ export default function CustomTrainings() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedChapter, setSelectedChapter] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
+  const [activeRequestId, setActiveRequestId] = useState<string | null>(null);
+  const [activeDateRequestId, setActiveDateRequestId] = useState<string | null>(null);
+  const [activeDateRequest, setActiveDateRequest] = useState<TrainingRequest | null>(null);
+  const [editTrainerRequestId, setEditTrainerRequestId] = useState<string | null>(null);
 
-  const { trainings, isLoading, error } = useCustomTrainings();
+  const { trainings, isLoading, error, refetch } = useCustomTrainings();
 
   const filteredTrainings = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -64,8 +73,6 @@ export default function CustomTrainings() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-[#cf2031] text-[22px] font-bold">Custom Trainings</h1>
-
       <SearchAndFilters
         searchValue={searchQuery}
         onSearchChange={setSearchQuery}
@@ -91,9 +98,7 @@ export default function CustomTrainings() {
         ) : error ? (
           <div className="bg-white py-16 text-center text-red-400 text-sm">{error}</div>
         ) : filteredTrainings.length === 0 ? (
-          <div className="bg-white py-16 text-center text-gray-400 text-sm">
-            No trainings match your search or filter.
-          </div>
+          <div className="bg-white py-16 text-center text-gray-400 text-sm">No trainings match your search or filter.</div>
         ) : (
           filteredTrainings.map((t, index) => (
             <div
@@ -114,12 +119,75 @@ export default function CustomTrainings() {
                 </Link>
               </div>
               <div className="px-3 text-[13px] text-center text-gray-800">{t.attendees}</div>
-              <div className="px-3 text-[12px] text-center text-gray-800">{formatProposedDate(t.proposed_date)}</div>
+              <div className="px-3 text-[13px] text-center text-gray-800 flex items-center justify-center gap-1">
+                <span className="text-[12px]">{formatProposedDate(t.proposed_date)}</span>
+                <button
+                  onClick={() => {
+                    setActiveDateRequestId(t.id);
+                    setActiveDateRequest(t);
+                  }}
+                  className="text-[#cf2031] hover:opacity-75 transition-opacity ml-1 flex-shrink-0"
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="px-3 text-[13px] text-center">
+                {t.trainer ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-[13px] text-gray-800">{t.trainer}</span>
+                    <button
+                      onClick={() => setEditTrainerRequestId(t.id)}
+                      className="text-gray-400 hover:text-[#cf2031] transition-colors"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setActiveRequestId(t.id)}
+                    className="flex items-center gap-1 text-[13px] text-[#cf2031] font-semibold hover:opacity-75 transition-opacity mx-auto"
+                  >
+                    <span className="w-5 h-5 rounded-full bg-[#cf2031] text-white flex items-center justify-center text-[14px] leading-none">+</span>
+                    Assign Trainer
+                  </button>
+                )}
+              </div>
               <div className="px-3 text-[13px] text-center text-gray-500">{t.status}</div>
             </div>
           ))
         )}
       </div>
+
+      {activeRequestId && (
+        <TrainerListModal
+          requestId={activeRequestId}
+          onClose={() => setActiveRequestId(null)}
+          onAssigned={() => refetch()}
+        />
+      )}
+
+      {activeDateRequestId && activeDateRequest && (
+        <ProposedDateModal
+          requestId={activeDateRequestId}
+          requestedAt={activeDateRequest.requested_at}
+          currentDate={activeDateRequest.proposed_date}
+          onClose={() => {
+            setActiveDateRequestId(null);
+            setActiveDateRequest(null);
+          }}
+          onUpdated={() => refetch()}
+        />
+      )}
+
+      {editTrainerRequestId && (
+        <EditTrainerModal
+          onEdit={() => {
+            setActiveRequestId(editTrainerRequestId);
+            setEditTrainerRequestId(null);
+          }}
+          onClose={() => setEditTrainerRequestId(null)}
+        />
+      )}
     </div>
   );
 }
