@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase/Client";
-import { Search, ChevronDown, X, ArrowUp, ArrowDown } from "lucide-react";
+import { X, ArrowUp, ArrowDown } from "lucide-react";
+import { SearchAndFilters } from "@/constants/SearchAndFilter";
+import type { RequestStatus } from "@/constants/Training";
+import type { TrainingRequest } from "@/types/TrainingTypes";
+import { MONTHS } from "@/constants/Training";
+import { categories } from "@/constants/Training";
+
 
 function formatDate(dateStr: string): string {
   if (!dateStr || dateStr === "—") return "—";
@@ -9,28 +15,6 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" }) +
     " " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase();
 }
-
-export type RequestStatus = "Approved" | "Declined" | "Pending";
-
-export interface TrainingRequest {
-  id: string;
-  ltName: string;
-  category: string;
-  training: string;
-  trainingDescription: string;
-  chapter: string;
-  proposedDate: string;
-  attendees: number;
-  trainer: string | null;
-  status: RequestStatus;
-  requestNote: string;
-  requestedAt: string;
-  timeApproved: string;
-}
-
-
-
-
 
 function StatusBadge({ status }: { status: RequestStatus }) {
   const styles: Record<RequestStatus, string> = {
@@ -69,16 +53,16 @@ function TrainingDetailsPanel({ req, onClose }: { req: TrainingRequest; onClose:
   useEffect(() => {
     async function fetchImage() {
       const { data } = await supabase
-        .from("tr_trainings")
-        .select("image_path")
-        .eq("name", req.training.trim())
+        .from("trainings")
+        .select("thumbnail")
+        .eq("title", req.training.trim())
         .maybeSingle();
-      if (data?.image_path) setImage(data.image_path);
+      if (data?.thumbnail) setImage(data.thumbnail);
     }
     fetchImage();
   }, [req.training]);
 
-  const description = req.trainingDescription || "—";
+  const description = req.trainingDescription || "No Description Available";
 
   return (
     <div className="fixed inset-0 z-50 flex">
@@ -127,7 +111,7 @@ function TrainingDetailsPanel({ req, onClose }: { req: TrainingRequest; onClose:
             </div>
             <div className="text-right shrink-0">
               <p className="text-[11px] font-semibold text-gray-500 mb-0.5">Request ID</p>
-              <p className="text-[13px] font-semibold text-gray-800">{req.id.replace("RQ-", "RQ - ")}</p>
+              <p className="text-[13px] font-semibold text-gray-800">{req.id}</p>
             </div>
           </div>
           <div>
@@ -140,7 +124,7 @@ function TrainingDetailsPanel({ req, onClose }: { req: TrainingRequest; onClose:
           </div>
           <div>
             <p className="text-[11px] font-semibold text-gray-500 mb-0.5">Request Note</p>
-            <p className="text-[13px] text-gray-700 leading-relaxed">{req.requestNote || "—"}</p>
+            <p className="text-[13px] text-gray-700 leading-relaxed">{req.requestNote}</p>
           </div>
           <div>
             <p className="text-[11px] font-semibold text-gray-500 mb-0.5">Leadership Team Name</p>
@@ -156,15 +140,15 @@ function TrainingDetailsPanel({ req, onClose }: { req: TrainingRequest; onClose:
         <div className="mx-7 mb-7 mt-5 rounded-[10px] bg-[#F4F4F4] border border-[#E0E0E0] px-5 py-4 flex justify-between shrink-0">
           <div>
             <p className="text-[10px] font-bold text-gray-600 mb-1">Requested At</p>
-            <p className="text-[12px] text-gray-800 font-medium">{req.requestedAt || "—"}</p>
+            <p className="text-[12px] text-gray-800 font-medium">{req.requestedAt}</p>
           </div>
           <div className="text-center">
             <p className="text-[10px] font-bold text-gray-600 mb-1">Time Approved</p>
-            <p className="text-[12px] text-gray-800 font-medium">{req.timeApproved || "—"}</p>
+            <p className="text-[12px] text-gray-800 font-medium">{req.timeApproved}</p>
           </div>
           <div className="text-right">
             <p className="text-[10px] font-bold text-gray-600 mb-1">Proposed Date</p>
-            <p className="text-[12px] text-gray-800 font-medium">{req.proposedDate || "—"}</p>
+            <p className="text-[12px] text-gray-800 font-medium">{req.proposedDate}</p>
           </div>
         </div>
       </div>
@@ -182,9 +166,6 @@ export default function TrainingTable({ requests, onNewRequest }: TrainingTableP
   const [categoryFilter, setCategoryFilter] = useState("");
   const [chapterFilter, setChapterFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
-  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
-  const [showChapterDropdown, setShowChapterDropdown] = useState(false);
-  const [showDateDropdown, setShowDateDropdown] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState<TrainingRequest | null>(null);
   const [dateSort, setDateSort] = useState<"" | "asc" | "desc">("");
   const [chapters, setChapters] = useState<string[]>([]);
@@ -223,78 +204,40 @@ export default function TrainingTable({ requests, onNewRequest }: TrainingTableP
     return dateSort === "asc" ? dateA - dateB : dateB - dateA;
   });
 
-  const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-  const categories = ["ASWS", "CDWS", "MSP", "MSWS", "NO"];
-
   return (
     <div className="flex-1 min-w-0">
       {/* Search and filters */}
-      <div className="flex items-center gap-2 mb-4 w-full">
-        <div className="relative flex-1 min-w-0">
-          <input
-            type="text"
-            placeholder="Search for categories, chapter, registrant ID"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-[53px] pl-5 pr-12 rounded-[10px] border border-[#D9D9D9] bg-white shadow-inner text-[#817E7E] italic text-sm focus:outline-none focus:border-[#CF2031]"
-          />
-          <Search className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#817E7E]" />
-        </div>
-
-        <div className="relative">
-          <button
-            onClick={() => { setShowCategoryDropdown((v) => !v); setShowChapterDropdown(false); setShowDateDropdown(false); }}
-            className="flex items-center gap-2 h-[53px] px-4 rounded-[10px] border border-[#D9D9D9] bg-white shadow text-[#817E7E] font-semibold text-sm whitespace-nowrap"
-          >
-            {categoryFilter || "Categories"}
-            <ChevronDown className="w-4 h-4" />
-          </button>
-          {showCategoryDropdown && (
-            <div className="absolute top-full left-0 mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-20">
-              <button className="block w-full text-left px-4 py-2 text-sm text-[#817E7E] hover:bg-gray-50" onClick={() => { setCategoryFilter(""); setShowCategoryDropdown(false); }}>All</button>
-              {categories.map((c) => (
-                <button key={c} className="block w-full text-left px-4 py-2 text-sm text-[#817E7E] hover:bg-gray-50" onClick={() => { setCategoryFilter(c); setShowCategoryDropdown(false); }}>{c}</button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="relative">
-          <button
-            onClick={() => { setShowChapterDropdown((v) => !v); setShowCategoryDropdown(false); setShowDateDropdown(false); }}
-            className="flex items-center gap-2 h-[53px] px-4 rounded-[10px] border border-[#D9D9D9] bg-white shadow text-[#817E7E] font-semibold text-sm whitespace-nowrap"
-          >
-            {chapterFilter || "Chapter"}
-            <ChevronDown className="w-4 h-4" />
-          </button>
-          {showChapterDropdown && (
-            <div className="absolute top-full left-0 mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-20 max-h-60 overflow-y-auto">
-              <button className="block w-full text-left px-4 py-2 text-sm text-[#817E7E] hover:bg-gray-50" onClick={() => { setChapterFilter(""); setShowChapterDropdown(false); }}>All</button>
-              {chapters.map((c) => (
-                <button key={c} className="block w-full text-left px-4 py-2 text-sm text-[#817E7E] hover:bg-gray-50" onClick={() => { setChapterFilter(c); setShowChapterDropdown(false); }}>{c}</button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="relative">
-          <button
-            onClick={() => { setShowDateDropdown((v) => !v); setShowCategoryDropdown(false); setShowChapterDropdown(false); }}
-            className="flex items-center gap-2 h-[53px] px-4 rounded-[10px] border border-[#D9D9D9] bg-white shadow text-[#817E7E] font-semibold text-sm whitespace-nowrap"
-          >
-            {dateFilter || "Month"}
-            <ChevronDown className="w-4 h-4" />
-          </button>
-          {showDateDropdown && (
-            <div className="absolute top-full left-0 mt-1 w-44 bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-20 max-h-60 overflow-y-auto">
-              <button className="block w-full text-left px-4 py-2 text-sm text-[#817E7E] hover:bg-gray-50" onClick={() => { setDateFilter(""); setShowDateDropdown(false); }}>All</button>
-              {MONTHS.map((m) => (
-                <button key={m} className="block w-full text-left px-4 py-2 text-sm text-[#817E7E] hover:bg-gray-50" onClick={() => { setDateFilter(m); setShowDateDropdown(false); }}>{m}</button>
-              ))}
-            </div>
-          )}
-        </div>
+      <div className="mb-4 w-full">
+        <SearchAndFilters
+          searchValue={search}
+          onSearchChange={setSearch}
+          searchPlaceholder="Search for categories, chapter, registrant ID"
+          dropdowns={[
+            {
+              value: categoryFilter,
+              onChange: setCategoryFilter,
+              placeholder: "Categories",
+              width: "w-[155px]",
+              options: categories.map((c) => ({ label: c, value: c })),
+            },
+            {
+              value: chapterFilter,
+              onChange: setChapterFilter,
+              placeholder: "Chapter",
+              width: "w-[155px]",
+              options: chapters.map((c) => ({ label: c, value: c })),
+              scrollable: true,
+            },
+            {
+              value: dateFilter,
+              onChange: setDateFilter,
+              placeholder: "Month",
+              width: "w-[140px]",
+              options: MONTHS.map((m) => ({ label: m, value: m })),
+              scrollable: true,
+            },
+          ]}
+        />
       </div>
 
       {/* Table */}

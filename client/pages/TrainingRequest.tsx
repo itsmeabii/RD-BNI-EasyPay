@@ -1,18 +1,15 @@
-'use client';
-
 import { useState } from "react";
-import Sidebar from "@/components/Sidebar";
+import { UserNavigationSection } from "@/pages/UserNavigation/UserNavigationSection";
 import TrainingTable from "@/components/TrainingTable";
 import NewRequestModal from "@/components/NewRequestModal";
 import { useTrainingRequest } from "@/hooks/useTrainingRequest";
 
 export default function Index() {
   const [showModal, setShowModal] = useState(false);
-  const { request, nextId, addRequest } = useTrainingRequest();
+  const { request, addRequest } = useTrainingRequest();
 
   const handleSubmit = (data: {
     requestorName: string;
-    requestId: string;
     trainingName: string;
     requestNote: string;
     proposedDate: string;
@@ -49,7 +46,7 @@ export default function Index() {
         {/* Sidebar + table */}
         <div className="flex gap-6 items-start">
           <div className="pt-[0px] w-[230px] shrink-0">
-            <Sidebar />
+            <UserNavigationSection />
           </div>
           <main className="flex-1 min-w-0">
             <TrainingTable
@@ -64,7 +61,6 @@ export default function Index() {
         <NewRequestModal
           onClose={() => setShowModal(false)}
           onSubmit={handleSubmit}
-          nextId={nextId}
         />
       )}
     </div>

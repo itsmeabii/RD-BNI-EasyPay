@@ -46,3 +46,21 @@ export interface TrainingRow {
   training_dates: { date: string; time: string }[];
   training_instructors: { name: string; background: string | null; image: string | null }[];
 }
+
+import type { RequestStatus } from "../constants/Training";
+
+export interface TrainingRequest {
+  id: string;
+  ltName: string;
+  category: string;
+  training: string;
+  trainingDescription: string;
+  chapter: string;
+  proposedDate: string;
+  attendees: number;
+  trainer: string | null;
+  status: RequestStatus;
+  requestNote: string;
+  requestedAt: string;
+  timeApproved: string;
+}

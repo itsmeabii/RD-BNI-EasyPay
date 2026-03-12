@@ -2,54 +2,77 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase/Client";
 import { X } from "lucide-react";
 
-
-
 interface NewRequestModalProps {
   onClose: () => void;
   onSubmit: (data: {
     requestorName: string;
-    requestId: string;
     trainingName: string;
     requestNote: string;
     proposedDate: string;
     chapter: string;
     attendees: number;
   }) => void;
-  nextId: string;
 }
 
-const INITIAL_FORM = {
-  requestorName: "",
-  trainingName: "",
-  requestNote: "",
-  proposedDate: "",
-  chapter: "",
-  attendees: 15,
-};
+interface FormState {
+  requestorName: string;
+  trainingName: string;
+  requestNote: string;
+  proposedDate: string;
+  chapter: string;
+  attendees: number;
+}
 
 const fieldClass =
   "w-full rounded-[6px] px-3 py-[6px] text-[13.5px] text-gray-700 placeholder-gray-400 bg-white focus:outline-none border border-[#DEDEDE] shadow-[inset_0_2px_5px_rgba(0,0,0,0.12)]";
 
 const labelClass = "block text-[12.5px] font-semibold text-gray-800 mb-[6px]";
 
-export default function NewRequestModal({ onClose, onSubmit, nextId }: NewRequestModalProps) {
-  const [form, setForm] = useState(INITIAL_FORM);
+export default function NewRequestModal({ onClose, onSubmit }: NewRequestModalProps) {
+  const [nextId, setNextId] = useState("—");
+
+  useEffect(() => {
+    async function fetchNextId() {
+      const { data } = await supabase
+        .from("training_request")
+        .select("id")
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (data?.id) {
+        const num = parseInt(data.id.replace("RQ-", ""), 10);
+        setNextId(`RQ-${String(num + 1).padStart(3, "0")}`);
+      } else {
+        setNextId("RQ-001");
+      }
+    }
+    fetchNextId();
+  }, []);
+
+  const [form, setForm] = useState<FormState>({
+    requestorName: "",
+    trainingName: "",
+    requestNote: "",
+    proposedDate: "",
+    chapter: "",
+    attendees: 15,
+  });
   const [showSuccess, setShowSuccess] = useState(false);
   const [chapters, setChapters] = useState<string[]>([]);
   const [trainingNames, setTrainingNames] = useState<string[]>([]);
+  const [pendingData, setPendingData] = useState<FormState | null>(null);
 
   useEffect(() => {
     async function fetchData() {
       const [chaptersRes, trainingsRes] = await Promise.all([
         supabase.from("chapters").select("name").order("name"),
-        supabase.from("tr_trainings").select("name").order("name"),
+        supabase.from("trainings").select("title").order("title"),
       ]);
       if (chaptersRes.data) setChapters(chaptersRes.data.map((c: { name: string }) => c.name));
-      if (trainingsRes.data) setTrainingNames(trainingsRes.data.map((t: { name: string }) => t.name));
+      if (trainingsRes.data) setTrainingNames(trainingsRes.data.map((t: { title: string }) => t.title));
     }
     fetchData();
   }, []);
-  const [pendingData, setPendingData] = useState<typeof form | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -62,6 +85,19 @@ export default function NewRequestModal({ onClose, onSubmit, nextId }: NewReques
     setForm((prev) => ({ ...prev, attendees: Math.max(1, prev.attendees + delta) }));
   };
 
+  const resetForm = () => {
+    setForm({
+      requestorName: "",
+      trainingName: "",
+      requestNote: "",
+      proposedDate: "",
+      chapter: "",
+      attendees: 15,
+    });
+    setPendingData(null);
+    setShowSuccess(false);
+  };
+
   const handleSendRequest = () => {
     if (!isFormComplete) return;
     setPendingData({ ...form });
@@ -72,23 +108,18 @@ export default function NewRequestModal({ onClose, onSubmit, nextId }: NewReques
     if (!pendingData) return;
     onSubmit({
       requestorName: pendingData.requestorName,
-      requestId: nextId,
       trainingName: pendingData.trainingName,
       requestNote: pendingData.requestNote,
       proposedDate: pendingData.proposedDate,
       chapter: pendingData.chapter,
       attendees: pendingData.attendees,
     });
-    setForm(INITIAL_FORM);
-    setPendingData(null);
-    setShowSuccess(false);
+    resetForm();
     onClose();
   };
 
   const handleClose = () => {
-    setForm(INITIAL_FORM);
-    setPendingData(null);
-    setShowSuccess(false);
+    resetForm();
     onClose();
   };
 

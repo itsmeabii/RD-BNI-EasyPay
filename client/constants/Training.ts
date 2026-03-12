@@ -15,3 +15,7 @@ export const FILTER_STATUS_LABELS = {
   completed: "Completed",
   upcoming: "Upcoming",
 } as const;
+
+export type RequestStatus = "Approved" | "Declined" | "Pending";
+
+export const categories = ["ASWS", "CDWS", "MSP", "MSWS", "NO"];
