@@ -1,19 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-import { UserNavigationSection } from "../UserNavigation/UserNavigationSection";
-
-// Map each route to a page title
-const PAGE_TITLES: Record<string, string> = {
-  "/my-account/AccountDetails": "Account Details",
-  "/my-account/Addresses": "Addresses",
-  "/my-account/Downloads": "Downloads",
-  "/my-account/Logout": "Logout",
-  "/my-account/MyWallet": "My Wallet",
-  "/my-account/OrderHistory": "Order History",
-  "/my-account/TrainerApplication": "Trainer Application",
-  "/my-account/UpcomingTraining": "Upcoming Trainings",
-};
-
+import { UserNavigationSection } from "../../components/UserNavigationSection";
+import { MEMBER_NAV_ITEMS } from "@/constants/routes";
 export default function MyAccountLayout() {
   const [pageTitle, setPageTitle] = useState("");
 
@@ -27,7 +15,7 @@ export default function MyAccountLayout() {
 
       <div className="flex gap-6 items-start">
         {/* Sidebar */}
-        <UserNavigationSection />
+        <UserNavigationSection menu_items={MEMBER_NAV_ITEMS}/>
 
         {/* Page content */}
         <main className="flex-1 min-w-0">

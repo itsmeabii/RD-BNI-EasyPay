@@ -1,6 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
-import { AdminNavigationSection } from "./AdminNavigationSection";
+import { AdminNavigationSection } from "@/components/AdminNavigationSection";
 
 const PAGE_TITLES: Record<string, string> = {
   "/admin/CustomTrainings": "Training > Custom Training Request",
@@ -13,7 +12,6 @@ const PAGE_TITLES: Record<string, string> = {
 };
 
 export default function AdminLayout() {
-  const { user } = useAuth();
   const location = useLocation();
   const pageTitle = PAGE_TITLES[location.pathname];
 

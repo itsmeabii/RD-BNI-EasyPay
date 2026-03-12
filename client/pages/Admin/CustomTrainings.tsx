@@ -1,31 +1,26 @@
 import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
 import { Pencil } from "lucide-react";
-import { SearchAndFilters } from "@/constants/SearchAndFilter";
+import { SearchAndFilters } from "@/components/SearchAndFilter";
 import { CATEGORY_OPTIONS, CHAPTERS, MONTH_OPTIONS } from "@/constants/Training";
 import { TrainingRequest, useCustomTrainings } from "@/hooks/useCustomTraining";
 import { TrainerListModal } from "@/components/TrainerListModal";
 import { ProposedDateModal } from "@/components/ProposedDateModal";
 import { EditTrainerModal } from "@/components/EditTrainerModal";
+import { TrainingDetailModal } from "@/components/TrainingDetailModal";
+import { ManageRequestActions } from "@/components/ManageRequestActions";
 
 const CHAPTER_OPTIONS = CHAPTERS.map((c) => ({ label: c, value: c }));
 
 const TABLE_COLUMNS = [
-  "Request ID",
-  "Chapter",
-  "Category",
-  "Training",
-  "No. of Attendees",
-  "Proposed Date",
-  "Trainer",
-  "Manage Request",
+  "Request ID", "Chapter", "Category", "Training",
+  "No. of Attendees", "Proposed Date", "Trainer", "Manage Request",
 ];
 
-const GRID_COLS = "110px 140px 100px 1fr 130px 220px 150px 140px";
+const GRID_COLS = "100px 180px 70px 170px 130px 140px 190px 140px";
 
 const FULL_MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January","February","March","April","May","June",
+  "July","August","September","October","November","December",
 ];
 
 function formatProposedDate(dateStr: string): string {
@@ -51,6 +46,7 @@ export default function CustomTrainings() {
   const [activeDateRequestId, setActiveDateRequestId] = useState<string | null>(null);
   const [activeDateRequest, setActiveDateRequest] = useState<TrainingRequest | null>(null);
   const [editTrainerRequestId, setEditTrainerRequestId] = useState<string | null>(null);
+  const [viewTrainingRequest, setViewTrainingRequest] = useState<TrainingRequest | null>(null);
 
   const { trainings, isLoading, error, refetch } = useCustomTrainings();
 
@@ -107,37 +103,45 @@ export default function CustomTrainings() {
               style={{
                 gridTemplateColumns: GRID_COLS,
                 borderTop: index === 0 ? "none" : "1px solid #e5e7eb",
-                minHeight: "60px",
+                minHeight: "70px",
               }}
             >
-              <div className="px-3 text-xs text-center text-gray-600">{t.id}</div>
-              <div className="px-3 text-[13px] text-center text-gray-800">{t.chapter}</div>
-              <div className="px-3 text-[13px] text-center text-gray-800">{t.category}</div>
-              <div className="px-3 text-[13px] text-center">
-                <Link to={`/training/${t.id}`} className="text-[#cf2031] underline hover:opacity-75 font-medium">
-                  View Training
-                </Link>
-              </div>
-              <div className="px-3 text-[13px] text-center text-gray-800">{t.attendees}</div>
-              <div className="px-3 text-[13px] text-center text-gray-800 flex items-center justify-center gap-1">
-                <span className="text-[12px]">{formatProposedDate(t.proposed_date)}</span>
+              <div className="px-2 text-xs text-center text-gray-600">{t.id}</div>
+              <div className="px-2 text-[13px] text-center text-gray-800">{t.chapter}</div>
+              <div className="px-2 text-[13px] text-center text-gray-800">{t.category}</div>
+              <div className="px-2 text-[13px] text-center">
                 <button
-                  onClick={() => {
-                    setActiveDateRequestId(t.id);
-                    setActiveDateRequest(t);
-                  }}
-                  className="text-[#cf2031] hover:opacity-75 transition-opacity ml-1 flex-shrink-0"
+                  onClick={() => setViewTrainingRequest(t)}
+                  className="text-[#cf2031] underline hover:opacity-75 font-medium text-[13px]"
                 >
-                  <Pencil className="w-4 h-4" />
+                  View Training
                 </button>
               </div>
-              <div className="px-3 text-[13px] text-center">
+              <div className="px-2 text-[13px] text-center text-gray-800">{t.attendees}</div>
+
+              {/* Proposed Date */}
+              <div className="px-2 flex items-center gap-2 py-2">
+                <div className="flex items-center gap-2 w-full justify-between">
+                  <span className="text-[13px] text-gray-800 leading-tight flex-1 text-center">
+                    {formatProposedDate(t.proposed_date)}
+                  </span>
+                  <button
+                    onClick={() => { setActiveDateRequestId(t.id); setActiveDateRequest(t); }}
+                    className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Trainer */}
+              <div className="px-2 flex items-center gap-2 py-2">
                 {t.trainer ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="text-[13px] text-gray-800">{t.trainer}</span>
+                  <div className="flex items-center gap-2 w-full justify-between">
+                    <span className="text-[13px] text-gray-800 leading-tight flex-1 text-center">{t.trainer}</span>
                     <button
                       onClick={() => setEditTrainerRequestId(t.id)}
-                      className="text-gray-400 hover:text-[#cf2031] transition-colors"
+                      className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
                     >
                       <Pencil className="w-4 h-4" />
                     </button>
@@ -152,11 +156,27 @@ export default function CustomTrainings() {
                   </button>
                 )}
               </div>
-              <div className="px-3 text-[13px] text-center text-gray-500">{t.status}</div>
+
+              {/* Manage Request */}
+              <div className="px-2 text-center">
+                <ManageRequestActions
+                  requestId={t.id}
+                  trainer={t.trainer}
+                  status={t.status}
+                  onUpdated={refetch}
+                />
+              </div>
             </div>
           ))
         )}
       </div>
+
+      {viewTrainingRequest && (
+        <TrainingDetailModal
+          request={viewTrainingRequest}
+          onClose={() => setViewTrainingRequest(null)}
+        />
+      )}
 
       {activeRequestId && (
         <TrainerListModal
@@ -171,20 +191,14 @@ export default function CustomTrainings() {
           requestId={activeDateRequestId}
           requestedAt={activeDateRequest.requested_at}
           currentDate={activeDateRequest.proposed_date}
-          onClose={() => {
-            setActiveDateRequestId(null);
-            setActiveDateRequest(null);
-          }}
+          onClose={() => { setActiveDateRequestId(null); setActiveDateRequest(null); }}
           onUpdated={() => refetch()}
         />
       )}
 
       {editTrainerRequestId && (
         <EditTrainerModal
-          onEdit={() => {
-            setActiveRequestId(editTrainerRequestId);
-            setEditTrainerRequestId(null);
-          }}
+          onEdit={() => { setActiveRequestId(editTrainerRequestId); setEditTrainerRequestId(null); }}
           onClose={() => setEditTrainerRequestId(null)}
         />
       )}

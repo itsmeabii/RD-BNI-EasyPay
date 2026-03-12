@@ -29,6 +29,7 @@ import SuccessTreasureMap from "@/pages/Journey/SuccessMap/SuccessTreasureMap";
 import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWorkshopDetails";
 import MembershipRenewal from "./pages/Membership/MembershipRenewalPage";
 import NewMembership from "./pages/Membership/NewMembershipPage";
+import TrainerListPage from "./pages/Admin/TrainerListPage";
 import ProtectedRoute from "./lib/utils/Protectedroute";
 
 const queryClient = new QueryClient();
@@ -71,8 +72,16 @@ export default function App() {
 
                 {/* Admin routes (Nested) */}
                 <Route path="/admin" element={<AdminLayout />}>
+                  <Route path="AccountDetails" element={<AccountDetails />} />
+                  <Route path="Addresses" element={<Addresses />} />
+                  <Route path="Downloads" element={<Downloads />} />
+                  <Route path="MyWallet" element={<MyWallet />} />
+                  <Route path="OrderHistory" element={<OrderHistory />} />
+                  <Route path="TrainerList" element={<TrainerListPage />} />
+                  {/* <Route path="RegularTrainings" element={<RegularTrainings />} /> */}
                   <Route path="CustomTrainings" element={<CustomTrainings />} />
-                  {/* <Route path="TrainerList" element={<TrainerList />} />  ← add this */}
+                  {/* <Route path="ViewRecords" element={<ViewRecords />} /> */}
+                  <Route path="Logout" element={<Logout />} />
                 </Route>
 
                 {/* Catch-all route for 404s */}

@@ -19,7 +19,7 @@ export const TrainerListModal = ({ requestId, onClose, onAssigned }: TrainerList
 
     const { error } = await supabase
       .from("training_request")
-      .update({ trainer: `${selectedTrainer.first_name} ${selectedTrainer.last_name}`, status: "Approved" })
+      .update({ trainer: `${selectedTrainer.first_name} ${selectedTrainer.last_name}`})
       .eq("id", requestId);
 
     setAssigning(false);
