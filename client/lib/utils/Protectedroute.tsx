@@ -1,15 +1,21 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 export default function ProtectedRoute() {
   const { user, isLoading } = useAuth();
+  const location = useLocation();
 
-  // Wait for auth to resolve before redirecting
   if (isLoading) return null;
-
-  // Not logged in → redirect to login
   if (!user) return <Navigate to="/login" replace />;
 
-  // Logged in → render the child route
+  const isAdminRoute = location.pathname.startsWith("/admin");
+  const isMemberRoute = location.pathname.startsWith("/my-account");
+
+  if (isAdminRoute && user.role !== "admin")
+    return <Navigate to="/my-account/AccountDetails" replace />;
+
+  if (isMemberRoute && user.role === "admin")
+    return <Navigate to="/admin" replace />;
+
   return <Outlet />;
 }

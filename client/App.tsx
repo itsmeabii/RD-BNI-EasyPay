@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
@@ -30,6 +30,7 @@ import MembershipRenewal from "./pages/Membership/MembershipRenewalPage";
 import NewMembership from "./pages/Membership/NewMembershipPage";
 import TrainerListPage from "./pages/Admin/TrainerListPage";
 import ProtectedRoute from "./lib/utils/Protectedroute";
+import ViewRecordsPage from "./pages/Admin/ViewRecordsPage";
 import TrainingRequest from "./pages/TrainingRequest";
 import LeadershipLayout from "./pages/LeadershipTeam/LeadershipLayout";
 
@@ -59,6 +60,7 @@ export default function App() {
 
                 {/* Protected: My Account routes (Member) */}
                 <Route element={<ProtectedRoute />}>
+                  {/* My Account routes */}
                   <Route path="/my-account" element={<MyAccountLayout />}>
                     <Route path="AccountDetails" element={<AccountDetails />} />
                     <Route path="Addresses" element={<Addresses />} />
@@ -69,7 +71,6 @@ export default function App() {
                     <Route path="TrainerApplication" element={<TrainerApplication />} />
                     <Route path="UpcomingTrainings" element={<UpcomingTraining />} />
                   </Route>
-                </Route>
 
                 {/* Protected: LT routes */}
                 <Route element={<ProtectedRoute />}>
@@ -84,16 +85,22 @@ export default function App() {
                   </Route>
                 </Route>
 
-                {/* Admin routes (Nested) */}
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route path="custom-trainings" element={<CustomTrainings />} />
-                  <Route path="trainer-list" element={<TrainerListPage />} />
+                    {/* Admin routes */}
+                    <Route path="/admin" element={<AdminLayout />}>
+                      <Route index element={<Navigate to="custom-trainings" replace />} />
+                      <Route path="custom-trainings" element={<CustomTrainings />} />
+                      <Route path="trainer-list" element={<TrainerListPage />} />
+                      <Route path="view-records" element={<ViewRecordsPage />} />
+                      <Route path="view-records/:id" element={<ViewRecordsPage />} />
+                    </Route>
                 </Route>
 
-                {/* Catch-all route for 404s */}
-                <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
-                <Route path="/success-treasure-map/:id" element={<SuccessMapWorkshopDetails />} />
-                <Route path="*" element={<NotFound />} />
+                  {/* Catch-all route for 404s */}
+                  <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
+                  <Route path="/success-treasure-map/:id" element={<SuccessMapWorkshopDetails />} />
+                  <Route path="/my-account/view-records" element={<ViewRecordsPage />} />
+                  <Route path="/my-account/view-records/:id" element={<ViewRecordsPage />} />
+                  <Route path="*" element={<NotFound />} />
               </Routes>
               <Cart />
             </BrowserRouter>

@@ -18,22 +18,26 @@ export function MapPin({ event, onClick }: MapPinProps) {
 
   return (
     <div
-      className="absolute flex flex-col items-center gap-1 -translate-x-1/2 cursor-pointer"
+      className="absolute -translate-x-1/2 cursor-pointer flex flex-col items-center gap-1"
       style={{ left: event.x, top: event.y }}
       onClick={onClick}
     >
-        {event.isLastOfMonth && (
-          <Trophy className="w-10 h-10 text-yellow-500 mb-1" fill="currentColor" />
-        )}
+      {/* Trophy */}
+      {event.isLastOfMonth && (
+        <Trophy className="w-10 h-10 text-yellow-500" fill="currentColor" />
+      )}
 
+      {/* Pin icon + Label side by side */}
+      <div className="flex items-center gap-2">
         {isCurrent && (
-          <img src="/Location.svg" alt="current location" className="w-10 h-10 mb-1" />
+          <img src="/Location.svg" alt="current location" className="w-10 h-10" />
         )}
-
-        <div className="text-[11px] text-center leading-tight text-gray-700 font-medium whitespace-pre-line mb-0.5 hidden sm:block">
+        <div className="text-sm leading-tight text-gray-700 font-medium whitespace-pre-line hidden sm:block text-center">
           {event.label}
         </div>
-      
+      </div>
+
+      {/* Circle with date */}
       <div className={`w-20 h-20 rounded-full shadow flex flex-col items-center justify-center text-[11px] font-semibold text-center leading-tight ${PIN_STYLES[event.status]}`}>
         {event.date}
         {isCompleted && (
