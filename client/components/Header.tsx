@@ -1,14 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import { ArrowLeft, User, ChevronDown } from "lucide-react";
-import { useAuth } from "@/context/AuthContext"; 
+import { useAuth } from "@/context/AuthContext";
 
-interface HeaderProps {
-  className?: string;
-}
-
-export default function Header({ className }: HeaderProps) {
+export default function Header() {
   const location = useLocation();
-  const { user, isLoading } = useAuth(); 
+  const { user, isLoading } = useAuth();
+  console.log(user)
 
   return (
     <header>
@@ -24,12 +21,15 @@ export default function Header({ className }: HeaderProps) {
         </Link>
 
         {isLoading ? (
-          <div className="w-20 h-4 bg-white/30 rounded animate-pulse" /> 
+          <div className="w-20 h-4 bg-white/30 rounded animate-pulse" />
         ) : user ? (
-          <div className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px]">
+          <Link
+            to={user.role === "admin" ? "/admin" : "/my-account"}
+            className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px] hover:opacity-90 transition-opacity"
+          >
             <User className="w-4 h-4 lg:w-5 lg:h-5" />
             <span className="hidden sm:inline">{user.userName}</span>
-          </div>
+          </Link>
         ) : (
           <Link
             to="/login"
@@ -51,29 +51,25 @@ export default function Header({ className }: HeaderProps) {
             className="h-8 sm:h-10 lg:h-12 w-auto"
           />
         </Link>
+
         <nav className="flex items-center gap-3 sm:gap-6 lg:gap-12">
           <Link
             to="/training#top"
-            className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
-              location.pathname === "/training" ? "text-bni-red" : "text-black"
-            }`}
+            className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname === "/training" ? "text-bni-red" : "text-black"}`}
           >
             Training
           </Link>
+
           <Link
             to="/journey"
-            className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
-              location.pathname === "/journey" ? "text-bni-red" : "text-black"
-            }`}
+            className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname === "/journey" ? "text-bni-red" : "text-black"}`}
           >
             Journey
           </Link>
+
+          {/* Membership Dropdown */}
           <div className="relative group">
-            <button
-              className={`flex items-center gap-1 text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
-                location.pathname.startsWith("/membership") ? "text-bni-red" : "text-black"
-              }`}
-            >
+            <button className={`flex items-center gap-1 text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname.startsWith("/membership") ? "text-bni-red" : "text-black"}`}>
               Membership
               <ChevronDown className="w-4 h-4" />
             </button>
@@ -84,11 +80,10 @@ export default function Header({ className }: HeaderProps) {
               <Link to="/membership/admin-fee" className="block px-4 py-2.5 text-md hover:bg-red-50 hover:text-bni-red transition">Admin Fee</Link>
             </div>
           </div>
+
           <Link
             to="/merchandise"
-            className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${
-              location.pathname === "/merchandise" ? "text-bni-red" : "text-black"
-            }`}
+            className={`text-sm sm:text-lg lg:text-xl font-bold hover:text-bni-red transition-colors ${location.pathname === "/merchandise" ? "text-bni-red" : "text-black"}`}
           >
             Merchandise
           </Link>

@@ -8,16 +8,29 @@ import { CartProvider } from "./context/CartContext";
 import Header from "./components/Header";
 import Cart from "./pages/CartDrawer";
 import Home from "./pages/Home";
-import Journey from "./pages/Journey/JourneyPage";
-import AuthPage from "./pages/Auth/AuthPage";
 import Merchandise from "./pages/Merchandise";
 import Checkout from "./pages/Checkout/Checkout";
 import TrainingDetail from "./pages/Training/[id]/page";
 import NotFound from "./pages/NotFound";
+import Journey from "./pages/Journey/JourneyPage";
+import MyAccountLayout from "./pages/MyAccount/MyAccountLayout";
+import AccountDetails from "./pages/MyAccount/AccountDetails";
+import Addresses from "./pages/MyAccount/Addresses";
+import Downloads from "./pages/MyAccount/Downloads";
+import Logout from "./pages/MyAccount/Logout";
+import MyWallet from "./pages/MyAccount/MyWallet";
+import OrderHistory from "./pages/MyAccount/OrderHistory";
+import TrainerApplication from "./pages/MyAccount/TrainerApplication";
+import AuthPage from "./pages/Auth/AuthPage";
+import UpcomingTraining from "./pages/MyAccount/UpcomingTraining";
+import AdminLayout from "./pages/Admin/AdminLayout";
+import CustomTrainings from "./pages/Admin/CustomTrainings";
 import SuccessTreasureMap from "@/pages/Journey/SuccessMap/SuccessTreasureMap";
 import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWorkshopDetails";
 import MembershipRenewal from "./pages/Membership/MembershipRenewalPage";
 import NewMembership from "./pages/Membership/NewMembershipPage";
+import TrainerListPage from "./pages/Admin/TrainerListPage";
+import ProtectedRoute from "./lib/utils/Protectedroute";
 import ViewRecordsPage from "./pages/Admin/ViewRecordsPage";
 
 const queryClient = new QueryClient();
@@ -33,6 +46,7 @@ export default function App() {
             <BrowserRouter>
               <Header />
               <Routes>
+                {/* Public routes */}
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<AuthPage />} />
                 <Route path="/journey" element={<Journey />} />
@@ -42,6 +56,28 @@ export default function App() {
                 <Route path="/membership/renewal" element={<MembershipRenewal />} />
                 <Route path="/merchandise" element={<Merchandise />} />
                 <Route path="/checkout" element={<Checkout />} />
+
+                {/* Protected: My Account routes (Nested) */}
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/my-account" element={<MyAccountLayout />}>
+                    <Route path="AccountDetails" element={<AccountDetails />} />
+                    <Route path="Addresses" element={<Addresses />} />
+                    <Route path="Downloads" element={<Downloads />} />
+                    <Route path="Logout" element={<Logout />} />
+                    <Route path="MyWallet" element={<MyWallet />} />
+                    <Route path="OrderHistory" element={<OrderHistory />} />
+                    <Route path="TrainerApplication" element={<TrainerApplication />} />
+                    <Route path="UpcomingTrainings" element={<UpcomingTraining />} />
+                  </Route>
+                </Route>
+
+                {/* Admin routes (Nested) */}
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route path="custom-trainings" element={<CustomTrainings />} />
+                  <Route path="trainer-list" element={<TrainerListPage />} />
+                </Route>
+
+                {/* Catch-all route for 404s */}
                 <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
                 <Route path="/success-treasure-map/:id" element={<SuccessMapWorkshopDetails />} />
                 <Route path="/my-account/view-records" element={<ViewRecordsPage />} />
