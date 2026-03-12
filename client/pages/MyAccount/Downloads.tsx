@@ -17,7 +17,7 @@ export default function Downloads() {
             searchValue={searchQuery}
             onSearchChange={setSearchQuery}
             searchPlaceholder="Search downloads..."
-            dropdowns={[
+            filters={[
               {
                 value: selectedMonth,
                 onChange: setSelectedMonth,

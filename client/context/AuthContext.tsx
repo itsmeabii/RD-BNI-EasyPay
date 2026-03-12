@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase/Client";
 import { subscribeToAuthChanges } from "@/lib/auth/AuthListener";
 
-type AuthUser = {
+export type AuthUser = {
   id: string;
   email: string;
   userName: string;
@@ -12,7 +12,6 @@ type AuthUser = {
 type AuthContextType = {
   user: AuthUser | null;
   isLoading: boolean;
-  login: (user: AuthUser) => void;
   logout: () => void;
 };
 
@@ -34,17 +33,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       setIsLoading(false);
     });
+
+    const subscription = subscribeToAuthChanges(setUser, setIsLoading);
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
-  
-  const login = (user: AuthUser) => setUser(user);
-  const logout = async () => {
-    setUser(null);
-    await supabase.auth.signOut();
-    window.location.href = "/login";
+    
+    const logout = async () => {
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error("Logout failed:", error);
+        return;
+      }
+
+      setUser(null);
+      window.location.href = "/login";
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, logout }}>
       {children}
     </AuthContext.Provider>
   );
