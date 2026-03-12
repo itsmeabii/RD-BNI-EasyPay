@@ -50,14 +50,6 @@ export default function NewMembership() {
       />
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-10">
-        {/* Back button */}
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition mb-8 text-sm font-medium"
-        >
-          <ArrowLeft className="w-4 h-4" />
-        </button>
-
         {/* Page header */}
         <div className="text-center mb-6">
           <h1 className="text-3xl font-extrabold text-gray-900 mb-4">

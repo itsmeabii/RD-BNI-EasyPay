@@ -18,10 +18,10 @@ function mapTraining(row: TrainingRow): Training {
       date: d.date,
       time: d.time,
     })),
-    instructors: (row.training_instructors ?? []).map((i) => ({
-      name: i.name,
-      background: i.background ?? "",
-      image: i.image ?? "",
+    instructors: (row.trainer_training_records ?? []).map((tt: any) => ({
+      name: `${tt.trainers.first_name} ${tt.trainers.last_name ?? ""}`.trim(),
+      background: tt.trainers.background ?? "",
+      image: tt.trainers.image ?? "",
     })),
   };
 }
@@ -29,7 +29,9 @@ function mapTraining(row: TrainingRow): Training {
 const TRAINING_SELECT = `
   *,
   training_dates ( date, time ),
-  training_instructors ( name, background, image )
+  trainer_training_records (
+    trainers ( id, first_name, last_name, background, image )
+  )
 `;
 
 export async function fetchTrainings(): Promise<Training[]> {

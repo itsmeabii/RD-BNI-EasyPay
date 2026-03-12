@@ -31,6 +31,7 @@ import MembershipRenewal from "./pages/Membership/MembershipRenewalPage";
 import NewMembership from "./pages/Membership/NewMembershipPage";
 import TrainerListPage from "./pages/Admin/TrainerListPage";
 import ProtectedRoute from "./lib/utils/Protectedroute";
+import ViewRecordsPage from "./pages/Admin/ViewRecordsPage";
 
 const queryClient = new QueryClient();
 
@@ -55,9 +56,12 @@ export default function App() {
                 <Route path="/membership/renewal" element={<MembershipRenewal />} />
                 <Route path="/merchandise" element={<Merchandise />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
+                <Route path="/success-treasure-map/:id" element={<SuccessMapWorkshopDetails />} />
 
-                {/* Protected: My Account routes (Nested) */}
+                {/* Protected routes */}
                 <Route element={<ProtectedRoute />}>
+                  {/* My Account routes */}
                   <Route path="/my-account" element={<MyAccountLayout />}>
                     <Route path="AccountDetails" element={<AccountDetails />} />
                     <Route path="Addresses" element={<Addresses />} />
@@ -68,25 +72,25 @@ export default function App() {
                     <Route path="TrainerApplication" element={<TrainerApplication />} />
                     <Route path="UpcomingTrainings" element={<UpcomingTraining />} />
                   </Route>
+
+                  {/* Admin routes */}
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route path="AccountDetails" element={<AccountDetails />} />
+                    <Route path="Addresses" element={<Addresses />} />
+                    <Route path="Downloads" element={<Downloads />} />
+                    <Route path="MyWallet" element={<MyWallet />} />
+                    <Route path="OrderHistory" element={<OrderHistory />} />
+                    <Route path="TrainerList" element={<TrainerListPage />} />
+                    <Route path="CustomTrainings" element={<CustomTrainings />} />
+                    <Route path="ViewRecords" element={<ViewRecordsPage />} />
+                    <Route path="Logout" element={<Logout />} />
+                  </Route>
+
+                  <Route path="/my-account/view-records" element={<ViewRecordsPage />} />
+                  <Route path="/my-account/view-records/:id" element={<ViewRecordsPage />} />
                 </Route>
 
-                {/* Admin routes (Nested) */}
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route path="AccountDetails" element={<AccountDetails />} />
-                  <Route path="Addresses" element={<Addresses />} />
-                  <Route path="Downloads" element={<Downloads />} />
-                  <Route path="MyWallet" element={<MyWallet />} />
-                  <Route path="OrderHistory" element={<OrderHistory />} />
-                  <Route path="TrainerList" element={<TrainerListPage />} />
-                  {/* <Route path="RegularTrainings" element={<RegularTrainings />} /> */}
-                  <Route path="CustomTrainings" element={<CustomTrainings />} />
-                  {/* <Route path="ViewRecords" element={<ViewRecords />} /> */}
-                  <Route path="Logout" element={<Logout />} />
-                </Route>
-
-                {/* Catch-all route for 404s */}
-                <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
-                <Route path="/success-treasure-map/:id" element={<SuccessMapWorkshopDetails />} />
+                {/* Catch-all */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Cart />

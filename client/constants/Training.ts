@@ -1,11 +1,19 @@
 import type { DropdownOption } from "@/types/TrainingTypes";
 
+export const TRAINING_CATEGORIES = ["AWS", "MSP", "MSS", "ASWS"] as const;
+
+export type SortOrder = "newest" | "oldest" | "";
+
+export const EVENT_TYPE_MAP = {
+  MSP: "msp",
+  MSWS: "msws",
+  ODWB: "odwb",
+} as const;
+
 export const MONTHS = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
 ];
-
-export type SortOrder = "newest" | "oldest" | "";
 
 export const TRAINING_MESSAGES = {
   loading: "Loading trainings...",

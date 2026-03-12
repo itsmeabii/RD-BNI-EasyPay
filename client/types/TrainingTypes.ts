@@ -1,3 +1,13 @@
+export const EVENT_TYPE_MAP = {
+  MSP: "msp",
+  MSWS: "msws",
+  ODWB: "odwb",
+} as const;
+
+export type EventType = typeof EVENT_TYPE_MAP[keyof typeof EVENT_TYPE_MAP] | "default";
+export type SortOrder = "newest" | "oldest" | "";
+export type TrainingCategory = "AWS" | "MSP" | "MSS" | "ASWS";
+
 export interface Instructor {
   name: string;
   background: string;
@@ -30,7 +40,7 @@ export interface TrainingCompletion {
   completedAt: string;
 }
 
-export interface TrainingRow {
+export type TrainingRow = {
   id: number;
   title: string;
   code: string;
@@ -43,12 +53,16 @@ export interface TrainingRow {
   months: string[] | null;
   location: string | null;
   training_dates: { date: string; time: string }[];
-  training_instructors: { name: string; background: string | null; image: string | null }[];
-}
-
-export type SortOrder = "newest" | "oldest" | "";
-export type TrainingCategory = "AWS" | "MSP" | "MSS" | "ASWS";
-
+  trainer_training_records: {
+    trainers: {
+      id: number;
+      first_name: string;
+      last_name: string | null;
+      background: string | null;
+      image: string | null;
+    };
+  }[];
+};
 export interface TrainingData {
   orderId: string;
   trainingName: string;

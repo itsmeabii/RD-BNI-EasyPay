@@ -49,12 +49,17 @@ function buildMonths(
       const index = existingEvents.length;
       const firstDate = training.dates[0]?.date ?? "";
 
-      existingEvents.push({
+        existingEvents.push({
         trainingId: training.id,
         date: firstDate ? formatDate(firstDate) : "TBD",
         label: `${training.title}\n(${training.code})`,
         type: getEventType(training.code),
-        status: progressMap.get(training.id) ?? "upcoming",
+        status: (() => {
+          const existing = progressMap.get(training.id);
+          if (existing && existing !== "upcoming") return existing; 
+          if (firstDate && new Date(firstDate) < new Date()) return "missed";
+          return existing ?? "upcoming";
+        })(),
         isLastOfMonth: lastOfMonth.get(month) === training.id,
         x: X_POSITIONS[index % X_POSITIONS.length],
         y: Y_POSITIONS[index % Y_POSITIONS.length],
