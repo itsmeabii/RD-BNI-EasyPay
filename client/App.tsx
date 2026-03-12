@@ -18,6 +18,7 @@ import SuccessTreasureMap from "@/pages/Journey/SuccessMap/SuccessTreasureMap";
 import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWorkshopDetails";
 import MembershipRenewal from "./pages/Membership/MembershipRenewalPage";
 import NewMembership from "./pages/Membership/NewMembershipPage";
+import ViewRecordsPage from "./pages/Admin/ViewRecordsPage";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,8 @@ export default function App() {
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
                 <Route path="/success-treasure-map/:id" element={<SuccessMapWorkshopDetails />} />
+                <Route path="/my-account/view-records" element={<ViewRecordsPage />} />
+                <Route path="/my-account/view-records/:id" element={<ViewRecordsPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Cart />
