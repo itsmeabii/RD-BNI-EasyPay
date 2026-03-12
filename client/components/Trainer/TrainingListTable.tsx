@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Check, Pencil, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { approveTrainer, fetchTrainers, rejectTrainer } from "@/lib/utils/TrainerUtils";
 import { Trainer } from "@/types/TrainerTypes";
 import { TrainerEditModal } from "@/components/Trainer/TrainerEditModal";
@@ -66,6 +67,7 @@ export const TrainerListTable = forwardRef((_, ref) => {
   const [editingTrainer, setEditingTrainer] = useState<Trainer | null>(null);
   const [selectedChapter, setSelectedChapter] = useState("");
   const [selectedPreferredTraining, setSelectedPreferredTraining] = useState("");
+  const navigate = useNavigate();
 
   async function loadTrainers() {
     setLoading(true);
@@ -170,7 +172,12 @@ export const TrainerListTable = forwardRef((_, ref) => {
                   <td className="px-4 py-3">{trainer.chapter}</td>
                   <td className="px-4 py-3">{trainer.preferredCategory}</td>
                   <td className="px-4 py-3">
-                    <button className="text-bni-red hover:underline">View Record</button>
+                    <button
+                      onClick={() => navigate(`/admin/view-records/${trainer.id}`)}
+                      className="text-bni-red hover:underline"
+                    >
+                      View Record
+                    </button>
                   </td>
                   <td className="px-4 py-3">
                     <AvailabilityBadge availability={trainer.availability} />

@@ -75,6 +75,8 @@ export default function App() {
                 <Route path="/admin" element={<AdminLayout />}>
                   <Route path="custom-trainings" element={<CustomTrainings />} />
                   <Route path="trainer-list" element={<TrainerListPage />} />
+                  <Route path="/admin/view-records/:id" element={<ViewRecordsPage />} />
+                  <Route path="/admin/view-records" element={<ViewRecordsPage />} />
                 </Route>
 
                 {/* Catch-all route for 404s */}

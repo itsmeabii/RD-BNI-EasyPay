@@ -4,7 +4,7 @@ import { Trainer } from "@/types/TrainerTypes";
 export async function fetchTrainers(): Promise<Trainer[]> {
   const { data, error } = await supabase
     .from("trainers")
-    .select("id, trainer_id, first_name, last_name, chapter, preferred_category, availability, image")
+    .select("id, first_name, last_name, chapter, preferred_category, availability, image")
     .order("id");
 
   if (error) {
@@ -14,12 +14,12 @@ export async function fetchTrainers(): Promise<Trainer[]> {
 
   return data.map((row) => ({
     id: row.id,
-    trainerId: row.trainer_id ?? "",
+    trainerId: `TR-${String(row.id).padStart(3, '0')}`, 
     firstName: row.first_name ?? "",
     lastName: row.last_name ?? "",
     chapter: row.chapter ?? "",
     preferredCategory: row.preferred_category ?? "",
-    availability: row.availability ??  null,
+    availability: row.availability ?? null,
     image: row.image ?? "",
   }));
 }
@@ -30,15 +30,6 @@ export async function addTrainer(form: {
   chapter: string;
   preferredCategory: string;
 }): Promise<Trainer | null> {
-  const { data: existing } = await supabase
-    .from("trainers")
-    .select("id")
-    .order("id", { ascending: false })
-    .limit(1);
-
-  const nextNum = (existing?.[0]?.id ?? 0) + 1;
-  const trainerId = `TR-${String(nextNum).padStart(3, "0")}`;
-
   const { data, error } = await supabase
     .from("trainers")
     .insert({
@@ -46,7 +37,6 @@ export async function addTrainer(form: {
       last_name: form.lastName,
       chapter: form.chapter,
       preferred_category: form.preferredCategory,
-      trainer_id: trainerId,
       availability: "Pending",
       image: "",
     })
@@ -60,7 +50,7 @@ export async function addTrainer(form: {
 
   return {
     id: data.id,
-    trainerId: data.trainer_id,
+    trainerId: `TR-${String(data.id).padStart(3, '0')}`, 
     firstName: data.first_name,
     lastName: data.last_name,
     chapter: data.chapter,

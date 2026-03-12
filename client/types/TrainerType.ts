@@ -17,12 +17,19 @@ export type TrainerListDrawerProps = {
 
 export type TrainingRecord = {
   id: number;
-  requestId: string;
+  requestId: string | null;
   trainerId: number;
-  trainingId: number;
+  trainingId: number | null;
   trainingTitle: string;
-  trainingThumbnail: string;
   trainingCode: string;
+  trainingDescription: string;
+  trainingThumbnail: string;
   proposedDate: string;
   status: string;
+  createdAt: string;
+  trainingType: "regular" | "custom";
+  chapter: string;
+  ltName: string;
+  requestedAt: string;
+  timeApproved: string;
 };

@@ -3,6 +3,8 @@ import { Search, ChevronDown, Trash2 } from "lucide-react";
 import { fetchTrainerRecords } from "@/lib/utils/Trainer/TrainerUtils";
 import { TrainingRecord } from "@/types/TrainerType";
 import { ViewRecordsSkeleton } from "@/components/ViewRecords/ViewRecordsSkeleton";
+import { VIEW_RECORDS_COLUMNS } from "@/constants/Records";
+import { ViewRecordTrainingDetail } from "./ViewRecordTrainingDetail";
 
 function StatusBadge({ status }: { status: string }) {
   if (status === "Done")
@@ -22,6 +24,7 @@ export function ViewRecordsTable({ trainerId, trainerName, trainerCode }: ViewRe
   const [records, setRecords] = useState<TrainingRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [selectedRecord, setSelectedRecord] = useState<TrainingRecord | null>(null);
 
   useEffect(() => {
     if (!trainerId) return;
@@ -34,10 +37,10 @@ export function ViewRecordsTable({ trainerId, trainerName, trainerCode }: ViewRe
   const filtered = records.filter((r) => {
     const q = search.toLowerCase();
     return (
-      r.requestId.toLowerCase().includes(q) ||
-      r.trainingTitle.toLowerCase().includes(q) ||
-      r.trainingCode.toLowerCase().includes(q) ||
-      r.status.toLowerCase().includes(q)
+      (r.requestId ?? "").toLowerCase().includes(q) ||
+      (r.trainingTitle ?? "").toLowerCase().includes(q) ||
+      (r.trainingCode ?? "").toLowerCase().includes(q) ||
+      (r.status ?? "").toLowerCase().includes(q)
     );
   });
 
@@ -51,7 +54,7 @@ export function ViewRecordsTable({ trainerId, trainerName, trainerCode }: ViewRe
           <table className="w-full text-sm text-center">
             <thead>
               <tr className="bg-bni-red text-white">
-                {["Request ID", "Proposed Date", "Training", "Category", "Training Record", "Status", "Action"].map((col) => (
+                {VIEW_RECORDS_COLUMNS.map((col) => (
                   <th key={col} className="px-4 py-3 font-semibold whitespace-nowrap">{col}</th>
                 ))}
               </tr>
@@ -69,7 +72,12 @@ export function ViewRecordsTable({ trainerId, trainerName, trainerCode }: ViewRe
                   <td className="px-4 py-3">{record.trainingTitle}</td>
                   <td className="px-4 py-3">{record.trainingCode}</td>
                   <td className="px-4 py-3">
-                    <button className="text-bni-red hover:underline">View more details</button>
+                    <button
+                        onClick={() => setSelectedRecord(record)}
+                        className="text-bni-red hover:underline"
+                      >
+                        View more details
+                    </button>
                   </td>
                   <td className="px-4 py-3">
                     <StatusBadge status={record.status} />
@@ -83,6 +91,12 @@ export function ViewRecordsTable({ trainerId, trainerName, trainerCode }: ViewRe
               ))}
             </tbody>
           </table>
+          {selectedRecord && (
+            <ViewRecordTrainingDetail
+              record={selectedRecord}
+              onClose={() => setSelectedRecord(null)}
+            />
+          )}
         </div>
       )}
     </div>

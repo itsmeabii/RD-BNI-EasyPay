@@ -4,7 +4,7 @@ import { Trainer, TrainingRecord } from "@/types/TrainerType";
 export async function fetchTrainers(): Promise<Trainer[]> {
   const { data, error } = await supabase
     .from("trainers")
-    .select("id, trainer_id, first_name, last_name, chapter, preferred_category, availability, image")
+    .select("id, first_name, last_name, chapter, preferred_category, availability, image")
     .order("id");
 
   if (error) {
@@ -14,7 +14,7 @@ export async function fetchTrainers(): Promise<Trainer[]> {
 
   return data.map((row) => ({
     id: row.id,
-    trainerId: row.trainer_id ?? "",
+    trainerId: `TR-${String(row.id).padStart(3, '0')}`, 
     firstName: row.first_name ?? "",
     lastName: row.last_name ?? "",
     chapter: row.chapter ?? "",
@@ -25,7 +25,7 @@ export async function fetchTrainers(): Promise<Trainer[]> {
 }
 export async function fetchTrainerRecords(trainerId: number): Promise<TrainingRecord[]> {
   const { data, error } = await supabase
-    .from("trainings")
+    .from("trainer_training_records")
     .select(`
       id,
       request_id,
@@ -33,9 +33,13 @@ export async function fetchTrainerRecords(trainerId: number): Promise<TrainingRe
       training_id,
       proposed_date,
       status,
+      training_type,
+      created_at,
       trainings (
         title,
-        code
+        code,
+        description,
+        thumbnail
       )
     `)
     .eq("trainer_id", trainerId)
@@ -48,12 +52,20 @@ export async function fetchTrainerRecords(trainerId: number): Promise<TrainingRe
 
   return data.map((row: any) => ({
     id: row.id,
-    requestId: row.request_id,
+    requestId: row.request_id ?? null,
     trainerId: row.trainer_id,
-    trainingId: row.training_id,
+    trainingId: row.training_id ?? null,
     trainingTitle: row.trainings?.title ?? "",
     trainingCode: row.trainings?.code ?? "",
-    proposedDate: row.proposed_date,
-    status: row.status,
+    trainingDescription: row.trainings?.description ?? "",
+    trainingThumbnail: row.trainings?.thumbnail ?? "",
+    proposedDate: row.proposed_date ?? "",
+    status: row.status ?? "",
+    createdAt: row.created_at ?? "",
+    trainingType: row.training_type ?? "regular",
+    chapter: "",
+    ltName: "",
+    requestedAt: "",
+    timeApproved: "",
   }));
 }
