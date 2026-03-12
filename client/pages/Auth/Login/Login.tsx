@@ -1,7 +1,6 @@
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext";
 import { LoginWithEmail } from "@/lib/auth/Login";
 
 
@@ -21,7 +20,6 @@ export default function LoginSection({ onSuccess, onLoadingChange }: LoginSectio
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,9 +33,7 @@ export default function LoginSection({ onSuccess, onLoadingChange }: LoginSectio
     setError("");
 
     try {
-      const result = await LoginWithEmail(formData);
-      login(result);
-      onSuccess?.(result);
+      await LoginWithEmail(formData);
       navigate("/");
     } catch (err) {
       console.log("error:", err);
@@ -105,7 +101,6 @@ export default function LoginSection({ onSuccess, onLoadingChange }: LoginSectio
         <div className="flex items-center gap-4">
           <button
             type="submit"
-            onClick={handleSubmit}
             className="bg-bni-red hover:bg-[#a93226] disabled:opacity-70 disabled:cursor-not-allowed text-white text-sm font-semibold px-5 py-2.5 rounded transition"
           >
             Login

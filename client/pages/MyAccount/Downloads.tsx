@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { SearchAndFilters } from "@/constants/SearchAndFilter";
+import { SearchAndFilters } from "@/components/SearchAndFilter";
 import { MONTH_OPTIONS } from "@/constants/Training";
 
 
@@ -17,7 +17,7 @@ export default function Downloads() {
             searchValue={searchQuery}
             onSearchChange={setSearchQuery}
             searchPlaceholder="Search downloads..."
-            dropdowns={[
+            filters={[
               {
                 value: selectedMonth,
                 onChange: setSelectedMonth,

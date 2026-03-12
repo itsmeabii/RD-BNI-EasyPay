@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-import { UserNavigationSection } from "../UserNavigation/UserNavigationSection";
-
+import { UserNavigationSection } from "../../components/UserNavigationSection";
+import { MEMBER_NAV_ITEMS } from "@/constants/routes";
 export default function MyAccountLayout() {
   const [pageTitle, setPageTitle] = useState("");
 
@@ -15,7 +15,7 @@ export default function MyAccountLayout() {
 
       <div className="flex gap-6 items-start">
         {/* Sidebar */}
-        <UserNavigationSection />
+        <UserNavigationSection menu_items={MEMBER_NAV_ITEMS}/>
 
         {/* Page content */}
         <main className="flex-1 min-w-0">

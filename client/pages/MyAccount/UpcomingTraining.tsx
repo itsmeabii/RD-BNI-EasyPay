@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useOutletContext } from "react-router-dom";
-import { SearchAndFilters } from "@/constants/SearchAndFilter";
+import { SearchAndFilters } from "@/components/SearchAndFilter";
 import { TrainingListSection } from "@/pages/MyAccount/TrainingListSection";
 import { useTrainings } from "@/hooks/useTrainings";
 import { CATEGORY_OPTIONS, MONTH_OPTIONS } from "@/constants/Training";
@@ -48,7 +48,7 @@ export default function UpcomingTraining() {
         searchValue={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search for categories, training name, training ID"
-        dropdowns={[
+        filters={[
           {
             value: selectedCategory,
             onChange: setSelectedCategory,

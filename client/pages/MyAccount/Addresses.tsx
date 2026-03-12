@@ -1,4 +1,4 @@
-import { UserNavigationSection } from "../UserNavigation/UserNavigationSection";
+import { UserNavigationSection } from "../../components/UserNavigationSection";
 
 export default function OrderHistory() {
   return (

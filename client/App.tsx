@@ -23,11 +23,12 @@ import TrainerApplication from "./pages/MyAccount/TrainerApplication";
 import AuthPage from "./pages/Auth/AuthPage";
 import UpcomingTraining from "./pages/MyAccount/UpcomingTraining";
 import AdminLayout from "./pages/Admin/AdminLayout";
-import CustomTrainings from "./pages/UserNavigation/CustomTrainings";
+import CustomTrainings from "./pages/Admin/CustomTrainings";
 import SuccessTreasureMap from "@/pages/Journey/SuccessMap/SuccessTreasureMap";
 import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWorkshopDetails";
 import MembershipRenewal from "./pages/Membership/MembershipRenewalPage";
 import NewMembership from "./pages/Membership/NewMembershipPage";
+import TrainerListPage from "./pages/Admin/TrainerListPage";
 import ProtectedRoute from "./lib/utils/Protectedroute";
 import TrainingRequest from "./pages/TrainingRequest";
 
@@ -73,7 +74,8 @@ export default function App() {
 
                 {/* Admin routes (Nested) */}
                 <Route path="/admin" element={<AdminLayout />}>
-                  <Route path="CustomTrainings" element={<CustomTrainings />} />
+                  <Route path="custom-trainings" element={<CustomTrainings />} />
+                  <Route path="trainer-list" element={<TrainerListPage />} />
                 </Route>
 
                 {/* Catch-all route for 404s */}
