@@ -1,34 +1,21 @@
 import { supabase } from "@/lib/supabase/Client";
 
 export async function GetUser() {
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession(); 
 
-  if (!user) return null;
+  if (!session?.user) return null;
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("username, first_name")
-    .eq("id", user.id)
+    .select("username, first_name, role, email")
+    .eq("id", session.user.id)
     .single();
 
   return {
-    id: user.id,
+    id: session.user.id,
     userName: profile?.username,
     firstName: profile?.first_name,
-    email: user.email,
+    email: session.user.email,
+    role: profile?.role,
   };
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

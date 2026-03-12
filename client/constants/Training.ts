@@ -40,6 +40,7 @@ export const CUSTOM_TRAINING_TABLE_COLUMNS = [
 ];
 
 export const CATEGORY_OPTIONS: DropdownOption[] = [
+  { label: "ASWS", value: "ASWS" },
   { label: "AWS", value: "AWS" },
   { label: "AMS", value: "AMS" },
   { label: "MSP", value: "MSP" },

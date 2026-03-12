@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 export default function Header() {
   const location = useLocation();
   const { user, isLoading } = useAuth();
+  console.log(user)
 
   return (
     <header>
@@ -22,10 +23,13 @@ export default function Header() {
         {isLoading ? (
           <div className="w-20 h-4 bg-white/30 rounded animate-pulse" />
         ) : user ? (
-          <div className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px]">
+          <Link
+            to={user.role === "admin" ? "/admin" : "/my-account"}
+            className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px] hover:opacity-90 transition-opacity"
+          >
             <User className="w-4 h-4 lg:w-5 lg:h-5" />
             <span className="hidden sm:inline">{user.userName}</span>
-          </div>
+          </Link>
         ) : (
           <Link
             to="/login"

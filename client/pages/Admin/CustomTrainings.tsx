@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { SearchAndFilters } from "@/constants/SearchAndFilter";
+import { SearchAndFilters } from "@/components/SearchAndFilter";
 import { formatDateLong, parseDate } from "@/lib/utils/Formatter";
 import { CUSTOM_TRAINING_TABLE_COLUMNS, CATEGORY_OPTIONS } from "@/constants/Training";
 import type { CustomTraining } from "@/types/TrainingTypes";
@@ -59,7 +59,7 @@ export default function CustomTrainings() {
         searchValue={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search for categories, chapter, registrant ID"
-        dropdowns={[
+        filters={[
           {
             value: selectedCategory,
             onChange: setSelectedCategory,
