@@ -1,6 +1,8 @@
-export type EventType = "msp" | "msws" | "odwb" | "default";
+import { TRAINING_CATEGORIES, EVENT_TYPE_MAP } from "@/constants/Training";
 
 export type WorkshopStatus = "missed" | "completed" | "current" | "upcoming";
+export type TrainingCategory = typeof TRAINING_CATEGORIES[number];
+export type EventType = typeof EVENT_TYPE_MAP[keyof typeof EVENT_TYPE_MAP] | "default";
 
 export type TrainingSeriesItem = {
   id: number;
