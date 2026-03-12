@@ -1,7 +1,6 @@
-"use client";
-
 import { ShoppingCart } from "lucide-react";
-import { MembershipPlan, formatMembershipPrice } from "@/data/Membership";
+import { formatPrice } from "@/lib/utils/Formatter";
+import { MembershipPlan } from "@/types/MembershipTypes";
 
 interface MembershipCardProps {
   plan: MembershipPlan;
@@ -35,7 +34,7 @@ export default function MembershipCard({ plan, onAddToCart, onCheckout }: Member
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-bold text-gray-900">{plan.label}</h3>
           <span className="text-lg font-bold text-bni-red">
-            {formatMembershipPrice(plan.price)}
+            {formatPrice(plan.price)}
           </span>
         </div>
 

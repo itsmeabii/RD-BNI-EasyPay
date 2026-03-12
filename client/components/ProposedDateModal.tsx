@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/lib/supabase/Client";
 
 interface ProposedDateModalProps {
@@ -8,11 +9,6 @@ interface ProposedDateModalProps {
   onClose: () => void;
   onUpdated: () => void;
 }
-
-const MONTHS = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-];
 
 const FULL_MONTHS = [
   "January", "February", "March", "April", "May", "June",
@@ -97,7 +93,6 @@ export const ProposedDateModal = ({
 
   const today = new Date();
 
-  // Build calendar grid
   const cells: (number | null)[] = [];
   for (let i = 0; i < firstDay; i++) cells.push(null);
   for (let d = 1; d <= daysInMonth; d++) cells.push(d);
@@ -136,17 +131,12 @@ export const ProposedDateModal = ({
                 value={formatDisplay(selectedDate, hours, minutes, ampm)}
                 className="flex-1 border border-gray-300 rounded-[6px] px-3 py-2 text-[13px] text-gray-800 focus:outline-none cursor-pointer"
                 onClick={() => setShowCalendar(v => !v)}
-                />
+              />
               <button
                 onClick={() => setShowCalendar(v => !v)}
                 className="w-10 h-10 flex items-center justify-center bg-[#cf2031] rounded-[6px] text-white hover:bg-[#b01c2a] transition-colors"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                  <line x1="16" y1="2" x2="16" y2="6"/>
-                  <line x1="8" y1="2" x2="8" y2="6"/>
-                  <line x1="3" y1="10" x2="21" y2="10"/>
-                </svg>
+                <CalendarDays className="w-5 h-5" />
               </button>
             </div>
 
@@ -157,13 +147,13 @@ export const ProposedDateModal = ({
                 {/* Month navigation */}
                 <div className="flex items-center justify-between px-4 py-3 bg-white">
                   <button onClick={prevMonth} className="text-gray-500 hover:text-[#cf2031] transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="15 18 9 12 15 6"/></svg>
+                    <ChevronLeft className="w-4 h-4" />
                   </button>
                   <span className="text-[14px] font-bold text-gray-800">
                     {FULL_MONTHS[viewMonth]} {viewYear}
                   </span>
                   <button onClick={nextMonth} className="text-gray-500 hover:text-[#cf2031] transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
 

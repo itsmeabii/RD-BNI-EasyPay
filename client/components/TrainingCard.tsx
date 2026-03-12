@@ -21,7 +21,7 @@ export default function TrainingCard({
 }: TrainingCardProps) {
   const navigate = useNavigate();
   return (
-    <div className="bg-white flex flex-col">
+    <div className="bg-white flex flex-col w-full max-w-[280px]">
       {/* Card Image */}
       <Link to={`/training/${id}`} className="block overflow-hidden">
         <img

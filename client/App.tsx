@@ -8,7 +8,6 @@ import { CartProvider } from "./context/CartContext";
 import Header from "./components/Header";
 import Cart from "./pages/CartDrawer";
 import Home from "./pages/Home";
-import Membership from "./pages/Membership/NewMembershipPage";
 import Merchandise from "./pages/Merchandise";
 import Checkout from "./pages/Checkout/Checkout";
 import TrainingDetail from "./pages/Training/[id]/page";
@@ -28,8 +27,9 @@ import AdminLayout from "./pages/Admin/AdminLayout";
 import CustomTrainings from "./pages/UserNavigation/CustomTrainings";
 import SuccessTreasureMap from "@/pages/Journey/SuccessMap/SuccessTreasureMap";
 import SuccessMapWorkshopDetails from "./pages/Journey/SuccessMap/SuccessMapWorkshopDetails";
-//import TrainerList from "./pages/Admin/TrainerList";
-
+import MembershipRenewal from "./pages/Membership/MembershipRenewalPage";
+import NewMembership from "./pages/Membership/NewMembershipPage";
+import ProtectedRoute from "./lib/utils/Protectedroute";
 
 const queryClient = new QueryClient();
 
@@ -50,20 +50,23 @@ export default function App() {
                 <Route path="/journey" element={<Journey />} />
                 <Route path="/training" element={<Home />} />
                 <Route path="/training/:id" element={<TrainingDetail />} />
-                <Route path="/membership" element={<Membership />} />
+                <Route path="/membership" element={<NewMembership />} />
+                <Route path="/membership/renewal" element={<MembershipRenewal />} />
                 <Route path="/merchandise" element={<Merchandise />} />
                 <Route path="/checkout" element={<Checkout />} />
 
-                {/* My Account routes (Nested) */}
-                <Route path="/my-account" element={<MyAccountLayout />}>
-                  <Route path="AccountDetails" element={<AccountDetails />} />
-                  <Route path="Addresses" element={<Addresses />} />
-                  <Route path="Downloads" element={<Downloads />} />
-                  <Route path="Logout" element={<Logout />} />
-                  <Route path="MyWallet" element={<MyWallet />} />
-                  <Route path="OrderHistory" element={<OrderHistory />} />
-                  <Route path="TrainerApplication" element={<TrainerApplication />} />
-                  <Route path="UpcomingTraining" element={<UpcomingTraining />} />
+                {/* Protected: My Account routes (Nested) */}
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/my-account" element={<MyAccountLayout />}>
+                    <Route path="AccountDetails" element={<AccountDetails />} />
+                    <Route path="Addresses" element={<Addresses />} />
+                    <Route path="Downloads" element={<Downloads />} />
+                    <Route path="Logout" element={<Logout />} />
+                    <Route path="MyWallet" element={<MyWallet />} />
+                    <Route path="OrderHistory" element={<OrderHistory />} />
+                    <Route path="TrainerApplication" element={<TrainerApplication />} />
+                    <Route path="UpcomingTrainings" element={<UpcomingTraining />} />
+                  </Route>
                 </Route>
 
                 {/* Admin routes (Nested) */}

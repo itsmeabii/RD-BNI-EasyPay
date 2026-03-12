@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
-import { TrainingData, TRAINING_TABLE_HEADERS } from "../../data/AllTrainings";
+import type { TrainingData, SortOrder } from "@/types/TrainingTypes";
 import TrainingRow from "../../components/training/TrainingRow";
 import CustomReminderSidebar from "./CustomReminder";
-import { SortOrder } from "../../components/SearchAndFilter";
+import { TrainingTableHeader } from "../../components/training/TrainingTableHeader";
+import { useReminders } from "../../hooks/useReminders";
 
 interface TrainingListSectionProps {
   trainings: TrainingData[];
@@ -16,10 +16,10 @@ export const TrainingListSection = ({
   sortOrder,
   onSortChange,
 }: TrainingListSectionProps) => {
+  const { reminderOverrides, saveReminder, setReminder } = useReminders(trainings);
   const [openReminder, setOpenReminder] = useState<string | null>(null);
   const [customSidebarOpen, setCustomSidebarOpen] = useState(false);
   const [activeOrderId, setActiveOrderId] = useState<string | null>(null);
-  const [reminderOverrides, setReminderOverrides] = useState<Record<string, string>>({});
 
   const reminderOptions = [
     "1 week before",
@@ -34,70 +34,35 @@ export const TrainingListSection = ({
       setCustomSidebarOpen(true);
       setOpenReminder(null);
     } else {
-      setReminderOverrides((prev) => ({ ...prev, [orderId]: option }));
+      setReminder(orderId, option);
       setOpenReminder(null);
+      saveReminder(orderId, option, "preset");
     }
   };
 
   const handleCustomDone = (label: string) => {
     if (activeOrderId) {
-      setReminderOverrides((prev) => ({ ...prev, [activeOrderId]: label }));
+      setReminder(activeOrderId, label);
+      const match = label.match(/^(\d+)\s+(\w+)\s+before$/);
+      const customNumber = match ? parseInt(match[1]) : undefined;
+      const customUnit = match ? match[2] : undefined;
+      saveReminder(activeOrderId, label, "custom", customNumber, customUnit);
     }
     setCustomSidebarOpen(false);
     setActiveOrderId(null);
   };
 
-  const handleSortClick = () => {
-    onSortChange(
-      sortOrder === null ? "newest" : sortOrder === "newest" ? "oldest" : null
-    );
-  };
-
-  const SortIcon = sortOrder === "newest"
-    ? ArrowDown
-    : sortOrder === "oldest"
-    ? ArrowUp
-    : ArrowUpDown;
-
   return (
     <>
-      <div className="w-full rounded-[8px] overflow-hidden border border-gray-300">
-        {/* Header */}
-        <div className="grid grid-cols-[130px_1fr_180px_110px_160px_170px] bg-[#cf2031]">
-          {TRAINING_TABLE_HEADERS.map((col) => (
-            <div
-              key={col}
-              className="py-[18px] px-4 text-center text-white font-extrabold text-xs"
-            >
-              {col === "Training Date" ? (
-                <button
-                  onClick={handleSortClick}
-                  className="flex items-center justify-center gap-1 w-full text-white font-extrabold text-xs"
-                  title={
-                    sortOrder === null
-                      ? "Sort by date"
-                      : sortOrder === "newest"
-                      ? "Showing newest first"
-                      : "Showing oldest first"
-                  }
-                >
-                  Training Date
-                  <SortIcon size={13} />
-                </button>
-              ) : (
-                col
-              )}
-            </div>
-          ))}
-        </div>
+      <div className="w-full rounded-[8px] border border-gray-300 overflow-visible">
+        <TrainingTableHeader sortOrder={sortOrder} onSortChange={onSortChange} />
 
-        {/* Body */}
         {trainings.length === 0 ? (
-          <div className="bg-white py-16 text-center text-gray-400 text-sm">
+          <div className="bg-white py-16 text-center text-gray-400 text-sm rounded-b-[8px]">
             No trainings match your search or filter.
           </div>
         ) : (
-          trainings.map((training) => (
+          trainings.map((training, index) => (
             <TrainingRow
               key={training.orderId}
               training={training}
@@ -108,6 +73,7 @@ export const TrainingListSection = ({
                 setOpenReminder(openReminder === training.orderId ? null : training.orderId)
               }
               onSelectOption={handleSelectOption}
+              isLast={index === trainings.length - 1}
             />
           ))
         )}

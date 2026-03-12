@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { NEW_MEMBERSHIP_PLANS, MembershipPlan } from "@/data/Membership";
+import { MembershipPlan } from "@/types/MembershipTypes";
+import { useMembershipPlans } from "@/lib/utils/Membership/MembershipUtils";
 import MembershipCard from "@/components/MembershipCard";
 import Patterns from "@/components/Patterns";
 import ShoppingCartButton from "@/components/ShoppingCartButton";
@@ -10,17 +11,17 @@ import { useCart } from "@/context/CartContext";
 export default function NewMembership() {
   const navigate = useNavigate();
   const { addToCart, openCart, checkoutSingle } = useCart();
+  const { plans, loading, error } = useMembershipPlans("new");
 
   const handleAddToCart = (plan: MembershipPlan) => {
     addToCart({
-      id: plan.price, 
+      id: plan.id,
       title: plan.label,
       price: plan.price,
       thumbnail: plan.image,
-    });
+    }, "membership");
     openCart();
   };
-
 
   const handleCheckout = (plan: MembershipPlan) => {
     const items = checkoutSingle({
@@ -64,8 +65,8 @@ export default function NewMembership() {
           </h1>
           <p className="text-gray-600 text-sm leading-relaxed max-w-xl mx-auto">
             Your BNI Membership is your gateway to a thriving business network.
-            gain exclusive access to a community of like-minded entrepreneurs
-            collaborate, and grow their business.
+            Gain exclusive access to a community of like-minded entrepreneurs,
+            collaborate, and grow your business.
           </p>
         </div>
 
@@ -82,17 +83,29 @@ export default function NewMembership() {
           </Link>
         </div>
 
+        {/* Loading & Error states */}
+        {loading && (
+          <p className="text-center text-gray-400 text-sm">Loading plans...</p>
+        )}
+        {error && (
+          <p className="text-center text-red-500 text-sm">
+            Failed to load plans: {error}
+          </p>
+        )}
+
         {/* Membership plan cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-3xl mx-auto">
-          {NEW_MEMBERSHIP_PLANS.map((plan) => (
-            <MembershipCard
-              key={plan.id}
-              plan={plan}
-              onAddToCart={handleAddToCart}
-              onCheckout={handleCheckout}
-            />
-          ))}
-        </div>
+        {!loading && !error && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-3xl mx-auto">
+            {plans.map((plan) => (
+              <MembershipCard
+                key={plan.id}
+                plan={plan}
+                onAddToCart={handleAddToCart}
+                onCheckout={handleCheckout}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <Footer />

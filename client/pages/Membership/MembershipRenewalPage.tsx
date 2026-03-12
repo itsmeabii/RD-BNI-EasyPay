@@ -1,0 +1,102 @@
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+import { MembershipPlan } from "@/types/MembershipTypes";
+import { useMembershipPlans } from "@/lib/utils/Membership/MembershipUtils";
+import MembershipCard from "@/components/MembershipCard";
+import Patterns from "@/components/Patterns";
+import ShoppingCartButton from "@/components/ShoppingCartButton";
+import Footer from "@/components/Footer";
+import { useCart } from "@/context/CartContext";
+
+export default function MembershipRenewal() {
+  const navigate = useNavigate();
+  const { addToCart, openCart, checkoutSingle } = useCart();
+  const { plans, loading, error } = useMembershipPlans("renewal");
+
+  const handleAddToCart = (plan: MembershipPlan) => {
+    addToCart({
+      id: plan.id,
+      title: plan.label,
+      price: plan.price,
+      thumbnail: plan.image,
+    }, "membership");
+    openCart();
+  };
+
+  const handleCheckout = (plan: MembershipPlan) => {
+    const items = checkoutSingle({
+      id: plan.id,
+      title: plan.label,
+      price: plan.price,
+      thumbnail: plan.image,
+      qty: 1,
+    });
+    navigate("/checkout", { state: { checkoutItems: items } });
+  };
+
+  return (
+    <div className="bg-white relative overflow-hidden">
+      {/* left side patterns */}
+      <Patterns
+        first="absolute left-24 bottom-40 z-0"
+        second="absolute left-0 bottom-20 z-0"
+        third="absolute left-24 bottom-20 z-0"
+      />
+      {/* right side patterns */}
+      <Patterns
+        first="absolute right-0 top-40 z-0"
+        second="absolute right-0 top-60 z-0"
+        third="absolute right-24 top-60 z-0"
+      />
+
+      <div className="relative z-10 max-w-5xl mx-auto px-6 py-10">
+        {/* Back button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition mb-8 text-sm font-medium"
+        >
+          <ArrowLeft className="w-4 h-4" />
+        </button>
+
+        {/* Page header */}
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-extrabold text-gray-900 mb-4">
+            Membership Renewal
+          </h1>
+          <p className="text-gray-600 text-sm leading-relaxed max-w-xl mx-auto">
+            Your renewal is subject to the approval of your chapter’s Membership Committee. As part of the 
+            membership renewal process, the Membership Committee will carry out a Participation Review to 
+            assess your eligibility for the 2nd year renewal.
+          </p>
+        </div>
+
+        {/* Loading & Error states */}
+        {loading && (
+          <p className="text-center text-gray-400 text-sm">Loading plans...</p>
+        )}
+        {error && (
+          <p className="text-center text-red-500 text-sm">
+            Failed to load plans: {error}
+          </p>
+        )}
+
+        {/* Membership plan cards */}
+        {!loading && !error && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-3xl mx-auto">
+            {plans.map((plan) => (
+              <MembershipCard
+                key={plan.id}
+                plan={plan}
+                onAddToCart={handleAddToCart}
+                onCheckout={handleCheckout}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <Footer />
+      <ShoppingCartButton />
+    </div>
+  );
+}

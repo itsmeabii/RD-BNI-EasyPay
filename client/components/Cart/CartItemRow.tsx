@@ -1,6 +1,6 @@
 import { Trash2 } from "lucide-react";
 import { CartItem } from "@/context/CartContext";
-import { formatPrice } from "@/data/Training";
+import { formatPrice } from "@/lib/utils/Formatter";
 
 interface CartItemRowProps {
   item: CartItem;

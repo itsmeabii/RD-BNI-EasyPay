@@ -1,4 +1,5 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import { useState } from "react";
 import { UserNavigationSection } from "../UserNavigation/UserNavigationSection";
 
 // Map each route to a page title
@@ -14,22 +15,23 @@ const PAGE_TITLES: Record<string, string> = {
 };
 
 export default function MyAccountLayout() {
-  const { pathname } = useLocation();
-  const title = PAGE_TITLES[pathname] ?? "My Account";
+  const [pageTitle, setPageTitle] = useState("");
 
   return (
-    <div className="min-h-screen bg-[#f4f4f4] px-8 py-8">
+    <div className="min-h-screen bg-[#f4f4f4] px-8 py-8 flex flex-col gap-4">
 
-      {/* Title — above everything including the sidebar */}
-      <h1 className="font-bold text-[#cf2031] text-3xl mb-6">
-        {title}
-      </h1>
+      {/* Title — above everything including the Menu label and sidebar */}
+      {pageTitle && (
+        <h1 className="text-[#CF2031] text-[30px] font-bold">{pageTitle}</h1>
+      )}
 
-      {/* Sidebar + content side by side */}
       <div className="flex gap-6 items-start">
+        {/* Sidebar */}
         <UserNavigationSection />
-        <main className="flex-1 min-w-0 mt-[25px]">
-          <Outlet />
+
+        {/* Page content */}
+        <main className="flex-1 min-w-0">
+          <Outlet context={{ setPageTitle }} />
         </main>
       </div>
 
