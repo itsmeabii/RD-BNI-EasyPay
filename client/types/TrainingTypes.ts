@@ -30,7 +30,6 @@ export interface TrainingCompletion {
   completedAt: string;
 }
 
-// Raw Supabase row shape (internal use by TrainingUtils only)
 export interface TrainingRow {
   id: number;
   title: string;
@@ -45,6 +44,31 @@ export interface TrainingRow {
   location: string | null;
   training_dates: { date: string; time: string }[];
   training_instructors: { name: string; background: string | null; image: string | null }[];
+}
+
+export type SortOrder = "newest" | "oldest" | "";
+export type TrainingCategory = "AWS" | "MSP" | "MSS" | "ASWS";
+
+export interface TrainingData {
+  orderId: string;
+  trainingName: string;
+  trainingDate: string;
+  reminder: string;
+  category: TrainingCategory;
+}
+
+export interface DropdownOption {
+  label: string;
+  value: string;
+}
+
+export interface CustomTraining {
+  requestId: string;
+  trainingName: string;
+  training: string;
+  chapter: string;
+  proposedDate: string;
+  noOfAttendees: number;
 }
 
 import type { RequestStatus } from "../constants/Training";
