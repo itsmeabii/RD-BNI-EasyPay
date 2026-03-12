@@ -50,22 +50,27 @@ export default function CustomTrainings() {
 
   const { trainings, isLoading, error, refetch } = useCustomTrainings();
 
-  const filteredTrainings = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    return trainings.filter((t) => {
-      const matchesCategory = !selectedCategory || t.category === selectedCategory;
-      const matchesChapter  = !selectedChapter  || t.chapter  === selectedChapter;
-      const matchesMonth    = !selectedMonth    || t.proposed_date.includes(selectedMonth);
-      const matchesSearch   =
-        !q ||
-        t.training.toLowerCase().includes(q) ||
-        t.category.toLowerCase().includes(q) ||
-        t.id.toLowerCase().includes(q) ||
-        t.chapter.toLowerCase().includes(q) ||
-        t.lt_name.toLowerCase().includes(q);
-      return matchesCategory && matchesChapter && matchesMonth && matchesSearch;
-    });
-  }, [searchQuery, selectedCategory, selectedChapter, selectedMonth, trainings]);
+const filteredTrainings = useMemo(() => {
+  const q = searchQuery.trim().toLowerCase();
+  return trainings.filter((t) => {
+    const matchesCategory = !selectedCategory || t.category === selectedCategory;
+    const matchesChapter  = !selectedChapter  || 
+      t.chapter.trim().toLowerCase() === selectedChapter.trim().toLowerCase();
+    const matchesMonth    = !selectedMonth || (() => {
+      if (!t.proposed_date) return false;
+      const d = new Date(t.proposed_date);
+      return FULL_MONTHS[d.getMonth()] === selectedMonth;
+    })();
+    const matchesSearch   =
+      !q ||
+      t.training.toLowerCase().includes(q) ||
+      t.category.toLowerCase().includes(q) ||
+      t.id.toLowerCase().includes(q) ||
+      t.chapter.toLowerCase().includes(q) ||
+      t.lt_name.toLowerCase().includes(q);
+    return matchesCategory && matchesChapter && matchesMonth && matchesSearch;
+  });
+}, [searchQuery, selectedCategory, selectedChapter, selectedMonth, trainings]);
 
   return (
     <div className="flex flex-col gap-4">
