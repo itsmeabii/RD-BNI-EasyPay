@@ -5,6 +5,8 @@ import { TrainingRecord } from "@/types/TrainerType";
 import { ViewRecordsSkeleton } from "@/components/ViewRecords/ViewRecordsSkeleton";
 import { VIEW_RECORDS_COLUMNS } from "@/constants/Records";
 import { ViewRecordTrainingDetail } from "./ViewRecordTrainingDetail";
+import { Archive } from "lucide-react";
+import { archiveTrainerRecord } from "@/lib/utils/Trainer/TrainerUtils";
 
 function StatusBadge({ status }: { status: string }) {
   if (status === "Done")
@@ -90,8 +92,16 @@ export function ViewRecordsTable({ trainerId, trainerName, trainerCode }: ViewRe
                     <StatusBadge status={record.status} />
                   </td>
                   <td className="px-4 py-3">
-                    <button className="w-8 h-8 flex items-center justify-center hover:opacity-70 transition mx-auto">
-                      <Trash2 className="w-4 h-4 text-bni-red" />
+                    <button
+                      onClick={async () => {
+                        const success = await archiveTrainerRecord(record.id);
+                        if (success) {
+                          setRecords((prev) => prev.filter((r) => r.id !== record.id));
+                        }
+                      }}
+                      className="w-8 h-8 flex items-center justify-center hover:opacity-70 transition mx-auto"
+                    >
+                      <Archive className="w-5 h-5 text-bni-red" />
                     </button>
                   </td>
                 </tr>

@@ -43,6 +43,7 @@ export async function fetchTrainerRecords(trainerId: number): Promise<TrainingRe
       )
     `)
     .eq("trainer_id", trainerId)
+    .eq("archived", false)
     .order("proposed_date", { ascending: false });
 
   if (error) {
@@ -68,4 +69,17 @@ export async function fetchTrainerRecords(trainerId: number): Promise<TrainingRe
     requestedAt: "",
     timeApproved: "",
   }));
+}
+
+export async function archiveTrainerRecord(id: number): Promise<boolean> {
+  const { data, error } = await supabase
+    .from("trainer_training_records")
+    .update({ archived: true })
+    .eq("id", id);
+  
+  if (error) {
+    console.error("archiveTrainerRecord:", error.message);
+    return false;
+  }
+  return true;
 }
