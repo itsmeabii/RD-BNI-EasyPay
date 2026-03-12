@@ -1,5 +1,7 @@
+
 import { useState } from "react";
-import { UserNavigationSection } from "@/pages/UserNavigation/UserNavigationSection";
+import { UserNavigationSection } from "@/components/UserNavigationSection";
+import { LT_NAV_ITEMS } from "@/constants/routes";
 import TrainingTable from "@/components/TrainingTable";
 import NewRequestModal from "@/components/NewRequestModal";
 import { useTrainingRequest } from "@/hooks/useTrainingRequest";
@@ -46,7 +48,7 @@ export default function Index() {
         {/* Sidebar + table */}
         <div className="flex gap-6 items-start">
           <div className="pt-[0px] w-[230px] shrink-0">
-            <UserNavigationSection />
+            <UserNavigationSection menu_items={LT_NAV_ITEMS} />
           </div>
           <main className="flex-1 min-w-0">
             <TrainingTable

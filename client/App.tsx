@@ -31,8 +31,7 @@ import NewMembership from "./pages/Membership/NewMembershipPage";
 import TrainerListPage from "./pages/Admin/TrainerListPage";
 import ProtectedRoute from "./lib/utils/Protectedroute";
 import TrainingRequest from "./pages/TrainingRequest";
-
-
+import LeadershipLayout from "./pages/LeadershipTeam/LeadershipLayout";
 
 const queryClient = new QueryClient();
 
@@ -55,10 +54,10 @@ export default function App() {
                 <Route path="/training/:id" element={<TrainingDetail />} />
                 <Route path="/membership" element={<NewMembership />} />
                 <Route path="/membership/renewal" element={<MembershipRenewal />} />
-            <Route path="/trainingrequest" element={<TrainingRequest />} />
-            <Route path="/checkout" element={<Checkout />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/trainingrequest" element={<TrainingRequest />} />
 
-                {/* Protected: My Account routes (Nested) */}
+                {/* Protected: My Account routes (Member) */}
                 <Route element={<ProtectedRoute />}>
                   <Route path="/my-account" element={<MyAccountLayout />}>
                     <Route path="AccountDetails" element={<AccountDetails />} />
@@ -69,6 +68,19 @@ export default function App() {
                     <Route path="OrderHistory" element={<OrderHistory />} />
                     <Route path="TrainerApplication" element={<TrainerApplication />} />
                     <Route path="UpcomingTrainings" element={<UpcomingTraining />} />
+                  </Route>
+                </Route>
+
+                {/* Protected: LT routes */}
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/lt" element={<LeadershipLayout />}>
+                    <Route path="AccountDetails" element={<AccountDetails />} />
+                    <Route path="Addresses" element={<Addresses />} />
+                    <Route path="Downloads" element={<Downloads />} />
+                    <Route path="MyWallet" element={<MyWallet />} />
+                    <Route path="OrderHistory" element={<OrderHistory />} />
+                    <Route path="TrainingRequest" element={<TrainingRequest />} />
+                    <Route path="Logout" element={<Logout />} />
                   </Route>
                 </Route>
 

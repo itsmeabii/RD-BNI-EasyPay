@@ -24,7 +24,13 @@ export default function Header() {
           <div className="w-20 h-4 bg-white/30 rounded animate-pulse" />
         ) : user ? (
           <Link
-            to={user.role === "admin" ? "/admin" : "/my-account"}
+  to={
+    user.role === "admin" 
+      ? "/admin" 
+      : user.role === "lt" 
+        ? "/lt" 
+        : "/my-account"
+  }
             className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px] hover:opacity-90 transition-opacity"
           >
             <User className="w-4 h-4 lg:w-5 lg:h-5" />

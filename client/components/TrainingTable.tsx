@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase/Client";
 import { X, ArrowUp, ArrowDown } from "lucide-react";
-import { SearchAndFilters } from "@/constants/SearchAndFilter";
+import { SearchAndFilters } from "@/components/SearchAndFilter";
 import type { RequestStatus } from "@/constants/Training";
 import type { TrainingRequest } from "@/types/TrainingTypes";
 import { MONTHS } from "@/constants/Training";
@@ -212,7 +212,7 @@ export default function TrainingTable({ requests, onNewRequest }: TrainingTableP
           searchValue={search}
           onSearchChange={setSearch}
           searchPlaceholder="Search for categories, chapter, registrant ID"
-          dropdowns={[
+          filters={[
             {
               value: categoryFilter,
               onChange: setCategoryFilter,

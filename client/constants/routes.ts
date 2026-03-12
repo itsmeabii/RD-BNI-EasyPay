@@ -43,7 +43,6 @@ export const LT_PATHS = {
   MY_WALLET: "/my-account/MyWallet",
   ORDER_HISTORY: "/my-account/OrderHistory",
   TRAINING_REQUEST: "/trainingrequest",
-  LOGOUT: "/my-account/Logout",
 } as const;
 
 
@@ -54,5 +53,4 @@ export const LT_NAV_ITEMS = [
   { label: "My Wallet", to: LT_PATHS.MY_WALLET },
   { label: "Order History", to: LT_PATHS.ORDER_HISTORY },
   { label: "Training Request", to: LT_PATHS.TRAINING_REQUEST },
-  { label: "Logout", to: LT_PATHS.LOGOUT },
 ] as const;
