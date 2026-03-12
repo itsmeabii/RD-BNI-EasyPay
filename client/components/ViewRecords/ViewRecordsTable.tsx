@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import { Search, ChevronDown, Trash2 } from "lucide-react";
-import { fetchTrainerRecords } from "@/lib/utils/Trainer/TrainerUtils";
+import { Archive } from "lucide-react";
+import { fetchTrainerRecords, archiveTrainerRecord } from "@/lib/utils/Trainer/TrainerUtils";
 import { TrainingRecord } from "@/types/TrainerType";
 import { ViewRecordsSkeleton } from "@/components/ViewRecords/ViewRecordsSkeleton";
 import { VIEW_RECORDS_COLUMNS } from "@/constants/Records";
 import { ViewRecordTrainingDetail } from "./ViewRecordTrainingDetail";
-import { Archive } from "lucide-react";
-import { archiveTrainerRecord } from "@/lib/utils/Trainer/TrainerUtils";
+import { SearchAndFilters } from "@/components/SearchAndFilter";
+import { MONTHS } from "@/constants/Training";
 
 function StatusBadge({ status }: { status: string }) {
   if (status === "Done")
@@ -18,15 +18,16 @@ function StatusBadge({ status }: { status: string }) {
 
 type ViewRecordsTableProps = {
   trainerId: number;
-  trainerName?: string;
-  trainerCode?: string;
 };
 
-export function ViewRecordsTable({ trainerId, trainerName, trainerCode }: ViewRecordsTableProps) {
+export function ViewRecordsTable({ trainerId }: ViewRecordsTableProps) {
   const [records, setRecords] = useState<TrainingRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedRecord, setSelectedRecord] = useState<TrainingRecord | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedType, setSelectedType] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
 
   useEffect(() => {
     if (!trainerId) return;
@@ -38,17 +39,56 @@ export function ViewRecordsTable({ trainerId, trainerName, trainerCode }: ViewRe
 
   const filtered = records.filter((r) => {
     const q = search.toLowerCase();
-    return (
+    const matchesSearch =
       (r.requestId ?? "").toLowerCase().includes(q) ||
       (r.trainingTitle ?? "").toLowerCase().includes(q) ||
       (r.trainingCode ?? "").toLowerCase().includes(q) ||
-      (r.status ?? "").toLowerCase().includes(q)
-    );
+      (r.status ?? "").toLowerCase().includes(q);
+
+    const matchesCategory = selectedCategory ? r.trainingCode === selectedCategory : true;
+    const matchesType = selectedType ? r.trainingType === selectedType : true;
+    const matchesMonth = selectedMonth
+      ? new Date(r.proposedDate).toLocaleString("default", { month: "long" }) === selectedMonth
+      : true;
+
+    return matchesSearch && matchesCategory && matchesType && matchesMonth;
   });
 
   return (
     <div className="w-full flex flex-col gap-4">
-      {/* Table */}
+      <SearchAndFilters
+        searchValue={search}
+        onSearchChange={setSearch}
+        searchPlaceholder="Search records..."
+        filters={[
+          {
+            value: selectedCategory,
+            onChange: setSelectedCategory,
+            placeholder: "Category",
+            width: "w-[150px]",
+            options: [...new Set(records.map((r) => r.trainingCode))].filter(Boolean).map((c) => ({ label: c, value: c })),
+          },
+          {
+            value: selectedType,
+            onChange: setSelectedType,
+            placeholder: "Type",
+            width: "w-[130px]",
+            options: [
+              { label: "Regular", value: "regular" },
+              { label: "Custom", value: "custom" },
+            ],
+          },
+          {
+            value: selectedMonth,
+            onChange: setSelectedMonth,
+            placeholder: "Month",
+            width: "w-[130px]",
+            options: MONTHS.map((m) => ({ label: m, value: m })),
+            scrollable: true,
+          },
+        ]}
+      />
+
       {loading ? (
         <ViewRecordsSkeleton />
       ) : (
@@ -64,7 +104,7 @@ export function ViewRecordsTable({ trainerId, trainerName, trainerCode }: ViewRe
             <tbody>
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="py-10 text-gray-400">No records found.</td>
+                  <td colSpan={8} className="py-10 text-gray-400">No records found.</td>
                 </tr>
               )}
               {filtered.map((record, index) => (
@@ -73,7 +113,7 @@ export function ViewRecordsTable({ trainerId, trainerName, trainerCode }: ViewRe
                     {record.trainingType === "custom" ? record.requestId : `TR-${String(record.trainingId).padStart(3, '0')}`}
                   </td>
                   <td className="px-4 py-3">
-                    <span >
+                    <span>
                       {record.trainingType === "custom" ? "Custom" : "Regular"}
                     </span>
                   </td>
@@ -82,10 +122,10 @@ export function ViewRecordsTable({ trainerId, trainerName, trainerCode }: ViewRe
                   <td className="px-4 py-3">{record.trainingCode}</td>
                   <td className="px-4 py-3">
                     <button
-                        onClick={() => setSelectedRecord(record)}
-                        className="text-bni-red hover:underline"
-                      >
-                        View more details
+                      onClick={() => setSelectedRecord(record)}
+                      className="text-bni-red hover:underline"
+                    >
+                      View more details
                     </button>
                   </td>
                   <td className="px-4 py-3">
