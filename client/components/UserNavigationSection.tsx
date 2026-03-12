@@ -23,7 +23,7 @@ export const UserNavigationSection = ({ menu_items }: UserNavigationSectionProps
   };
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `block pl-8 pr-4 py-[14px] text-[17px] font-semibold ${
+    `block pl-8 pr-4 py-[10px] text-[17px] font-semibold ${
       isActive ? "text-[#cf2031] font-bold" : "text-[#817d7d]"
     }`;
 
