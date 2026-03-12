@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { NAV_ITEMS } from "../../constants/routes";
+import { LT_NAV_ITEMS } from "../../constants/routes";
 
 export const UserNavigationSection = (): JSX.Element => {
   return (
@@ -13,7 +13,7 @@ export const UserNavigationSection = (): JSX.Element => {
       </p>
 
       <div className="w-[230px] rounded-[5px] border border-[#817d7d] bg-white">
-        {NAV_ITEMS.map((item) => (
+        {LT_NAV_ITEMS.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
