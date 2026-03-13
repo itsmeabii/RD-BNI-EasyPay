@@ -31,6 +31,8 @@ import NewMembership from "./pages/Membership/NewMembershipPage";
 import TrainerListPage from "./pages/Admin/TrainerListPage";
 import ProtectedRoute from "./lib/utils/Protectedroute";
 import ViewRecordsPage from "./pages/Admin/ViewRecordsPage";
+import TrainingRequest from "./pages/TrainingRequest";
+import LeadershipLayout from "./pages/LeadershipTeam/LeadershipLayout";
 import MerchandisePage from "./pages/Merchandise/MerchandisePage";
 import MerchandiseDetailPage from "./pages/Merchandise/MerchandiseDetailPage";
 
@@ -59,8 +61,8 @@ export default function App() {
                 <Route path="/merchandise/:id" element={<MerchandiseDetailPage />} />
                 <Route path="/checkout" element={<Checkout />} />
 
+                {/* Protected: Member routes */}
                 <Route element={<ProtectedRoute />}>
-                  {/* My Account routes */}
                   <Route path="/my-account" element={<MyAccountLayout />}>
                     <Route path="account-details" element={<AccountDetails />} />
                     <Route path="addresses" element={<Addresses />} />
@@ -71,6 +73,21 @@ export default function App() {
                     <Route path="trainer-application" element={<TrainerApplication />} />
                     <Route path="upcoming-trainings" element={<UpcomingTraining />} />
                   </Route>
+                </Route>
+
+                {/* Protected: LT routes */}
+                <Route element={<ProtectedRoute />}>
+                  <Route index element={<Navigate to="training-request" replace />} />
+                  <Route path="/leadership-account" element={<LeadershipLayout />}>
+                    <Route path="account-details" element={<AccountDetails />} />
+                    <Route path="addresses" element={<Addresses />} />
+                    <Route path="downloads" element={<Downloads />} />
+                    <Route path="my-wallet" element={<MyWallet />} />
+                    <Route path="order-history" element={<OrderHistory />} />
+                    <Route path="training-request" element={<TrainingRequest />} />
+                    <Route path="logout" element={<Logout />} />
+                  </Route>
+                </Route>
 
                   {/* Admin routes */}
                   <Route path="/admin" element={<AdminLayout />}>
@@ -80,7 +97,6 @@ export default function App() {
                     <Route path="view-records" element={<ViewRecordsPage />} />
                     <Route path="view-records/:id" element={<ViewRecordsPage />} />
                   </Route>
-                </Route>
 
                 {/* Catch-all route for 404s */}
                 <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
