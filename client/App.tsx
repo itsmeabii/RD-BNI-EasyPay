@@ -63,7 +63,9 @@ export default function App() {
 
                 {/* Protected: Member routes */}
                 <Route element={<ProtectedRoute />}>
-                  <Route path="/my-account" element={<MyAccountLayout />}>
+                  {/* My Account routes */}
+                <Route path="/my-account" element={<MyAccountLayout />}>
+                    <Route index element={<Navigate to="upcoming-trainings" replace />} />
                     <Route path="account-details" element={<AccountDetails />} />
                     <Route path="addresses" element={<Addresses />} />
                     <Route path="downloads" element={<Downloads />} />
