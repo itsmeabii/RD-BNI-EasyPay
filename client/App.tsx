@@ -77,6 +77,7 @@ export default function App() {
 
                 {/* Protected: LT routes */}
                 <Route element={<ProtectedRoute />}>
+                  <Route index element={<Navigate to="training-request" replace />} />
                   <Route path="/leadership-account" element={<LeadershipLayout />}>
                     <Route path="account-details" element={<AccountDetails />} />
                     <Route path="addresses" element={<Addresses />} />

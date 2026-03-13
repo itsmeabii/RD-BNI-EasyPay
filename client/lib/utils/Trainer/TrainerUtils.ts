@@ -73,7 +73,7 @@ export async function fetchTrainerRecords(trainerId: number): Promise<TrainingRe
 }
 
 export async function archiveTrainerRecord(id: number): Promise<boolean> {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("trainer_training_records")
     .update({ archived: true })
     .eq("id", id);
