@@ -58,8 +58,7 @@ export const CUSTOM_TRAINING_ADMIN_TABLE_COLUMNS = [
   "Manage Request",
 ];
 
-export const CUSTOM_TRAINING_GRID_COLS = "100px 180px 70px 170px 130px 140px 190px 140px";
-
+export const CUSTOM_TRAINING_GRID_COLS = "minmax(80px, 100px) minmax(120px, 1fr) minmax(60px, 80px) minmax(120px, 1fr) minmax(80px, 100px) minmax(120px, 150px) minmax(120px, 1fr) minmax(100px, 130px)";
 export const CATEGORY_OPTIONS: DropdownOption[] = [
   { label: "ASWS", value: "ASWS" },
   { label: "AWS", value: "AWS" },

@@ -60,130 +60,136 @@ export default function CustomTrainings() {
         ]}
       />
 
-      <div className="w-full rounded-[8px] overflow-hidden border border-[#d9d9d9]">
-        <div className="grid bg-[#cf2031]" style={{ gridTemplateColumns: CUSTOM_TRAINING_GRID_COLS }}>
-          {CUSTOM_TRAINING_ADMIN_TABLE_COLUMNS.map((col) => (
-            <div key={col} className="py-[14px] px-3 text-center text-white font-extrabold text-[11px] leading-tight">
-              {col}
-            </div>
-          ))}
-        </div>
-
-        {isLoading ? (
-          <div className="bg-white py-16 text-center text-gray-400 text-sm">Loading...</div>
-        ) : error ? (
-          <div className="bg-white py-16 text-center text-red-400 text-sm">{error}</div>
-        ) : filteredTrainings.length === 0 ? (
-          <div className="bg-white py-16 text-center text-gray-400 text-sm">No trainings match your search or filter.</div>
-        ) : (
-          filteredTrainings.map((t, index) => (
-            <div
-              key={t.id}
-              className="grid bg-white items-center"
-              style={{
-                gridTemplateColumns: CUSTOM_TRAINING_GRID_COLS,
-                borderTop: index === 0 ? "none" : "1px solid #e5e7eb",
-                minHeight: "70px",
-              }}
-            >
-              <div className="px-2 text-xs text-center text-gray-600">{t.id}</div>
-              <div className="px-2 text-[13px] text-center text-gray-800">{t.chapter}</div>
-              <div className="px-2 text-[13px] text-center text-gray-800">{t.category}</div>
-              <div className="px-2 text-[13px] text-center">
-                <button
-                  onClick={() => setViewTrainingRequest(t)}
-                  className="text-[#cf2031] underline hover:opacity-75 font-medium text-[13px]"
-                >
-                  View Training
-                </button>
+      <div className="w-full rounded-[8px] overflow-x-auto border border-[#d9d9d9]">
+        <div className="min-w-[900px]">
+          <div className="grid bg-[#cf2031]" style={{ gridTemplateColumns: CUSTOM_TRAINING_GRID_COLS }}>
+            {CUSTOM_TRAINING_ADMIN_TABLE_COLUMNS.map((col) => (
+              <div key={col} className="py-[14px] px-3 text-center text-white font-extrabold text-[11px] leading-tight">
+                {col}
               </div>
-              <div className="px-2 text-[13px] text-center text-gray-800">{t.attendees}</div>
+            ))}
+          </div>
 
-              {/* Proposed Date */}
-              <div className="px-2 flex items-center gap-2 py-2">
-                <div className="flex items-center gap-2 w-full justify-between">
-                  <span className="text-[13px] text-gray-800 leading-tight flex-1 text-center">
-                    {formatProposedDate(t.proposed_date)}
-                  </span>
+          {isLoading ? (
+            <div className="bg-white py-16 text-center text-gray-400 text-sm">Loading...</div>
+          ) : error ? (
+            <div className="bg-white py-16 text-center text-red-400 text-sm">{error}</div>
+          ) : filteredTrainings.length === 0 ? (
+            <div className="bg-white py-16 text-center text-gray-400 text-sm">No trainings match your search or filter.</div>
+          ) : (
+            filteredTrainings.map((t, index) => (
+              <div
+                key={t.id}
+                className="grid bg-white items-center"
+                style={{
+                  gridTemplateColumns: CUSTOM_TRAINING_GRID_COLS,
+                  borderTop: index === 0 ? "none" : "1px solid #e5e7eb",
+                  minHeight: "70px",
+                }}
+              >
+                <div className="px-2 text-xs text-center text-gray-600">{t.id}</div>
+                <div className="px-2 text-[13px] text-center text-gray-800">{t.chapter}</div>
+                <div className="px-2 text-[13px] text-center text-gray-800">{t.category}</div>
+                <div className="px-2 text-[13px] text-center">
                   <button
-                    onClick={() => { setActiveDateRequestId(t.id); setActiveDateRequest(t); }}
-                    className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
+                    onClick={() => setViewTrainingRequest(t)}
+                    className="text-[#cf2031] underline hover:opacity-75 font-medium text-[13px]"
                   >
-                    <Pencil className="w-4 h-4" />
+                    View Training
                   </button>
                 </div>
-              </div>
+                <div className="px-2 text-[13px] text-center text-gray-800">{t.attendees}</div>
 
-              {/* Trainer */}
-              <div className="px-2 flex items-center gap-2 py-2">
-                {t.trainer ? (
+                {/* Proposed Date */}
+                <div className="px-2 flex items-center gap-2 py-2">
                   <div className="flex items-center gap-2 w-full justify-between">
-                    <span className="text-[13px] text-gray-800 leading-tight flex-1 text-center">{t.trainer}</span>
-                    <button
-                      onClick={() => setEditTrainerRequestId(t.id)}
-                      className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </button>
+                    <span className="text-[13px] text-gray-800 leading-tight flex-1 text-center">
+                      {formatProposedDate(t.proposed_date)}
+                    </span>
+                    {t.status !== "Rejected" && t.status !== "Cancelled" && (
+                      <button
+                        onClick={() => { setActiveDateRequestId(t.id); setActiveDateRequest(t); }}
+                        className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
-                ) : (
-                  <button
-                    onClick={() => setActiveRequestId(t.id)}
-                    className="flex items-center gap-1 text-[13px] text-[#cf2031] font-semibold hover:opacity-75 transition-opacity mx-auto"
-                  >
-                    <span className="w-5 h-5 rounded-full bg-[#cf2031] text-white flex items-center justify-center text-[14px] leading-none">+</span>
-                    Assign Trainer
-                  </button>
-                )}
-              </div>
+                </div>
 
-              {/* Manage Request */}
-              <div className="px-2 text-center">
-                <ManageRequestActions
-                  requestId={t.id}
-                  trainer={t.trainer}
-                  status={t.status}
-                  onUpdated={refetch}
-                />
+                {/* Trainer */}
+                <div className="px-2 flex items-center gap-2 py-2">
+                  {t.trainer ? (
+                    <div className="flex items-center gap-2 w-full justify-between">
+                      <span className="text-[13px] text-gray-800 leading-tight flex-1 text-center">{t.trainer}</span>
+                      {t.status !== "Rejected" && t.status !== "Cancelled" && (
+                        <button
+                          onClick={() => setEditTrainerRequestId(t.id)}
+                          className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setActiveRequestId(t.id)}
+                      className="flex items-center gap-1 text-[13px] text-[#cf2031] font-semibold hover:opacity-75 transition-opacity mx-auto"
+                    >
+                      <span className="w-5 h-5 rounded-full bg-[#cf2031] text-white flex items-center justify-center text-[14px] leading-none">+</span>
+                      Assign Trainer
+                    </button>
+                  )}
+                </div>
+
+                {/* Manage Request */}
+                <div className="px-2 text-center flex items-center justify-center">
+                  <ManageRequestActions
+                    requestId={t.id}
+                    trainer={t.trainer}
+                    status={t.status}
+                    onUpdated={refetch}
+                  />
+                </div>
               </div>
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
       </div>
 
-{viewTrainingRequest && (
-  <ViewRecordTrainingDetail
-    record={{
-      id: 0,
-      trainingTitle: viewTrainingRequest.training,
-      trainingCode: viewTrainingRequest.category,
-      trainingType: "custom",
-      requestId: viewTrainingRequest.id,
-      trainingId: null,
-      ltName: viewTrainingRequest.lt_name,
-      chapter: viewTrainingRequest.chapter,
-      requestedAt: viewTrainingRequest.requested_at,
-      createdAt: viewTrainingRequest.requested_at,
-      timeApproved: "—",
-      proposedDate: viewTrainingRequest.proposed_date ?? "—",
-      trainingThumbnail: "",
-      trainingDescription: "",
-      status: viewTrainingRequest.status,
-      trainerId: 0,
-    }}
-    onClose={() => setViewTrainingRequest(null)}
-  />
-)}
+      {viewTrainingRequest && (
+        <ViewRecordTrainingDetail
+          record={{
+            id: 0,
+            trainingTitle: viewTrainingRequest.training,
+            trainingCode: viewTrainingRequest.category,
+            trainingType: "custom",
+            requestId: viewTrainingRequest.id,
+            trainingId: null,
+            ltName: viewTrainingRequest.lt_name,
+            chapter: viewTrainingRequest.chapter,
+            requestedAt: viewTrainingRequest.requested_at,
+            createdAt: viewTrainingRequest.requested_at,
+            timeApproved: "—",
+            proposedDate: viewTrainingRequest.proposed_date ?? "—",
+            trainingThumbnail: "",
+            trainingDescription: "",
+            status: viewTrainingRequest.status,
+            trainerId: 0,
+          }}
+          onClose={() => setViewTrainingRequest(null)}
+        />
+      )}
 
-        {activeRequestId && (
-          <AssignTrainerDrawer
-            isOpen={!!activeRequestId}
-            requestId={activeRequestId}
-            onClose={() => setActiveRequestId(null)}
-            onAssign={() => {}}
-            onAssigned={() => refetch()}
-          />
-        )}
+      {activeRequestId && (
+        <AssignTrainerDrawer
+          isOpen={!!activeRequestId}
+          requestId={activeRequestId}
+          onClose={() => setActiveRequestId(null)}
+          onAssign={() => {}}
+          onAssigned={() => refetch()}
+        />
+      )}
 
       {activeDateRequestId && activeDateRequest && (
         <ProposedDateModal
