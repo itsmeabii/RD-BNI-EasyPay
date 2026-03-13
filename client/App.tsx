@@ -96,7 +96,6 @@ export default function App() {
                     <Route path="view-records" element={<ViewRecordsPage />} />
                     <Route path="view-records/:id" element={<ViewRecordsPage />} />
                   </Route>
-                </Route>
 
                 {/* Catch-all route for 404s */}
                 <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
