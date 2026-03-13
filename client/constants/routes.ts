@@ -18,33 +18,19 @@ export const MEMBER_NAV_ITEMS = [
   { label: "Upcoming Trainings", to: MEMBER_PATHS.UPCOMING_TRAINING },
 ] as const;
 
-export const ADMIN_PATHS = {
-  ACCOUNT_DETAILS: "/admin/AccountDetails",
-  ADDRESSES: "/admin/Addresses",
-  DOWNLOADS: "/admin/Downloads",
-  MY_WALLET: "/admin/MyWallet",
-  ORDER_HISTORY: "/admin/OrderHistory",
-  TRAINER_LIST: "/admin/TrainerList",
-  REGULAR_TRAININGS: "/admin/RegularTrainings",
-  CUSTOM_TRAININGS: "/admin/CustomTrainings",
-  VIEW_RECORDS: "/admin/ViewRecords",
-  LOGOUT: "/admin/Logout",
-} as const;
-
 export const ADMIN_NAV_ITEMS = [
-  { label: "Account Details", to: ADMIN_PATHS.ACCOUNT_DETAILS },
-  { label: "Addresses", to: ADMIN_PATHS.ADDRESSES },
-  { label: "Downloads", to: ADMIN_PATHS.DOWNLOADS },
-  { label: "My Wallet", to: ADMIN_PATHS.MY_WALLET },
-  { label: "Order History", to: ADMIN_PATHS.ORDER_HISTORY },
-  { label: "Trainer List", to: ADMIN_PATHS.TRAINER_LIST },
+  { label: "Account Details", to: "/admin/account-details" },
+  { label: "Addresses", to: "/admin/addresses" },
+  { label: "Downloads", to: "/admin/downloads" },
+  { label: "My Wallet", to: "/admin/my-wallet" },
+  { label: "Order History", to: "/admin/order-history" },
+  { label: "Trainer List", to: "/admin/trainer-list" },
   {
     label: "Trainings",
     children: [
-      { label: "Regular Trainings", to: ADMIN_PATHS.REGULAR_TRAININGS },
-      { label: "Custom Trainings", to: ADMIN_PATHS.CUSTOM_TRAININGS },
+      { to: "/admin/regular-trainings", label: "Regular Trainings" },
+      { to: "/admin/custom-trainings", label: "Custom Trainings" },
     ],
   },
-  { label: "View Records", to: ADMIN_PATHS.VIEW_RECORDS },
-  { label: "Logout", to: ADMIN_PATHS.LOGOUT },
+  { label: "View Records", to: "/admin/view-records" },
 ] as const;
