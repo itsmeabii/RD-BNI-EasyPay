@@ -28,8 +28,8 @@ export const ADMIN_NAV_ITEMS = [
   {
     label: "Trainings",
     children: [
-      { to: "/admin/regular-trainings", label: "Regular Trainings" },
-      { to: "/admin/custom-trainings", label: "Custom Trainings" },
+      { label: "Regular Trainings", to: "/admin/regular-trainings" },
+      { label: "Custom Trainings", to: "/admin/custom-trainings" },
     ],
   },
   { label: "View Records", to: "/admin/view-records" },
