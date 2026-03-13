@@ -83,6 +83,7 @@ export default function App() {
                     <Route path="TrainerList" element={<TrainerListPage />} />
                     <Route path="CustomTrainings" element={<CustomTrainings />} />
                     <Route path="ViewRecords" element={<ViewRecordsPage />} />
+                    <Route path="ViewRecords/:id" element={<ViewRecordsPage />} />
                     <Route path="Logout" element={<Logout />} />
                   </Route>
 
