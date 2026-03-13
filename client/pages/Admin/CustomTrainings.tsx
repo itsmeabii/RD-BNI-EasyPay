@@ -1,43 +1,32 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
+import { useOutletContext } from "react-router-dom";
 import { Pencil } from "lucide-react";
 import { SearchAndFilters } from "@/components/SearchAndFilter";
-import { CATEGORY_OPTIONS, CHAPTERS, MONTH_OPTIONS } from "@/constants/Training";
+import {
+  CATEGORY_OPTIONS,
+  CHAPTERS,
+  MONTH_OPTIONS,
+  CUSTOM_TRAINING_ADMIN_TABLE_COLUMNS,
+  CUSTOM_TRAINING_GRID_COLS,
+} from "@/constants/Training";
 import { TrainingRequest, useCustomTrainings } from "@/hooks/useCustomTraining";
-import { TrainerListModal } from "@/components/TrainerListModal";
-import { ProposedDateModal } from "@/components/ProposedDateModal";
-import { EditTrainerModal } from "@/components/EditTrainerModal";
-import { TrainingDetailModal } from "@/components/TrainingDetailModal";
-import { ManageRequestActions } from "@/components/ManageRequestActions";
+import { AssignTrainerDrawer } from "@/components/CustomTraining/AssignTrainerDrawer";
+import { ProposedDateModal } from "@/components/CustomTraining/ProposedDateModal";
+import { EditTrainerModal } from "@/components/CustomTraining/EditTrainerModal";
+import { ViewRecordTrainingDetail } from "@/components/CustomTraining/ViewRecordTrainingDetail";
+import { ManageRequestActions } from "@/components/CustomTraining/ManageRequestActions";
+import { formatProposedDate } from "@/lib/utils/Formatter";
+import { useFilteredTrainings } from "@/hooks/useFilteredTrainings";
 
 const CHAPTER_OPTIONS = CHAPTERS.map((c) => ({ label: c, value: c }));
 
-const TABLE_COLUMNS = [
-  "Request ID", "Chapter", "Category", "Training",
-  "No. of Attendees", "Proposed Date", "Trainer", "Manage Request",
-];
-
-const GRID_COLS = "100px 180px 70px 170px 130px 140px 190px 140px";
-
-const FULL_MONTHS = [
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December",
-];
-
-function formatProposedDate(dateStr: string): string {
-  if (!dateStr) return "—";
-  const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return dateStr;
-  const month = FULL_MONTHS[d.getMonth()];
-  const day = d.getDate();
-  const year = d.getFullYear();
-  let hours = d.getHours();
-  const minutes = String(d.getMinutes()).padStart(2, "0");
-  const ampm = hours >= 12 ? "pm" : "am";
-  hours = hours % 12 || 12;
-  return `${month} ${day}, ${year} ${hours}:${minutes}${ampm}`;
-}
-
 export default function CustomTrainings() {
+  const { setPageTitle } = useOutletContext<{ setPageTitle: (t: string) => void }>();
+
+  useEffect(() => {
+    setPageTitle("Training > Custom Training Request");
+  }, []);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedChapter, setSelectedChapter] = useState("");
@@ -50,27 +39,13 @@ export default function CustomTrainings() {
 
   const { trainings, isLoading, error, refetch } = useCustomTrainings();
 
-const filteredTrainings = useMemo(() => {
-  const q = searchQuery.trim().toLowerCase();
-  return trainings.filter((t) => {
-    const matchesCategory = !selectedCategory || t.category === selectedCategory;
-    const matchesChapter  = !selectedChapter  || 
-      t.chapter.trim().toLowerCase() === selectedChapter.trim().toLowerCase();
-    const matchesMonth    = !selectedMonth || (() => {
-      if (!t.proposed_date) return false;
-      const d = new Date(t.proposed_date);
-      return FULL_MONTHS[d.getMonth()] === selectedMonth;
-    })();
-    const matchesSearch   =
-      !q ||
-      t.training.toLowerCase().includes(q) ||
-      t.category.toLowerCase().includes(q) ||
-      t.id.toLowerCase().includes(q) ||
-      t.chapter.toLowerCase().includes(q) ||
-      t.lt_name.toLowerCase().includes(q);
-    return matchesCategory && matchesChapter && matchesMonth && matchesSearch;
-  });
-}, [searchQuery, selectedCategory, selectedChapter, selectedMonth, trainings]);
+  const filteredTrainings = useFilteredTrainings(
+    trainings,
+    searchQuery,
+    selectedCategory,
+    selectedChapter,
+    selectedMonth
+  );
 
   return (
     <div className="flex flex-col gap-4">
@@ -78,7 +53,7 @@ const filteredTrainings = useMemo(() => {
         searchValue={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Search for categories, chapter, request ID"
-        dropdowns={[
+        filters={[
           { value: selectedCategory, onChange: setSelectedCategory, placeholder: "Categories", width: "w-[140px]", options: CATEGORY_OPTIONS },
           { value: selectedChapter, onChange: setSelectedChapter, placeholder: "Chapter", width: "w-[120px]", options: CHAPTER_OPTIONS, scrollable: true },
           { value: selectedMonth, onChange: setSelectedMonth, placeholder: "Month", width: "w-[120px]", options: MONTH_OPTIONS, scrollable: true },
@@ -86,8 +61,8 @@ const filteredTrainings = useMemo(() => {
       />
 
       <div className="w-full rounded-[8px] overflow-hidden border border-[#d9d9d9]">
-        <div className="grid bg-[#cf2031]" style={{ gridTemplateColumns: GRID_COLS }}>
-          {TABLE_COLUMNS.map((col) => (
+        <div className="grid bg-[#cf2031]" style={{ gridTemplateColumns: CUSTOM_TRAINING_GRID_COLS }}>
+          {CUSTOM_TRAINING_ADMIN_TABLE_COLUMNS.map((col) => (
             <div key={col} className="py-[14px] px-3 text-center text-white font-extrabold text-[11px] leading-tight">
               {col}
             </div>
@@ -106,7 +81,7 @@ const filteredTrainings = useMemo(() => {
               key={t.id}
               className="grid bg-white items-center"
               style={{
-                gridTemplateColumns: GRID_COLS,
+                gridTemplateColumns: CUSTOM_TRAINING_GRID_COLS,
                 borderTop: index === 0 ? "none" : "1px solid #e5e7eb",
                 minHeight: "70px",
               }}
@@ -176,20 +151,37 @@ const filteredTrainings = useMemo(() => {
         )}
       </div>
 
-      {viewTrainingRequest && (
-        <TrainingDetailModal
-          request={viewTrainingRequest}
-          onClose={() => setViewTrainingRequest(null)}
-        />
-      )}
+{viewTrainingRequest && (
+  <ViewRecordTrainingDetail
+    record={{
+      id: 0,
+      trainingTitle: viewTrainingRequest.training,
+      trainingCode: viewTrainingRequest.category,
+      trainingType: "custom",
+      requestId: viewTrainingRequest.id,
+      trainingId: null,
+      ltName: viewTrainingRequest.lt_name,
+      chapter: viewTrainingRequest.chapter,
+      requestedAt: viewTrainingRequest.requested_at,
+      createdAt: viewTrainingRequest.requested_at,
+      timeApproved: "—",
+      proposedDate: viewTrainingRequest.proposed_date ?? "—",
+      trainingThumbnail: "",
+      trainingDescription: "",
+      status: viewTrainingRequest.status,
+      trainerId: 0,
+    }}
+    onClose={() => setViewTrainingRequest(null)}
+  />
+)}
 
-      {activeRequestId && (
-        <TrainerListModal
-          requestId={activeRequestId}
-          onClose={() => setActiveRequestId(null)}
-          onAssigned={() => refetch()}
-        />
-      )}
+        {activeRequestId && (
+          <AssignTrainerDrawer
+            isOpen={!!activeRequestId}
+            onClose={() => setActiveRequestId(null)}
+            onAssign={() => refetch()}
+          />
+        )}
 
       {activeDateRequestId && activeDateRequest && (
         <ProposedDateModal

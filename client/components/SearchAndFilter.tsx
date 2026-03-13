@@ -19,14 +19,14 @@ interface SearchAndFiltersProps {
   searchValue: string;
   onSearchChange: (val: string) => void;
   searchPlaceholder?: string;
-  dropdowns?: DropdownConfig[];
+  filters?: DropdownConfig[];
 }
 
 export const SearchAndFilters: FC<SearchAndFiltersProps> = ({
   searchValue,
   onSearchChange,
   searchPlaceholder = "Search...",
-  dropdowns = [],
+  filters = [],
 }) => {
   return (
     <div className="flex items-center gap-3">
@@ -35,15 +35,15 @@ export const SearchAndFilters: FC<SearchAndFiltersProps> = ({
         onChange={onSearchChange}
         placeholder={searchPlaceholder}
       />
-      {dropdowns.map((dropdown, index) => (
+      {filters.map((filter, index) => (
         <Dropdown
           key={index}
-          value={dropdown.value}
-          onChange={dropdown.onChange}
-          placeholder={dropdown.placeholder}
-          width={dropdown.width}
-          options={dropdown.options}
-          scrollable={dropdown.scrollable}
+          value={filter.value}
+          onChange={filter.onChange}
+          placeholder={filter.placeholder}
+          width={filter.width}
+          options={filter.options}
+          scrollable={filter.scrollable}
         />
       ))}
     </div>

@@ -1,28 +1,32 @@
 import { useMemo } from "react";
-import { ALL_CUSTOM_TRAININGS } from "../data/AllTrainings";
+import { MONTHS } from "@/constants/Training";
 
 export const useFilteredTrainings = (
+  trainings: any[],
   searchQuery: string,
   selectedCategory: string,
   selectedChapter: string,
-  selectedDate: string
+  selectedMonth: string
 ) =>
   useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
 
-    return ALL_CUSTOM_TRAININGS.filter((t) => {
-      const matchesCategory = !selectedCategory || t.training === selectedCategory;
-      const matchesChapter  = !selectedChapter  || t.chapter  === selectedChapter;
-      const matchesSearch   =
+    return trainings.filter((t) => {
+      const matchesCategory = !selectedCategory || t.category === selectedCategory;
+      const matchesChapter  = !selectedChapter ||
+        t.chapter.trim().toLowerCase() === selectedChapter.trim().toLowerCase();
+      const matchesMonth = !selectedMonth || (() => {
+        if (!t.proposed_date) return false;
+        return MONTHS[new Date(t.proposed_date).getMonth()] === selectedMonth;
+      })();
+      const matchesSearch =
         !q ||
-        t.trainingName.toLowerCase().includes(q) ||
         t.training.toLowerCase().includes(q) ||
-        t.requestId.toLowerCase().includes(q) ||
-        t.chapter.toLowerCase().includes(q);
+        t.category.toLowerCase().includes(q) ||
+        t.id.toLowerCase().includes(q) ||
+        t.chapter.toLowerCase().includes(q) ||
+        t.lt_name.toLowerCase().includes(q);
 
-      const trainingMonth = new Date(t.proposedDate).toLocaleString("default", { month: "long" });
-      const matchesMonth  = !selectedDate || trainingMonth === selectedDate;
-
-      return matchesCategory && matchesChapter && matchesSearch && matchesMonth;
+      return matchesCategory && matchesChapter && matchesMonth && matchesSearch;
     });
-  }, [searchQuery, selectedCategory, selectedChapter, selectedDate]);
+  }, [trainings, searchQuery, selectedCategory, selectedChapter, selectedMonth]);

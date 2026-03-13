@@ -23,3 +23,18 @@ export function parseDate(dateStr: string): number {
   const [m, d, y] = dateStr.split("/");
   return new Date(+y, +m - 1, +d).getTime();
 }
+
+// Output: "March 6, 2026 2:35pm"
+export function formatProposedDate(dateStr: string): string {
+  if (!dateStr) return "—";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  const month = d.toLocaleDateString("en-US", { month: "long" });
+  const day = d.getDate();
+  const year = d.getFullYear();
+  let hours = d.getHours();
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+  const ampm = hours >= 12 ? "pm" : "am";
+  hours = hours % 12 || 12;
+  return `${month} ${day}, ${year} ${hours}:${minutes}${ampm}`;
+}

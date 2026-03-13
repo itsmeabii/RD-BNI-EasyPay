@@ -38,6 +38,13 @@ export const ADMIN_NAV_ITEMS = [
   { label: "My Wallet", to: ADMIN_PATHS.MY_WALLET },
   { label: "Order History", to: ADMIN_PATHS.ORDER_HISTORY },
   { label: "Trainer List", to: ADMIN_PATHS.TRAINER_LIST },
+  {
+    label: "Trainings",
+    children: [
+      { label: "Regular Trainings", to: ADMIN_PATHS.REGULAR_TRAININGS },
+      { label: "Custom Trainings", to: ADMIN_PATHS.CUSTOM_TRAININGS },
+    ],
+  },
   { label: "View Records", to: ADMIN_PATHS.VIEW_RECORDS },
   { label: "Logout", to: ADMIN_PATHS.LOGOUT },
 ] as const;
