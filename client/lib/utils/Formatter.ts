@@ -23,3 +23,12 @@ export function parseDate(dateStr: string): number {
   const [m, d, y] = dateStr.split("/");
   return new Date(+y, +m - 1, +d).getTime();
 }
+
+// Output: "01/27/2026 8:19 pm" — for Training Request table
+export function formatDateTime(dateStr: string): string {
+  if (!dateStr || dateStr === "—") return "—";
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return dateStr;
+  return d.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" }) +
+    " " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase();
+}

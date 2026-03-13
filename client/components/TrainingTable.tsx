@@ -1,20 +1,12 @@
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase/Client";
+import { fetchTrainingThumbnail, fetchChapters } from "@/lib/utils/Trainer/TrainerUtils";
 import { X, ArrowUp, ArrowDown } from "lucide-react";
 import { SearchAndFilters } from "@/components/SearchAndFilter";
 import type { RequestStatus } from "@/constants/Training";
 import type { TrainingRequest } from "@/types/TrainingTypes";
 import { MONTHS } from "@/constants/Training";
 import { categories } from "@/constants/Training";
-
-
-function formatDate(dateStr: string): string {
-  if (!dateStr || dateStr === "—") return "—";
-  const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return dateStr;
-  return d.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" }) +
-    " " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase();
-}
+import { formatDateTime } from "@/lib/utils/Formatter";
 
 function StatusBadge({ status }: { status: RequestStatus }) {
   const styles: Record<RequestStatus, string> = {
@@ -49,20 +41,23 @@ function TrainerCell({ trainer }: { trainer: string | null }) {
 
 function TrainingDetailsPanel({ req, onClose }: { req: TrainingRequest; onClose: () => void }) {
   const [image, setImage] = useState<string | null>(null);
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
-    async function fetchImage() {
-      const { data } = await supabase
-        .from("trainings")
-        .select("thumbnail")
-        .eq("title", req.training.trim())
-        .maybeSingle();
-      if (data?.thumbnail) setImage(data.thumbnail);
-    }
-    fetchImage();
+    setImgError(false);
+    fetchTrainingThumbnail(req.training).then((thumbnail) => {
+      if (thumbnail) setImage(thumbnail);
+    });
   }, [req.training]);
 
   const description = req.trainingDescription || "No Description Available";
+
+  const fallback = (
+    <div className="w-full h-full bg-gradient-to-br from-[#8B0000] to-[#CF2031] flex flex-col items-center justify-center text-white p-4 text-center">
+      <p className="text-[11px] font-semibold uppercase tracking-widest mb-1 opacity-80">{req.category}</p>
+      <p className="text-[15px] font-bold leading-snug">{req.training}</p>
+    </div>
+  );
 
   return (
     <div className="fixed inset-0 z-50 flex">
@@ -80,25 +75,14 @@ function TrainingDetailsPanel({ req, onClose }: { req: TrainingRequest; onClose:
         {/* Thumbnail */}
         <div className="flex justify-center px-7 pb-5 shrink-0">
           <div className="w-[200px] h-[160px] rounded-[8px] overflow-hidden">
-            {image ? (
+            {image && !imgError ? (
               <img
                 src={image}
                 alt={req.training}
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  const el = e.target as HTMLImageElement;
-                  el.style.display = "none";
-                  const parent = el.parentElement!;
-                  parent.className = "w-[200px] h-[160px] rounded-[8px] bg-gradient-to-br from-[#8B0000] to-[#CF2031] flex flex-col items-center justify-center text-white p-4 text-center";
-                  parent.innerHTML = `<p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;opacity:0.8;margin-bottom:4px">${req.category}</p><p style="font-size:15px;font-weight:700;line-height:1.3">${req.training}</p>`;
-                }}
+                onError={() => setImgError(true)}
               />
-            ) : (
-              <div className="w-full h-full bg-gradient-to-br from-[#8B0000] to-[#CF2031] flex flex-col items-center justify-center text-white p-4 text-center">
-                <p className="text-[11px] font-semibold uppercase tracking-widest mb-1 opacity-80">{req.category}</p>
-                <p className="text-[15px] font-bold leading-snug">{req.training}</p>
-              </div>
-            )}
+            ) : fallback}
           </div>
         </div>
 
@@ -169,14 +153,9 @@ export default function TrainingTable({ requests, onNewRequest }: TrainingTableP
   const [selectedRequest, setSelectedRequest] = useState<TrainingRequest | null>(null);
   const [dateSort, setDateSort] = useState<"" | "asc" | "desc">("");
   const [chapters, setChapters] = useState<string[]>([]);
+
   useEffect(() => {
-    async function fetchDropdownData() {
-      const [chaptersRes] = await Promise.all([
-        supabase.from("chapters").select("name").order("name"),
-      ]);
-      if (chaptersRes.data) setChapters(chaptersRes.data.map((c: { name: string }) => c.name));
-    }
-    fetchDropdownData();
+    fetchChapters().then(setChapters);
   }, []);
 
   const filtered = requests.filter((r) => {
@@ -293,7 +272,7 @@ export default function TrainingTable({ requests, onNewRequest }: TrainingTableP
                       </button>
                     </td>
                     <td className="py-4 px-3 text-center text-xs text-[#212121] border-r border-[#817E7E] whitespace-nowrap">{req.chapter}</td>
-                    <td className="py-4 px-3 text-center text-xs text-[#212121] border-r border-[#817E7E] whitespace-nowrap">{formatDate(req.proposedDate)}</td>
+                    <td className="py-4 px-3 text-center text-xs text-[#212121] border-r border-[#817E7E] whitespace-nowrap">{formatDateTime(req.proposedDate)}</td>
                     <td className="py-4 px-3 text-center text-xs text-[#212121] border-r border-[#817E7E] whitespace-nowrap">{req.attendees}</td>
                     <td className="py-4 px-3 text-center border-r border-[#817E7E] whitespace-nowrap"><TrainerCell trainer={req.trainer} /></td>
                     <td className="py-4 px-3 text-center whitespace-nowrap"><StatusBadge status={req.status} /></td>
