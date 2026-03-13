@@ -90,12 +90,14 @@ export async function assignTrainerToRequest(
   trainerName: string
 ): Promise<void> {
 
-  // 1. Update training_request with trainer_id and trainer name
+  // 1. Update training_request with trainer_id, trainer name and reset status
   const { data: request, error: updateRequestError } = await supabase
     .from("training_request")
     .update({ 
       trainer_id: trainerId,
-      trainer: trainerName 
+      trainer: trainerName,
+      status: "Pending",
+      time_approved: null,
     })
     .eq("id", requestId)
     .select()
@@ -103,7 +105,12 @@ export async function assignTrainerToRequest(
 
   if (updateRequestError) throw updateRequestError;
 
-  // 2. Upsert into trainer_training_records
+  // 2. Block reassignment if status is Cancelled or Rejected
+  if (request.status === "Cancelled" || request.status === "Rejected") {
+    throw new Error("Training with rejected status cannot reassign a trainer.");
+  }
+
+  // 3. Upsert into trainer_training_records
   const { error: recordError } = await supabase
     .from("trainer_training_records")
     .upsert({
@@ -111,7 +118,7 @@ export async function assignTrainerToRequest(
       request_id: requestId,
       training_id: null,
       training_type: "custom",
-      status: request.status,
+      status: "Pending",
       proposed_date: request.proposed_date,
       archived: false,
     }, {
