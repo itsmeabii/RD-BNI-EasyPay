@@ -2,31 +2,51 @@ import { X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Trainer, TrainerListDrawerProps } from "@/types/TrainerTypes";
 import TrainerCard from "@/components/Trainer/TrainerCard";
-import { fetchTrainers } from "@/lib/utils/TrainerUtils";
+import { fetchTrainers, assignTrainerToRequest } from "@/lib/utils/Trainer/TrainerUtils";
 
-export function AssignTrainerDrawer({ isOpen, onClose, onAssign }: TrainerListDrawerProps) {
+interface AssignTrainerDrawerProps extends TrainerListDrawerProps {
+  requestId: string;
+  onAssigned?: () => void;
+}
+
+export function AssignTrainerDrawer({ isOpen, onClose, onAssign, requestId, onAssigned }: AssignTrainerDrawerProps) {
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [trainers, setTrainers] = useState<Trainer[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [assigning, setAssigning] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (!isOpen) return;
-        setLoading(true);
-        fetchTrainers().then((data) => {
-            setTrainers(data);
-            setLoading(false);
-        });
-    }, [isOpen]);
+        useEffect(() => {
+            if (!isOpen) return;
+            fetchTrainers().then((data) => {
+                const available = data.filter((t) => t.availability === "Accepting Training");
+                setTrainers(available);
+            });
+        }, [isOpen]);
 
     if (!isOpen) return null;
 
     const selectedTrainer = trainers.find((t) => t.id === selectedId) ?? null;
 
-    function handleAssign() {
-        if (!selectedTrainer) return;
-        onAssign(selectedTrainer); 
-        setSelectedId(null);       
-        onClose();               
+    async function handleAssign() {
+        if (!selectedTrainer || !requestId) return;
+        setAssigning(true);
+        setError(null);
+
+        try {
+            await assignTrainerToRequest(
+                requestId,
+                selectedTrainer.id,
+                `${selectedTrainer.firstName} ${selectedTrainer.lastName}`
+            );
+            onAssign(selectedTrainer);
+            onAssigned?.();
+            setSelectedId(null);
+            onClose();
+        } catch (err: any) {
+            setError(err.message ?? "Failed to assign trainer. Please try again.");
+        } finally {
+            setAssigning(false);
+        }
     }
 
     return (
@@ -46,13 +66,7 @@ export function AssignTrainerDrawer({ isOpen, onClose, onAssign }: TrainerListDr
 
                 {/* Trainer list */}
                 <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-3">
-                    {loading && (
-                        <p className="text-sm text-gray-400 text-center">Loading trainers...</p>
-                    )}
-                    {!loading && trainers.length === 0 && (
-                        <p className="text-sm text-gray-400 text-center">No trainers available.</p>
-                    )}
-                    {!loading && trainers.map((trainer) => (
+                    {trainers.map((trainer) => (
                         <TrainerCard
                             key={trainer.id}
                             trainer={trainer}
@@ -64,11 +78,16 @@ export function AssignTrainerDrawer({ isOpen, onClose, onAssign }: TrainerListDr
                     ))}
                 </div>
 
+                {/* Error */}
+                {error && (
+                    <p className="px-6 pb-2 text-sm text-red-500">{error}</p>
+                )}
+
                 {/* Footer */}
                 <div className="px-6 py-4 border-t">
                     <button
                         onClick={handleAssign}
-                        disabled={!selectedId}
+                        disabled={!selectedId || assigning}
                         className="w-full bg-bni-red text-white font-bold py-3 rounded-lg hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Assign Trainer

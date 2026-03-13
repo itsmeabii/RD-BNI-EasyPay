@@ -60,14 +60,14 @@ export default function App() {
                 <Route element={<ProtectedRoute />}>
                   {/* My Account routes */}
                   <Route path="/my-account" element={<MyAccountLayout />}>
-                    <Route path="AccountDetails" element={<AccountDetails />} />
-                    <Route path="Addresses" element={<Addresses />} />
-                    <Route path="Downloads" element={<Downloads />} />
-                    <Route path="Logout" element={<Logout />} />
-                    <Route path="MyWallet" element={<MyWallet />} />
-                    <Route path="OrderHistory" element={<OrderHistory />} />
-                    <Route path="TrainerApplication" element={<TrainerApplication />} />
-                    <Route path="UpcomingTrainings" element={<UpcomingTraining />} />
+                    <Route path="account-details" element={<AccountDetails />} />
+                    <Route path="addresses" element={<Addresses />} />
+                    <Route path="downloads" element={<Downloads />} />
+                    <Route path="logout" element={<Logout />} />
+                    <Route path="my-wallet" element={<MyWallet />} />
+                    <Route path="order-history" element={<OrderHistory />} />
+                    <Route path="trainer-application" element={<TrainerApplication />} />
+                    <Route path="upcoming-trainings" element={<UpcomingTraining />} />
                   </Route>
 
                   {/* Admin routes */}

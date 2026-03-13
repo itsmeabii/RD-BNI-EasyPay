@@ -10,10 +10,10 @@ import {
   CUSTOM_TRAINING_GRID_COLS,
 } from "@/constants/Training";
 import { TrainingRequest, useCustomTrainings } from "@/hooks/useCustomTraining";
-import { AssignTrainerDrawer } from "@/components/CustomTraining/AssignTrainerDrawer";
+import { AssignTrainerDrawer } from "@/components/Trainer/AssignTrainerDrawer";
 import { ProposedDateModal } from "@/components/CustomTraining/ProposedDateModal";
 import { EditTrainerModal } from "@/components/CustomTraining/EditTrainerModal";
-import { ViewRecordTrainingDetail } from "@/components/CustomTraining/ViewRecordTrainingDetail";
+import { ViewRecordTrainingDetail } from "@/components/ViewRecords/ViewRecordTrainingDetail";
 import { ManageRequestActions } from "@/components/CustomTraining/ManageRequestActions";
 import { formatProposedDate } from "@/lib/utils/Formatter";
 import { useFilteredTrainings } from "@/hooks/useFilteredTrainings";
@@ -178,8 +178,10 @@ export default function CustomTrainings() {
         {activeRequestId && (
           <AssignTrainerDrawer
             isOpen={!!activeRequestId}
+            requestId={activeRequestId}
             onClose={() => setActiveRequestId(null)}
-            onAssign={() => refetch()}
+            onAssign={() => {}}
+            onAssigned={() => refetch()}
           />
         )}
 
