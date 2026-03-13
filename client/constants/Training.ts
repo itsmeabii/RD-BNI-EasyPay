@@ -103,3 +103,7 @@ export const TRAININGS = [
   "Business Strategy and Training",
   "Entrepreneurship Fundamentals",
 ];
+
+export type RequestStatus = "Approved" | "Declined" | "Pending";
+
+export const categories = ["ASWS", "CDWS", "MSP", "MSWS", "NO"];

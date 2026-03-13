@@ -19,10 +19,11 @@ export async function fetchTrainers(): Promise<Trainer[]> {
     lastName: row.last_name ?? "",
     chapter: row.chapter ?? "",
     preferredCategory: row.preferred_category ?? "",
-    availability: row.availability ??  null,
+    availability: row.availability ?? null,
     image: row.image ?? "",
   }));
 }
+
 export async function fetchTrainerRecords(trainerId: number): Promise<TrainingRecord[]> {
   const { data, error } = await supabase
     .from("trainer_training_records")
@@ -228,4 +229,24 @@ export async function deleteTrainer(id: number): Promise<boolean> {
     return false;
   }
   return true;
+}
+
+
+export async function fetchTrainingThumbnail(trainingTitle: string): Promise<string> {
+  const { data } = await supabase
+    .from("trainings")
+    .select("thumbnail")
+    .eq("title", trainingTitle.trim())
+    .maybeSingle();
+
+  return data?.thumbnail ?? "";
+}
+
+export async function fetchChapters(): Promise<string[]> {
+  const { data } = await supabase
+    .from("chapters")
+    .select("name")
+    .order("name");
+
+  return data ? data.map((c: { name: string }) => c.name) : [];
 }

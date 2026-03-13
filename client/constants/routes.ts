@@ -24,3 +24,12 @@ export const ADMIN_NAV_ITEMS = [
   },
   { label: "View Records", to: "/admin/view-records" },
 ] as const;
+
+export const LT_NAV_ITEMS = [
+  { label: "Account Details", to: "/leadership-account/account-details" },
+  { label: "Addresses", to: "/leadership-account/addresses" },
+  { label: "Downloads", to: "/leadership-account/downloads" },
+  { label: "My Wallet", to: "/leadership-account/my-wallet" },
+  { label: "Order History", to: "/leadership-account/order-history" },
+  { label: "Training Request", to: "/leadership-account/training-request" },
+] as const;
