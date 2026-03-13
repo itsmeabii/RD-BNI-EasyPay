@@ -1,7 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { Check, Pencil, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { approveTrainer, fetchTrainers, rejectTrainer } from "@/lib/utils/TrainerUtils";
+import { approveTrainer, fetchTrainers, rejectTrainer } from "@/lib/utils/Trainer/TrainerUtils";
 import { Trainer } from "@/types/TrainerTypes";
 import { TrainerEditModal } from "@/components/Trainer/TrainerEditModal";
 import { TrainerListSkeleton } from "./TrainerListSkeleton";

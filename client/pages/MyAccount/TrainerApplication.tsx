@@ -61,6 +61,12 @@ export default function TrainerApplication() {
   const ErrorMsg = ({ msg }: { msg?: string }) =>
     msg ? <span className="text-[#CF2031] text-[10px] font-bold mt-1 pl-2">{msg}</span> : null;
 
+  const RequiredLabel = ({ children }: { children: React.ReactNode }) => (
+    <label className="text-black text-[12px] pl-2">
+      {children} <span className="text-[#CF2031]">*</span>
+    </label>
+  );
+
   return (
     <>
       {showModal && (

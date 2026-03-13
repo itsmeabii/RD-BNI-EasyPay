@@ -35,15 +35,15 @@ export const SearchAndFilters: FC<SearchAndFiltersProps> = ({
         onChange={onSearchChange}
         placeholder={searchPlaceholder}
       />
-      {filters.map((dropdown, index) => (
+      {filters.map((filter, index) => (
         <Dropdown
           key={index}
-          value={dropdown.value}
-          onChange={dropdown.onChange}
-          placeholder={dropdown.placeholder}
-          width={dropdown.width}
-          options={dropdown.options}
-          scrollable={dropdown.scrollable}
+          value={filter.value}
+          onChange={filter.onChange}
+          placeholder={filter.placeholder}
+          width={filter.width}
+          options={filter.options}
+          scrollable={filter.scrollable}
         />
       ))}
     </div>
