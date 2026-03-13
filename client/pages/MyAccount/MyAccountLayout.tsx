@@ -22,6 +22,7 @@ export default function MyAccountLayout() {
           <Outlet context={{ setPageTitle }} />
         </main>
       </div>
+
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { Trainer } from "@/types/TrainerTypes";
-import { updateTrainer, deleteTrainer } from "@/lib/utils/TrainerUtils";
+import { updateTrainer, deleteTrainer } from "@/lib/utils/Trainer/TrainerUtils";
 import { Dropdown } from "@/components/Dropdown";
 import { AVAILABILITY, PREFERRED_CATEGORY } from "@/constants/Trainer";
 import { ConfirmModal } from "../ConfirmModal";

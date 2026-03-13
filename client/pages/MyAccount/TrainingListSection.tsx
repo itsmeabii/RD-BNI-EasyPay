@@ -21,7 +21,12 @@ export const TrainingListSection = ({
   const [customSidebarOpen, setCustomSidebarOpen] = useState(false);
   const [activeOrderId, setActiveOrderId] = useState<string | null>(null);
 
-  const reminderOptions = ["1 week before", "1 day before", "1 hour before", "Custom"];
+  const reminderOptions = [
+    "1 week before",
+    "1 day before",
+    "1 hour before",
+    "Custom",
+  ];
 
   const handleSelectOption = (orderId: string, option: string) => {
     if (option === "Custom") {
@@ -52,7 +57,6 @@ export const TrainingListSection = ({
       <div className="w-full rounded-[8px] border border-gray-300 overflow-visible">
         <TrainingTableHeader sortOrder={sortOrder} onSortChange={onSortChange} />
 
-        {/* Body */}
         {trainings.length === 0 ? (
           <div className="bg-white py-16 text-center text-gray-400 text-sm rounded-b-[8px]">
             No trainings match your search or filter.

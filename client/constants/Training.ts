@@ -47,6 +47,19 @@ export const CUSTOM_TRAINING_TABLE_COLUMNS = [
   "Trainer Application",
 ];
 
+export const CUSTOM_TRAINING_ADMIN_TABLE_COLUMNS = [
+  "Request ID",
+  "Chapter",
+  "Category",
+  "Training",
+  "No. of Attendees",
+  "Proposed Date",
+  "Trainer",
+  "Manage Request",
+];
+
+export const CUSTOM_TRAINING_GRID_COLS = "100px 180px 70px 170px 130px 140px 190px 140px";
+
 export const CATEGORY_OPTIONS: DropdownOption[] = [
   { label: "ASWS", value: "ASWS" },
   { label: "AWS", value: "AWS" },

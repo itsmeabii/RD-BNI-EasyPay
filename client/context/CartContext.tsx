@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { GetUser } from "@/lib/auth/GetUser";
+import { useAuth } from "@/context/AuthContext";
 import {
   loadCartFromDB,
   upsertCartItem,
@@ -9,18 +9,20 @@ import {
 
 export interface CartItem {
   id: number;
+  itemType?: "training" | "membership" | "merchandise";
   title: string;
   price: number;
   thumbnail: string;
   qty?: number;
   selectedDate?: string;
   selectedTime?: string;
+  color?: string;
 }
 
 interface CartContextType {
   isLoading: boolean;
   items: CartItem[];
-  addToCart: (item: CartItem, itemType?: "training" | "membership") => void;
+  addToCart: (item: CartItem, itemType?: "training" | "membership" | "merchandise") => void;
   removeFromCart: (id: number) => void;
   clearCart: () => void;
   totalCount: number;
@@ -34,35 +36,63 @@ interface CartContextType {
   checkoutItems: CartItem[];
   checkoutSelected: () => CartItem[];
   checkoutSingle: (item: CartItem) => CartItem[];
+  updateQty: (id: number, qty: number) => void;
 }
 
 const CartContext = createContext<CartContextType | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+  const userId = user?.id ?? null;
+
   const [items, setItems] = useState<CartItem[]>([]);
-  const [userId, setUserId] = useState<string | null>(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [checkoutItems, setCheckoutItems] = useState<CartItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // React to auth changes — load DB cart or guest cart
   useEffect(() => {
-    const init = async () => {
-      const user = await GetUser();
-      if (!user?.id) {
-        setIsLoading(false); 
-        return;
+    const load = async () => {
+      setIsLoading(true);
+      if (userId) {
+        sessionStorage.removeItem("guest_cart");
+        const cartData = await loadCartFromDB(userId);
+        setItems(cartData);
+      } else {
+        const stored = sessionStorage.getItem("guest_cart");
+        setItems(stored ? JSON.parse(stored) : []);
       }
-      setUserId(user.id);
-      const cartData = await loadCartFromDB(user.id);
-      setItems(cartData);
-      setIsLoading(false); 
+      setIsLoading(false);
     };
-    init();
-  }, []);
+    load();
+  }, [userId]);
 
-  const addToCart = async (item: CartItem, itemType: "training" | "membership" = "training") => {
-    if (items.some((i) => i.id === item.id)) return;
+  // Sync guest cart to sessionStorage
+  useEffect(() => {
+    if (!userId) {
+      sessionStorage.setItem("guest_cart", JSON.stringify(items));
+    }
+  }, [items, userId]);
+
+  const updateQty = async (id: number, qty: number) => {
+    if (qty < 1) return;
+    setItems((prev) => {
+      const updated = prev.map((i) => i.id === id ? { ...i, qty } : i);
+      const updatedItem = updated.find((i) => i.id === id);
+      if (userId && updatedItem) {
+        upsertCartItem(userId, updatedItem, "merchandise");
+      }
+      return updated;
+    });
+  };
+
+  const addToCart = async (item: CartItem, itemType: "training" | "membership" | "merchandise" = "training") => {
+    const existing = items.find((i) => i.id === item.id);
+    if (existing) {
+      await updateQty(item.id, (existing.qty ?? 1) + 1);
+      return;
+    }
     const newItem = { ...item, qty: item.qty ?? 1 };
     setItems((prev) => [...prev, newItem]);
     if (userId) await upsertCartItem(userId, newItem, itemType);
@@ -117,11 +147,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const closeCart = () => setIsCartOpen(false);
 
   const totalCount = items.length;
-  const totalPrice = items.reduce((sum, i) => sum + i.price, 0);
+  const totalPrice = items.reduce((sum, i) => sum + i.price * (i.qty ?? 1), 0);
 
   return (
     <CartContext.Provider
       value={{
+        updateQty,
         isLoading,
         items,
         addToCart,

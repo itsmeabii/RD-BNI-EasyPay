@@ -1,5 +1,5 @@
 export const MEMBER_NAV_ITEMS = [
-  { label: "Account Details", to: "/my-account/account-details" },
+  { label: "Account Details", to: "/my-account/account-details"},
   { label: "Addresses", to: "/my-account/addresses" },
   { label: "Downloads", to: "/my-account/downloads" },
   { label: "My Wallet", to: "/my-account/my-wallet" },
@@ -18,8 +18,8 @@ export const ADMIN_NAV_ITEMS = [
   {
     label: "Trainings",
     children: [
-      { to: "/admin/regular-trainings", label: "Regular Trainings" },
-      { to: "/admin/custom-trainings", label: "Custom Trainings" },
+      { label: "Regular Trainings", to: "/admin/regular-trainings" },
+      { label: "Custom Trainings", to: "/admin/custom-trainings" },
     ],
   },
   { label: "View Records", to: "/admin/view-records" },

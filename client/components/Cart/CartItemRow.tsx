@@ -1,6 +1,7 @@
 import { Trash2 } from "lucide-react";
 import { CartItem } from "@/context/CartContext";
 import { formatPrice } from "@/lib/utils/Formatter";
+import { useCart } from "@/context/CartContext";
 
 interface CartItemRowProps {
   item: CartItem;
@@ -8,6 +9,9 @@ interface CartItemRowProps {
 }
 
 export default function CartItemRow({ item, onRemove }: CartItemRowProps) {
+  const { updateQty } = useCart();
+  const isMerchandise = item.itemType === "merchandise";
+
   return (
     <div className="flex items-start gap-3 py-4 border-b border-gray-100 last:border-none">
       {/* Thumbnail */}
@@ -16,7 +20,7 @@ export default function CartItemRow({ item, onRemove }: CartItemRowProps) {
         alt={item.title}
         width={80}
         height={80}
-        className="w-20 h-20 object-cover rounded flex-shrink-0"
+        className="w-20 h-20 object-contain rounded flex-shrink-0"
       />
 
       {/* Details */}
@@ -30,9 +34,34 @@ export default function CartItemRow({ item, onRemove }: CartItemRowProps) {
             </span>
           )}
         </p>
+
+        {/* Color */}
+        {item.color && (
+          <p className="text-xs text-gray-500 mb-1">Color: {item.color}</p>
+        )}
+
         <p className="text-sm font-semibold text-gray-800">
           {formatPrice(item.price)}
         </p>
+
+        {/* Qty controls - merchandise only */}
+        {isMerchandise && (
+          <div className="flex items-center gap-2 mt-2">
+            <button
+              onClick={() => updateQty(item.id, (item.qty ?? 1) - 1)}
+              className="w-6 h-6 rounded border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition text-sm"
+            >
+              -
+            </button>
+            <span className="text-sm font-semibold w-4 text-center">{item.qty ?? 1}</span>
+            <button
+              onClick={() => updateQty(item.id, (item.qty ?? 1) + 1)}
+              className="w-6 h-6 rounded border border-gray-300 flex items-center justify-center text-gray-600 hover:bg-gray-100 transition text-sm"
+            >
+              +
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Remove */}

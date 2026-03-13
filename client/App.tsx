@@ -33,6 +33,8 @@ import ProtectedRoute from "./lib/utils/Protectedroute";
 import ViewRecordsPage from "./pages/Admin/ViewRecordsPage";
 import TrainingRequest from "./pages/TrainingRequest";
 import LeadershipLayout from "./pages/LeadershipTeam/LeadershipLayout";
+import MerchandisePage from "./pages/Merchandise/MerchandisePage";
+import MerchandiseDetailPage from "./pages/Merchandise/MerchandiseDetailPage";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +57,8 @@ export default function App() {
                 <Route path="/training/:id" element={<TrainingDetail />} />
                 <Route path="/membership" element={<NewMembership />} />
                 <Route path="/membership/renewal" element={<MembershipRenewal />} />
+                <Route path="/merchandise" element={<MerchandisePage />} />
+                <Route path="/merchandise/:id" element={<MerchandiseDetailPage />} />
                 <Route path="/checkout" element={<Checkout />} />
 
                 {/* Protected: Member routes */}
@@ -84,16 +88,17 @@ export default function App() {
                   </Route>
                 </Route>
 
-                {/* Admin routes */}
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route index element={<Navigate to="custom-trainings" replace />} />
-                  <Route path="custom-trainings" element={<CustomTrainings />} />
-                  <Route path="trainer-list" element={<TrainerListPage />} />
-                  <Route path="view-records" element={<ViewRecordsPage />} />
-                  <Route path="view-records/:id" element={<ViewRecordsPage />} />
+                  {/* Admin routes */}
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route index element={<Navigate to="custom-trainings" replace />} />
+                    <Route path="custom-trainings" element={<CustomTrainings />} />
+                    <Route path="trainer-list" element={<TrainerListPage />} />
+                    <Route path="view-records" element={<ViewRecordsPage />} />
+                    <Route path="view-records/:id" element={<ViewRecordsPage />} />
+                  </Route>
                 </Route>
 
-                {/* Catch-all */}
+                {/* Catch-all route for 404s */}
                 <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
                 <Route path="/success-treasure-map/:id" element={<SuccessMapWorkshopDetails />} />
                 <Route path="/my-account/view-records" element={<ViewRecordsPage />} />
