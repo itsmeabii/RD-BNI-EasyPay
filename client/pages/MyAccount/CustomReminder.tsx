@@ -15,24 +15,14 @@ export default function CustomReminderSidebar({
   const [numVal, setNumVal] = useState<number>(30);
   const [unitVal, setUnitVal] = useState<UnitType>("minutes");
 
-  const handleDone = () => {
-    onDone(`${numVal} ${unitVal} before`);
-  };
-
   return (
     <>
       {/* Backdrop */}
       <div
         onClick={onClose}
-        style={{
-          position: "fixed",
-          inset: 0,
-          backgroundColor: "rgba(0,0,0,0.25)",
-          zIndex: 998,
-          opacity: isOpen ? 1 : 0,
-          pointerEvents: isOpen ? "auto" : "none",
-          transition: "opacity 0.25s ease",
-        }}
+        className={`fixed inset-0 bg-black/25 transition-opacity duration-300 z-[998] ${
+          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
       />
 
       {/* Slide-in wrapper */}
@@ -50,10 +40,6 @@ export default function CustomReminderSidebar({
           onDone={() => onDone(`${numVal} ${unitVal} before`)}
         />
       </div>
-
-      <style>{`
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-      `}</style>
     </>
   );
 }
