@@ -8,7 +8,6 @@ import { CartProvider } from "./context/CartContext";
 import Header from "./components/Header";
 import Cart from "./pages/CartDrawer";
 import Home from "./pages/Home";
-import Merchandise from "./pages/Merchandise";
 import Checkout from "./pages/Checkout/Checkout";
 import TrainingDetail from "./pages/Training/[id]/page";
 import NotFound from "./pages/NotFound";
@@ -32,6 +31,8 @@ import NewMembership from "./pages/Membership/NewMembershipPage";
 import TrainerListPage from "./pages/Admin/TrainerListPage";
 import ProtectedRoute from "./lib/utils/Protectedroute";
 import ViewRecordsPage from "./pages/Admin/ViewRecordsPage";
+import MerchandisePage from "./pages/Merchandise/MerchandisePage";
+import MerchandiseDetailPage from "./pages/Merchandise/MerchandiseDetailPage";
 
 const queryClient = new QueryClient();
 
@@ -54,7 +55,8 @@ export default function App() {
                 <Route path="/training/:id" element={<TrainingDetail />} />
                 <Route path="/membership" element={<NewMembership />} />
                 <Route path="/membership/renewal" element={<MembershipRenewal />} />
-                <Route path="/merchandise" element={<Merchandise />} />
+                <Route path="/merchandise" element={<MerchandisePage />} />
+                <Route path="/merchandise/:id" element={<MerchandiseDetailPage />} />
                 <Route path="/checkout" element={<Checkout />} />
 
                 <Route element={<ProtectedRoute />}>

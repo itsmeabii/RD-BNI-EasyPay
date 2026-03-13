@@ -13,21 +13,24 @@ export async function loadCartFromDB(userId: string): Promise<CartItem[]> {
     return [];
   }
 
-  return data.map((row) => ({
-    id: row.item_id,          
+    return data.map((row) => ({
+    id: row.item_id,
+    itemType: row.item_type ?? "training", 
     title: row.title,
     price: row.price,
     thumbnail: row.thumbnail ?? "",
     qty: row.qty,
     selectedDate: row.selected_date ?? undefined,
     selectedTime: row.selected_time ?? undefined,
+    color: row.color ?? undefined, 
   }));
 }
 
+//update and insert items in cart
 export async function upsertCartItem(
   userId: string,
   item: CartItem,
-  itemType: "training" | "membership" 
+  itemType: "training" | "membership" | "merchandise"
 ): Promise<void> {
   const { error } = await supabase.from("cart_items").upsert(
     {
