@@ -100,47 +100,49 @@ export default function CustomTrainings() {
                 </div>
                 <div className="px-2 text-[13px] text-center text-gray-800">{t.attendees}</div>
 
-                {/* Proposed Date */}
-                <div className="px-2 flex items-center gap-2 py-2">
-                  <div className="flex items-center gap-2 w-full justify-between">
-                    <span className="text-[13px] text-gray-800 leading-tight flex-1 text-center">
-                      {formatProposedDate(t.proposed_date)}
-                    </span>
+              {/* Proposed Date */}
+              <div className="px-2 flex items-center gap-2 py-2">
+                <div className="flex items-center gap-2 w-full justify-between">
+                  <span className="text-[13px] text-gray-800 leading-tight flex-1 text-center">
+                    {formatProposedDate(t.proposed_date)}
+                  </span>
+                  {t.status !== "Rejected" && t.status !== "Cancelled" && (
+                    <button
+                      onClick={() => { setActiveDateRequestId(t.id); setActiveDateRequest(t); }}
+                      className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+            {/* Trainer */}
+            <div className="px-2 flex items-center gap-2 py-2">
+              <div className="flex items-center gap-1 w-full justify-between">
+                {t.trainer ? (
+                  <>
+                    <span className="text-[13px] text-gray-800 leading-tight flex-1 text-center">{t.trainer}</span>
                     {t.status !== "Rejected" && t.status !== "Cancelled" && (
                       <button
-                        onClick={() => { setActiveDateRequestId(t.id); setActiveDateRequest(t); }}
+                        onClick={() => setEditTrainerRequestId(t.id)}
                         className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
                     )}
-                  </div>
-                </div>
-
-                {/* Trainer */}
-                <div className="px-2 flex items-center gap-2 py-2">
-                  {t.trainer ? (
-                    <div className="flex items-center gap-2 w-full justify-between">
-                      <span className="text-[13px] text-gray-800 leading-tight flex-1 text-center">{t.trainer}</span>
-                      {t.status !== "Rejected" && t.status !== "Cancelled" && (
-                        <button
-                          onClick={() => setEditTrainerRequestId(t.id)}
-                          className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  ) : (
-                    <button
-                      onClick={() => setActiveRequestId(t.id)}
-                      className="flex items-center gap-1 text-[13px] text-[#cf2031] font-semibold hover:opacity-75 transition-opacity mx-auto"
-                    >
-                      <span className="w-5 h-5 rounded-full bg-[#cf2031] text-white flex items-center justify-center text-[14px] leading-none">+</span>
-                      Assign Trainer
-                    </button>
-                  )}
-                </div>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => setActiveRequestId(t.id)}
+                    className="flex items-center gap-1 text-[13px] text-[#cf2031] font-semibold hover:opacity-75 transition-opacity mx-auto"
+                  >
+                    <span className="w-5 h-5 rounded-full bg-[#cf2031] text-white flex items-center justify-center text-[14px] leading-none">+</span>
+                    Assign Trainer
+                  </button>
+                )}
+              </div>
+            </div>
 
                 {/* Manage Request */}
                 <div className="px-2 text-center flex items-center justify-center">
@@ -157,29 +159,29 @@ export default function CustomTrainings() {
         </div>
       </div>
 
-      {viewTrainingRequest && (
-        <ViewRecordTrainingDetail
-          record={{
-            id: 0,
-            trainingTitle: viewTrainingRequest.training,
-            trainingCode: viewTrainingRequest.category,
-            trainingType: "custom",
-            requestId: viewTrainingRequest.id,
-            trainingId: null,
-            ltName: viewTrainingRequest.lt_name,
-            chapter: viewTrainingRequest.chapter,
-            requestedAt: viewTrainingRequest.requested_at,
-            createdAt: viewTrainingRequest.requested_at,
-            timeApproved: "—",
-            proposedDate: viewTrainingRequest.proposed_date ?? "—",
-            trainingThumbnail: "",
-            trainingDescription: "",
-            status: viewTrainingRequest.status,
-            trainerId: 0,
-          }}
-          onClose={() => setViewTrainingRequest(null)}
-        />
-      )}
+        {viewTrainingRequest && (
+          <ViewRecordTrainingDetail
+            record={{
+              id: 0,
+              trainingTitle: viewTrainingRequest.training,
+              trainingCode: viewTrainingRequest.category,
+              trainingType: "custom",
+              requestId: viewTrainingRequest.id,
+              trainingId: null,
+              ltName: viewTrainingRequest.lt_name,
+              chapter: viewTrainingRequest.chapter,
+              requestedAt: viewTrainingRequest.requested_at,
+              createdAt: viewTrainingRequest.requested_at,
+              timeApproved: "—",
+              proposedDate: viewTrainingRequest.proposed_date ?? "—",
+              trainingThumbnail: "",
+              trainingDescription: "",
+              status: viewTrainingRequest.status,
+              trainerId: 0,
+            }}
+            onClose={() => setViewTrainingRequest(null)}
+          />
+        )}
 
       {activeRequestId && (
         <AssignTrainerDrawer
@@ -191,15 +193,15 @@ export default function CustomTrainings() {
         />
       )}
 
-      {activeDateRequestId && activeDateRequest && (
-        <ProposedDateModal
-          requestId={activeDateRequestId}
-          requestedAt={activeDateRequest.requested_at}
-          currentDate={activeDateRequest.proposed_date}
-          onClose={() => { setActiveDateRequestId(null); setActiveDateRequest(null); }}
-          onUpdated={() => refetch()}
-        />
-      )}
+          {activeDateRequestId && activeDateRequest && (
+            <ProposedDateModal
+              requestId={activeDateRequestId}
+              requestedAt={activeDateRequest.requested_at}
+              currentDate={activeDateRequest.proposed_date}
+              onClose={() => { setActiveDateRequestId(null); setActiveDateRequest(null); }}
+              onUpdated={() => refetch()}
+            />
+          )}
 
       {editTrainerRequestId && (
         <EditTrainerModal
