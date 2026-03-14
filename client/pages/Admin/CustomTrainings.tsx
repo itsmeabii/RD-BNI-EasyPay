@@ -203,7 +203,10 @@ export default function CustomTrainings() {
 
       {editTrainerRequestId && (
         <EditTrainerModal
-          onEdit={() => { setActiveRequestId(editTrainerRequestId); setEditTrainerRequestId(null); }}
+          onEdit={() => { 
+            setActiveRequestId(editTrainerRequestId); 
+            setEditTrainerRequestId(null); 
+          }}
           onClose={() => setEditTrainerRequestId(null)}
         />
       )}
