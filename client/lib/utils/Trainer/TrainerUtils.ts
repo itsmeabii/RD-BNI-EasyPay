@@ -41,6 +41,13 @@ export async function fetchTrainerRecords(trainerId: number): Promise<TrainingRe
         code,
         description,
         thumbnail
+      ),
+      training_request (
+        lt_name,
+        chapter,
+        training,
+        training_description,
+        requested_at
       )
     `)
     .eq("trainer_id", trainerId)
@@ -52,24 +59,27 @@ export async function fetchTrainerRecords(trainerId: number): Promise<TrainingRe
     return [];
   }
 
-  return data.map((row: any) => ({
-    id: row.id,
-    requestId: row.request_id ?? null,
-    trainerId: row.trainer_id,
-    trainingId: row.training_id ?? null,
-    trainingTitle: row.trainings?.title ?? "",
-    trainingCode: row.trainings?.code ?? "",
-    trainingDescription: row.trainings?.description ?? "",
-    trainingThumbnail: row.trainings?.thumbnail ?? "",
-    proposedDate: row.proposed_date ?? "",
-    status: row.status ?? "",
-    createdAt: row.created_at ?? "",
-    trainingType: row.training_type ?? "regular",
-    chapter: "",
-    ltName: "",
-    requestedAt: "",
-    timeApproved: "",
-  }));
+  return data.map((row: any) => {
+    const isCustom = row.training_type === "custom";
+    return {
+      id: row.id,
+      requestId: row.request_id ?? null,
+      trainerId: row.trainer_id,
+      trainingId: row.training_id ?? null,
+      trainingTitle: isCustom ? row.training_request?.training ?? "" : row.trainings?.title ?? "",
+      trainingCode: isCustom ? "" : row.trainings?.code ?? "",
+      trainingDescription: isCustom ? row.training_request?.training_description ?? "" : row.trainings?.description ?? "",
+      trainingThumbnail: isCustom ? "" : row.trainings?.thumbnail ?? "",
+      proposedDate: row.proposed_date ?? "",
+      status: row.status ?? "",
+      createdAt: row.created_at ?? "",
+      trainingType: row.training_type ?? "regular",
+      chapter: isCustom ? row.training_request?.chapter ?? "" : "",
+      ltName: isCustom ? row.training_request?.lt_name ?? "" : "",
+      requestedAt: isCustom ? row.training_request?.requested_at ?? "" : "",
+      timeApproved: "",
+    };
+  });
 }
 
 export async function archiveTrainerRecord(id: number): Promise<boolean> {
@@ -91,12 +101,14 @@ export async function assignTrainerToRequest(
   trainerName: string
 ): Promise<void> {
 
-  // 1. Update training_request with trainer_id and trainer name
+  // 1. Update training_request with trainer_id, trainer name and reset status
   const { data: request, error: updateRequestError } = await supabase
     .from("training_request")
     .update({ 
       trainer_id: trainerId,
-      trainer: trainerName 
+      trainer: trainerName,
+      status: "Pending",
+      time_approved: null,
     })
     .eq("id", requestId)
     .select()
@@ -104,7 +116,12 @@ export async function assignTrainerToRequest(
 
   if (updateRequestError) throw updateRequestError;
 
-  // 2. Upsert into trainer_training_records
+  // 2. Block reassignment if status is Cancelled or Rejected
+  if (request.status === "Cancelled" || request.status === "Rejected") {
+    throw new Error("Training with rejected status cannot reassign a trainer.");
+  }
+
+  // 3. Upsert into trainer_training_records
   const { error: recordError } = await supabase
     .from("trainer_training_records")
     .upsert({
@@ -112,7 +129,7 @@ export async function assignTrainerToRequest(
       request_id: requestId,
       training_id: null,
       training_type: "custom",
-      status: request.status,
+      status: "Pending",
       proposed_date: request.proposed_date,
       archived: false,
     }, {

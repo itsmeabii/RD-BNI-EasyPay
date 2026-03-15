@@ -64,6 +64,7 @@ export default function App() {
                 {/* Protected: Member routes */}
                 <Route element={<ProtectedRoute />}>
                   <Route path="/my-account" element={<MyAccountLayout />}>
+                    <Route index element={<Navigate to="upcoming-trainings" replace />} />
                     <Route path="account-details" element={<AccountDetails />} />
                     <Route path="addresses" element={<Addresses />} />
                     <Route path="downloads" element={<Downloads />} />
@@ -79,6 +80,7 @@ export default function App() {
                 <Route element={<ProtectedRoute />}>
                   <Route index element={<Navigate to="/leadership-account/training-request" replace />} />
                   <Route path="/leadership-account" element={<LeadershipLayout />}>
+                    <Route index element={<Navigate to="training-request" replace />} />
                     <Route path="account-details" element={<AccountDetails />} />
                     <Route path="addresses" element={<Addresses />} />
                     <Route path="downloads" element={<Downloads />} />
@@ -89,7 +91,8 @@ export default function App() {
                   </Route>
                 </Route>
 
-                  {/* Admin routes */}
+                {/* Protected: Admin routes */}
+                <Route element={<ProtectedRoute />}>
                   <Route path="/admin" element={<AdminLayout />}>
                     <Route index element={<Navigate to="custom-trainings" replace />} />
                     <Route path="custom-trainings" element={<CustomTrainings />} />
@@ -97,12 +100,11 @@ export default function App() {
                     <Route path="view-records" element={<ViewRecordsPage />} />
                     <Route path="view-records/:id" element={<ViewRecordsPage />} />
                   </Route>
+                </Route>
 
                 {/* Catch-all route for 404s */}
                 <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
                 <Route path="/success-treasure-map/:id" element={<SuccessMapWorkshopDetails />} />
-                <Route path="/my-account/view-records" element={<ViewRecordsPage />} />
-                <Route path="/my-account/view-records/:id" element={<ViewRecordsPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Cart />
