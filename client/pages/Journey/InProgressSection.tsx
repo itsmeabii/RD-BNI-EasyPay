@@ -24,23 +24,31 @@ export function InProgressSection() {
   const [overall, setOverall] = useState<OverallProgress>({ starsCompleted: 0, totalStars: 50 });
 
   useEffect(() => {
-    if (user?.id) {
-      // logged in — fetch with progress
-      fetchProgramProgress(user.id).then(({ overall, programs }) => {
+    const load = async () => {
+      const series = await fetchTrainingSeries();
+      const baseSeries = series.map((s) => ({
+        id: s.id,
+        title: s.title,
+        starsCompleted: 0,
+        totalStars: 10,
+      }));
+
+      if (user?.id) {
+        const { overall, programs } = await fetchProgramProgress(user.id);
         setOverall(overall);
-        setPrograms(programs);
-      });
-    } else {
-      // not logged in — show all series with 0 stars
-      fetchTrainingSeries().then((series) => {
-        setPrograms(series.map((s) => ({
-          id: s.id,
-          title: s.title,
-          starsCompleted: 0, // 👈 empty stars
-          totalStars: 10,
-        })));
-      });
-    }
+
+        // Merge — show all series, fill in progress where available
+        const merged = baseSeries.map((s) => {
+          const found = programs.find((p) => p.id === s.id);
+          return found ?? s;
+        });
+        setPrograms(merged);
+      } else {
+        setPrograms(baseSeries);
+      }
+    };
+
+    load();
   }, [user?.id]);
 
   return (

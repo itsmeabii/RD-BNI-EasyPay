@@ -6,6 +6,12 @@ export default function Header() {
   const location = useLocation();
   const { user, isLoading } = useAuth();
 
+  function getUserLink(role: string) {
+    if (role === "admin") return "/admin";
+    else if (role === "lt") return "/leadership-account";
+    else return "/my-account";
+  }
+
   return (
     <header>
       {/* Top Red Bar */}
@@ -23,7 +29,7 @@ export default function Header() {
           <div className="w-20 h-4 bg-white/30 rounded animate-pulse" />
         ) : user ? (
           <Link
-            to={user.role === "admin" ? "/admin" : "/my-account"}
+            to={getUserLink(user.role)}
             className="flex items-center gap-2 text-white text-xs sm:text-sm lg:text-[15px] hover:opacity-90 transition-opacity"
           >
             <User className="w-4 h-4 lg:w-5 lg:h-5" />

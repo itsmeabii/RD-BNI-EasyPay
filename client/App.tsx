@@ -31,6 +31,8 @@ import NewMembership from "./pages/Membership/NewMembershipPage";
 import TrainerListPage from "./pages/Admin/TrainerListPage";
 import ProtectedRoute from "./lib/utils/Protectedroute";
 import ViewRecordsPage from "./pages/Admin/ViewRecordsPage";
+import TrainingRequest from "./pages/TrainingRequest";
+import LeadershipLayout from "./pages/LeadershipTeam/LeadershipLayout";
 import MerchandisePage from "./pages/Merchandise/MerchandisePage";
 import MerchandiseDetailPage from "./pages/Merchandise/MerchandiseDetailPage";
 
@@ -59,9 +61,10 @@ export default function App() {
                 <Route path="/merchandise/:id" element={<MerchandiseDetailPage />} />
                 <Route path="/checkout" element={<Checkout />} />
 
+                {/* Protected: Member routes */}
                 <Route element={<ProtectedRoute />}>
-                  {/* My Account routes */}
                   <Route path="/my-account" element={<MyAccountLayout />}>
+                    <Route index element={<Navigate to="upcoming-trainings" replace />} />
                     <Route path="account-details" element={<AccountDetails />} />
                     <Route path="addresses" element={<Addresses />} />
                     <Route path="downloads" element={<Downloads />} />
@@ -71,8 +74,24 @@ export default function App() {
                     <Route path="trainer-application" element={<TrainerApplication />} />
                     <Route path="upcoming-trainings" element={<UpcomingTraining />} />
                   </Route>
+                </Route>
 
-                  {/* Admin routes */}
+                {/* Protected: LT routes */}
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/leadership-account" element={<LeadershipLayout />}>
+                    <Route index element={<Navigate to="training-request" replace />} />
+                    <Route path="account-details" element={<AccountDetails />} />
+                    <Route path="addresses" element={<Addresses />} />
+                    <Route path="downloads" element={<Downloads />} />
+                    <Route path="my-wallet" element={<MyWallet />} />
+                    <Route path="order-history" element={<OrderHistory />} />
+                    <Route path="training-request" element={<TrainingRequest />} />
+                    <Route path="logout" element={<Logout />} />
+                  </Route>
+                </Route>
+
+                {/* Protected: Admin routes */}
+                <Route element={<ProtectedRoute />}>
                   <Route path="/admin" element={<AdminLayout />}>
                     <Route index element={<Navigate to="custom-trainings" replace />} />
                     <Route path="custom-trainings" element={<CustomTrainings />} />
@@ -85,8 +104,6 @@ export default function App() {
                 {/* Catch-all route for 404s */}
                 <Route path="/success-treasure-map/" element={<SuccessTreasureMap />} />
                 <Route path="/success-treasure-map/:id" element={<SuccessMapWorkshopDetails />} />
-                <Route path="/my-account/view-records" element={<ViewRecordsPage />} />
-                <Route path="/my-account/view-records/:id" element={<ViewRecordsPage />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Cart />

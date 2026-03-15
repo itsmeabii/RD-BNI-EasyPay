@@ -29,7 +29,7 @@ function mapTraining(row: TrainingRow): Training {
 const TRAINING_SELECT = `
   *,
   training_dates ( date, time ),
-  trainer_training_records (
+  trainer_training_records!trainer_training_records_training_id_fkey (
     trainers ( id, first_name, last_name, background, image )
   )
 `;
