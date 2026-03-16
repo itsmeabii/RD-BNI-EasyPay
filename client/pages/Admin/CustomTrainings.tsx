@@ -127,7 +127,7 @@ export default function CustomTrainings() {
                         <Pencil className="w-4 h-4" />
                       </button>
                     )}
-                  </>
+                  </div>
                 ) : (
                   <button
                     onClick={() => setActiveRequestId(t.id)}
