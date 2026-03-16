@@ -119,13 +119,15 @@ export default function CustomTrainings() {
                 {t.trainer ? (
                   <div className="flex items-center gap-2 w-full justify-between">
                     <span className="text-[13px] text-gray-800 leading-tight flex-1 text-center">{t.trainer}</span>
-                    <button
-                      onClick={() => setEditTrainerRequestId(t.id)}
-                      className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                  </div>
+                    {t.status !== "Rejected" && t.status !== "Cancelled" && (
+                      <button
+                        onClick={() => setEditTrainerRequestId(t.id)}
+                        className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                    )}
+                  </>
                 ) : (
                   <button
                     onClick={() => setActiveRequestId(t.id)}
