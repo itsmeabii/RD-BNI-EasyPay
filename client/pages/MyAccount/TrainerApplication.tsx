@@ -101,10 +101,10 @@ export default function TrainerApplication() {
               <div className="flex flex-col gap-1">
                 <label className="text-black text-base pl-2">First Name <span className="text-[#CF2031]">*</span></label>
                 <input
-                  type="text" placeholder="Jane Marie" value={firstName}
+                  type="text" placeholder="John" value={firstName}
                   onChange={(e) => { setFirstName(e.target.value); clearError("firstName"); }}
                   onBlur={() => { if (!firstName.trim()) setError("firstName", "First name is required"); }}
-                  className={`placeholder:text-black text-black w-full h-[42px] rounded-[10px] border ${errors.firstName ? "border-red-500" : "border-[#D9D9D9]"} bg-[#e2e1e1] shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)] px-5 focus:outline-none focus:border-[#CF2031]`}
+                  className={`placeholder:text-gray-500 text-black w-full h-[42px] rounded-[10px] border ${errors.firstName ? "border-red-500" : "border-[#D9D9D9]"} bg-[#e2e1e1] shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)] px-5 focus:outline-none focus:border-[#CF2031]`}
                 />
                 <ErrorMsg msg={errors.firstName} />
               </div>
@@ -115,7 +115,7 @@ export default function TrainerApplication() {
                   type="text" placeholder="Doe" value={lastName}
                   onChange={(e) => { setLastName(e.target.value); clearError("lastName"); }}
                   onBlur={() => { if (!lastName.trim()) setError("lastName", "Last name is required"); }}
-                  className={`placeholder:text-black text-black w-full h-[42px] rounded-[10px] border ${errors.lastName ? "border-red-500" : "border-[#D9D9D9]"} bg-[#e2e1e1] shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)] px-5 focus:outline-none focus:border-[#CF2031]`}
+                  className={`placeholder:text-gray-500 text-black w-full h-[42px] rounded-[10px] border ${errors.lastName ? "border-red-500" : "border-[#D9D9D9]"} bg-[#e2e1e1] shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)] px-5 focus:outline-none focus:border-[#CF2031]`}
                 />
                 <ErrorMsg msg={errors.lastName} />
               </div>
