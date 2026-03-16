@@ -99,29 +99,29 @@ export default function TrainerApplication() {
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex-1 flex flex-col gap-4">
               <div className="flex flex-col gap-1">
-                <label className="text-black text-[12px] pl-2">First Name <span className="text-[#CF2031]">*</span></label>
+                <label className="text-black text-base pl-2">First Name <span className="text-[#CF2031]">*</span></label>
                 <input
                   type="text" placeholder="Jane Marie" value={firstName}
                   onChange={(e) => { setFirstName(e.target.value); clearError("firstName"); }}
                   onBlur={() => { if (!firstName.trim()) setError("firstName", "First name is required"); }}
-                  className={`w-full h-[42px] rounded-[10px] border ${errors.firstName ? "border-red-500" : "border-[#D9D9D9]"} bg-[#D9D9D9] shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)] px-5 focus:outline-none focus:border-[#CF2031]`}
+                  className={`placeholder:text-black text-black w-full h-[42px] rounded-[10px] border ${errors.firstName ? "border-red-500" : "border-[#D9D9D9]"} bg-[#e2e1e1] shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)] px-5 focus:outline-none focus:border-[#CF2031]`}
                 />
                 <ErrorMsg msg={errors.firstName} />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-black text-[12px] pl-2">Last Name <span className="text-[#CF2031]">*</span></label>
+                <label className="text-black text-base pl-2">Last Name <span className="text-[#CF2031]">*</span></label>
                 <input
                   type="text" placeholder="Doe" value={lastName}
                   onChange={(e) => { setLastName(e.target.value); clearError("lastName"); }}
                   onBlur={() => { if (!lastName.trim()) setError("lastName", "Last name is required"); }}
-                  className={`w-full h-[42px] rounded-[10px] border ${errors.lastName ? "border-red-500" : "border-[#D9D9D9]"} bg-[#D9D9D9] shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)] px-5 focus:outline-none focus:border-[#CF2031]`}
+                  className={`placeholder:text-black text-black w-full h-[42px] rounded-[10px] border ${errors.lastName ? "border-red-500" : "border-[#D9D9D9]"} bg-[#e2e1e1] shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)] px-5 focus:outline-none focus:border-[#CF2031]`}
                 />
                 <ErrorMsg msg={errors.lastName} />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-black text-[12px] pl-2">Chapter <span className="text-[#CF2031]">*</span></label>
+                <label className="text-black text-base pl-2">Chapter <span className="text-[#CF2031]">*</span></label>
                 <Dropdown
                   value={chapter}
                   onChange={(v) => { setChapter(v); clearError("chapter"); }}
@@ -129,18 +129,22 @@ export default function TrainerApplication() {
                   placeholder="Select Chapter"
                   width="w-full"
                   scrollable
+                  placeholderClassName="text-black font-regular"
+                  triggerClassName="text-black font-regular"
                 />
                 <ErrorMsg msg={errors.chapter} />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-black text-[12px] pl-2">Preferred Training <span className="text-[#CF2031]">*</span></label>
+                <label className="text-black text-base pl-2">Preferred Training <span className="text-[#CF2031]">*</span></label>
                 <Dropdown
                   value={training}
                   onChange={(v) => { setTraining(v); clearError("training"); }}
                   options={TRAINING_OPTIONS}
                   placeholder="Select Training"
                   width="w-full"
+                  placeholderClassName="text-black"
+                  triggerClassName="text-black"
                 />
                 <ErrorMsg msg={errors.training} />
               </div>
@@ -158,9 +162,9 @@ export default function TrainerApplication() {
 
             <div className="flex-1 flex flex-col gap-4">
               <div className="flex flex-col gap-1">
-                <label className="text-black text-[12px] pl-2">Upload a Formal Picture <span className="text-[#CF2031]">*</span></label>
+                <label className="text-black text-base pl-2">Upload a Formal Picture <span className="text-[#CF2031]">*</span></label>
                 <div className={`w-full h-[196px] rounded-[5px] border-2 border-dashed ${errors.file ? "border-red-500 bg-red-50" : "border-[#999] bg-white"} flex flex-col items-center justify-center gap-3`}>
-                  <div className="text-[#817E7E] text-[10px] text-center">
+                  <div className="text-[#817E7E] text-sm text-center">
                     <p>Max file size: 2MB</p>
                     <p>File format: .jpg, .jpeg, .png</p>
                   </div>
@@ -175,7 +179,7 @@ export default function TrainerApplication() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-black text-[12px] pl-2">Brief Description <span className="text-[#CF2031]">*</span></label>
+                <label className="text-black text-base pl-2">Brief Description <span className="text-[#CF2031]">*</span></label>
                 <div className="relative">
                   <textarea
                     value={description}
@@ -186,9 +190,9 @@ export default function TrainerApplication() {
                       }
                     }}
                     onBlur={() => { if (!description.trim()) setError("description", "Description is required"); }}
-                    className={`w-full h-[137px] rounded-[5px] border ${errors.description ? "border-red-500" : "border-[#999]"} bg-[#D9D9D9] shadow-[inset_4px_4px_4px_rgba(0,0,0,0.25)] p-3 text-[15px] resize-none focus:outline-none`}
+                    className={`w-full h-[137px] rounded-[5px] border ${errors.description ? "border-red-500" : "border-[#999]"} bg-[#e2e1e1] shadow-[inset_4px_4px_4px_rgba(0,0,0,0.25)] p-3 text-[15px] resize-none focus:outline-none`}
                   />
-                  <span className="absolute bottom-2 right-2 text-[#817E7E] text-[10px]">{description.length}/500</span>
+                  <span className="absolute bottom-2 right-2 text-black text-[10px]">{description.length}/500</span>
                 </div>
                 <ErrorMsg msg={errors.description} />
               </div>
