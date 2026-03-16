@@ -84,21 +84,3 @@ export interface CustomTraining {
   proposedDate: string;
   noOfAttendees: number;
 }
-
-import type { RequestStatus } from "../constants/Training";
-
-export interface TrainingRequest {
-  id: string;
-  ltName: string;
-  category: string;
-  training: string;
-  trainingDescription: string;
-  chapter: string;
-  proposedDate: string;
-  attendees: number;
-  trainer: string | null;
-  status: RequestStatus;
-  requestNote: string;
-  requestedAt: string;
-  timeApproved: string;
-}

@@ -105,14 +105,12 @@ export default function CustomTrainings() {
                   <span className="text-[13px] text-gray-800 leading-tight flex-1 text-center">
                     {formatProposedDate(t.proposed_date)}
                   </span>
-                  {t.status !== "Rejected" && t.status !== "Cancelled" && (
-                    <button
-                      onClick={() => { setActiveDateRequestId(t.id); setActiveDateRequest(t); }}
-                      className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                  )}
+                  <button
+                    onClick={() => { setActiveDateRequestId(t.id); setActiveDateRequest(t); }}
+                    className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
 
@@ -121,14 +119,12 @@ export default function CustomTrainings() {
                 {t.trainer ? (
                   <div className="flex items-center gap-2 w-full justify-between">
                     <span className="text-[13px] text-gray-800 leading-tight flex-1 text-center">{t.trainer}</span>
-                    {t.status !== "Rejected" && t.status !== "Cancelled" && (
-                      <button
-                        onClick={() => setEditTrainerRequestId(t.id)}
-                        className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </button>
-                    )}
+                    <button
+                      onClick={() => setEditTrainerRequestId(t.id)}
+                      className="text-[#cf2031] hover:opacity-75 transition-opacity flex-shrink-0"
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
                   </div>
                 ) : (
                   <button
@@ -155,29 +151,29 @@ export default function CustomTrainings() {
         )}
       </div>
 
-        {viewTrainingRequest && (
-          <ViewRecordTrainingDetail
-            record={{
-              id: 0,
-              trainingTitle: viewTrainingRequest.training,
-              trainingCode: viewTrainingRequest.category,
-              trainingType: "custom",
-              requestId: viewTrainingRequest.id,
-              trainingId: null,
-              ltName: viewTrainingRequest.lt_name,
-              chapter: viewTrainingRequest.chapter,
-              requestedAt: viewTrainingRequest.requested_at,
-              createdAt: viewTrainingRequest.requested_at,
-              timeApproved: "—",
-              proposedDate: viewTrainingRequest.proposed_date ?? "—",
-              trainingThumbnail: "",
-              trainingDescription: "",
-              status: viewTrainingRequest.status,
-              trainerId: 0,
-            }}
-            onClose={() => setViewTrainingRequest(null)}
-          />
-        )}
+{viewTrainingRequest && (
+  <ViewRecordTrainingDetail
+    record={{
+      id: 0,
+      trainingTitle: viewTrainingRequest.training,
+      trainingCode: viewTrainingRequest.category,
+      trainingType: "custom",
+      requestId: viewTrainingRequest.id,
+      trainingId: null,
+      ltName: viewTrainingRequest.lt_name,
+      chapter: viewTrainingRequest.chapter,
+      requestedAt: viewTrainingRequest.requested_at,
+      createdAt: viewTrainingRequest.requested_at,
+      timeApproved: "—",
+      proposedDate: viewTrainingRequest.proposed_date ?? "—",
+      trainingThumbnail: "",
+      trainingDescription: "",
+      status: viewTrainingRequest.status,
+      trainerId: 0,
+    }}
+    onClose={() => setViewTrainingRequest(null)}
+  />
+)}
 
         {activeRequestId && (
           <AssignTrainerDrawer
@@ -189,15 +185,15 @@ export default function CustomTrainings() {
           />
         )}
 
-          {activeDateRequestId && activeDateRequest && (
-            <ProposedDateModal
-              requestId={activeDateRequestId}
-              requestedAt={activeDateRequest.requested_at}
-              currentDate={activeDateRequest.proposed_date}
-              onClose={() => { setActiveDateRequestId(null); setActiveDateRequest(null); }}
-              onUpdated={() => refetch()}
-            />
-          )}
+      {activeDateRequestId && activeDateRequest && (
+        <ProposedDateModal
+          requestId={activeDateRequestId}
+          requestedAt={activeDateRequest.requested_at}
+          currentDate={activeDateRequest.proposed_date}
+          onClose={() => { setActiveDateRequestId(null); setActiveDateRequest(null); }}
+          onUpdated={() => refetch()}
+        />
+      )}
 
       {editTrainerRequestId && (
         <EditTrainerModal
