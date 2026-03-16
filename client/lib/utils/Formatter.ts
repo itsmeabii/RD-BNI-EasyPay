@@ -38,12 +38,3 @@ export function formatProposedDate(dateStr: string): string {
   hours = hours % 12 || 12;
   return `${month} ${day}, ${year} ${hours}:${minutes}${ampm}`;
 }
-
-// Output: "01/27/2026 8:19 pm" — for Training Request table
-export function formatDateTime(dateStr: string): string {
-  if (!dateStr || dateStr === "—") return "—";
-  const d = new Date(dateStr);
-  if (isNaN(d.getTime())) return dateStr;
-  return d.toLocaleDateString("en-US", { month: "2-digit", day: "2-digit", year: "numeric" }) +
-    " " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true }).toLowerCase();
-}

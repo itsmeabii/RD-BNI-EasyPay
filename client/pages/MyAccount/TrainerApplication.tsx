@@ -1,13 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import { Dropdown } from "@/components/SearchControls";
-import { CHAPTERS, TRAININGS } from "@/constants/Training";
 import { validateFile, validateForm, ValidationErrors } from "../../helper/TrainerApplicationValidation";
+import { fetchChapters, fetchTrainings, submitTrainerApplication } from "@/lib/utils/Trainer/TrainerUtils";
 
 const toOptions = (arr: string[]) => arr.map((s) => ({ label: s, value: s }));
-
-const CHAPTER_OPTIONS = toOptions(CHAPTERS);
-const TRAINING_OPTIONS = toOptions(TRAININGS);
 
 export default function TrainerApplication() {
   const context = useOutletContext<{ setPageTitle?: (t: string) => void }>();
@@ -22,7 +19,16 @@ export default function TrainerApplication() {
   const [file, setFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [showModal, setShowModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [chapterOptions, setChapterOptions] = useState<{ label: string; value: string }[]>([]);
+  const [trainingOptions, setTrainingOptions] = useState<{ label: string; value: string }[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    fetchChapters().then((data) => setChapterOptions(toOptions(data)));
+    fetchTrainings().then((data) => setTrainingOptions(toOptions(data)));
+  }, []);
 
   const clearError = (field: string) =>
     setErrors((prev) => { const { [field]: _, ...rest } = prev; return rest; });
@@ -32,7 +38,7 @@ export default function TrainerApplication() {
 
   const resetForm = () => {
     setFirstName(""); setLastName(""); setChapter(""); setTraining("");
-    setDescription(""); setFile(null); setErrors({});
+    setDescription(""); setFile(null); setErrors({}); setSubmitError(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -50,22 +56,26 @@ export default function TrainerApplication() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors = validateForm({ firstName, lastName, chapter, training, description, file });
     if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
     setErrors({});
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    const result = await submitTrainerApplication({ firstName, lastName, chapter, training, description, file: file! });
+
+    setIsSubmitting(false);
+    if (!result.success) {
+      setSubmitError(result.error ?? "Something went wrong. Please try again.");
+      return;
+    }
     setShowModal(true);
   };
 
   const ErrorMsg = ({ msg }: { msg?: string }) =>
     msg ? <span className="text-[#CF2031] text-[10px] font-bold mt-1 pl-2">{msg}</span> : null;
-
-  const RequiredLabel = ({ children }: { children: React.ReactNode }) => (
-    <label className="text-black text-[12px] pl-2">
-      {children} <span className="text-[#CF2031]">*</span>
-    </label>
-  );
 
   return (
     <>
@@ -87,6 +97,9 @@ export default function TrainerApplication() {
 
       <div className="bg-white rounded-[10px] border border-black shadow-[inset_0_0_0_4px_rgba(207,32,49,0.25)] p-6 md:p-8">
         <form onSubmit={handleSubmit} noValidate>
+          {submitError && (
+            <p className="text-[#CF2031] text-[12px] font-bold mb-4">{submitError}</p>
+          )}
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex-1 flex flex-col gap-4">
               <div className="flex flex-col gap-1">
@@ -116,7 +129,7 @@ export default function TrainerApplication() {
                 <Dropdown
                   value={chapter}
                   onChange={(v) => { setChapter(v); clearError("chapter"); }}
-                  options={CHAPTER_OPTIONS}
+                  options={chapterOptions}
                   placeholder="Select Chapter"
                   width="w-full"
                   scrollable
@@ -129,7 +142,7 @@ export default function TrainerApplication() {
                 <Dropdown
                   value={training}
                   onChange={(v) => { setTraining(v); clearError("training"); }}
-                  options={TRAINING_OPTIONS}
+                  options={trainingOptions}
                   placeholder="Select Training"
                   width="w-full"
                 />
@@ -137,8 +150,12 @@ export default function TrainerApplication() {
               </div>
 
               <div className="mt-4">
-                <button type="submit" className="w-full h-[48px] rounded-[10px] bg-[#CF2031] shadow-[4px_4px_4px_rgba(0,0,0,0.25)] text-white text-[15px] font-bold hover:bg-[#b51c2b] active:scale-[0.98] transition-all">
-                  Send Application
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full h-[48px] rounded-[10px] bg-[#CF2031] shadow-[4px_4px_4px_rgba(0,0,0,0.25)] text-white text-[15px] font-bold hover:bg-[#b51c2b] active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? "Sending..." : "Send Application"}
                 </button>
               </div>
             </div>
