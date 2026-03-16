@@ -61,7 +61,7 @@ export default function CustomTrainings() {
       />
 
       <div className="w-full rounded-[8px] overflow-x-auto border border-[#d9d9d9]">
-        <div className="min-w-[900px]">
+        <div className="w-full">
           <div className="grid bg-[#cf2031]" style={{ gridTemplateColumns: CUSTOM_TRAINING_GRID_COLS }}>
             {CUSTOM_TRAINING_ADMIN_TABLE_COLUMNS.map((col) => (
               <div key={col} className="py-[14px] px-3 text-center text-white font-extrabold text-[11px] leading-tight">
