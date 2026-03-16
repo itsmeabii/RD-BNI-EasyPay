@@ -14,6 +14,7 @@ type DropdownProps = {
   className?: string;
   placeholder?: string;
   optionClassName?: string;
+  placeholderClassName?: string;
   label?: string;           
   required?: boolean;       
   error?: string;          
@@ -31,6 +32,7 @@ export function Dropdown({
   required,
   error,
   labelClassName,
+  placeholderClassName
 }: DropdownProps) {
   return (
     <div className="flex flex-col gap-1">
@@ -50,7 +52,9 @@ export function Dropdown({
               className
             )}
           >
-            <span className={value ? "text-gray-900" : "text-gray-400"}>{value || placeholder}</span>
+            <span className={value ? "text-gray-900" : cn("text-gray-400", placeholderClassName)}>
+              {value || placeholder}
+            </span>
             <ChevronDown className="w-4 h-4 text-gray-600 flex-shrink-0" />
           </button>
         </DropdownMenuTrigger>

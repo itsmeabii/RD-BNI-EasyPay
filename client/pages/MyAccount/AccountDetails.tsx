@@ -8,7 +8,7 @@ export default function OrderHistory() {
       <main className="flex items-center justify-center px-4 min-h-[80vh]">
         <div className="text-center max-w-2xl">
           <h1 className="text-4xl font-bold text-black mb-4">
-            MAccount Details
+            Account Details
           </h1>
 
           <p className="text-xl text-gray-600">

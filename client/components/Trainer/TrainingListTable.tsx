@@ -13,7 +13,7 @@ function AvailabilityBadge({ availability }: { availability: string | null }) {
     return <span className="text-bni-red font-bold">Fully Booked</span>;
   if (availability === "Accepting Training")
     return <span className="text-green-500 font-bold">Accepting Training</span>;
-  if (availability === "Pending")
+  if (availability === "pending")
     return <span className="text-gray-500 font-semibold">Pending</span>;
   return <span className="text-gray-400 font-semibold">Rejected</span>; 
 }
@@ -68,6 +68,7 @@ export const TrainerListTable = forwardRef((_, ref) => {
   const [selectedChapter, setSelectedChapter] = useState("");
   const [selectedPreferredTraining, setSelectedPreferredTraining] = useState("");
   const navigate = useNavigate();
+  const [selectedAvailability, setSelectedAvailability] = useState("");
 
   async function loadTrainers() {
     setLoading(true);
@@ -103,24 +104,30 @@ export const TrainerListTable = forwardRef((_, ref) => {
     }
 
   const filtered = trainers.filter((t) => {
-  const q = search.toLowerCase();
-  const matchesSearch =
-    t.trainerId.toLowerCase().includes(q) ||
-    t.firstName.toLowerCase().includes(q) ||
-    t.lastName.toLowerCase().includes(q) ||
-    t.chapter.toLowerCase().includes(q) ||
-    t.preferredCategory.toLowerCase().includes(q);
+    const q = search.toLowerCase();
+    const matchesSearch =
+      t.trainerId.toLowerCase().includes(q) ||
+      t.firstName.toLowerCase().includes(q) ||
+      t.lastName.toLowerCase().includes(q) ||
+      t.chapter.toLowerCase().includes(q) ||
+      t.preferredCategory.toLowerCase().includes(q);
 
-  const matchesCategory = selectedPreferredTraining
-    ? t.preferredCategory === selectedPreferredTraining
-    : true;
+    const matchesCategory = selectedPreferredTraining
+      ? t.preferredCategory === selectedPreferredTraining
+      : true;
 
-  const matchesChapter = selectedChapter
-    ? t.chapter === selectedChapter
-    : true;
+    const matchesChapter = selectedChapter
+      ? t.chapter === selectedChapter
+      : true;
 
-  return matchesSearch && matchesCategory && matchesChapter;
-});
+    const matchesAvailability = selectedAvailability
+      ? selectedAvailability === "Rejected"
+        ? t.availability === null        // null maps to "Rejected"
+        : t.availability === selectedAvailability
+      : true;
+
+    return matchesSearch && matchesCategory && matchesChapter && matchesAvailability;
+  });
 
   return (
     <div className="w-full flex flex-col gap-4">
@@ -143,6 +150,18 @@ export const TrainerListTable = forwardRef((_, ref) => {
             width: "w-[130px]",
             options: CHAPTERS.map((c) => ({ label: c, value: c })),
             scrollable: true,
+          },
+          {
+            value: selectedAvailability,
+            onChange: setSelectedAvailability,
+            placeholder: "Availability",
+            width: "w-[180px]",
+            options: [
+              { label: "Pending", value: "Pending" },
+              { label: "Accepting Training", value: "Accepting Training" },
+              { label: "Fully Booked", value: "Fully Booked" },
+              { label: "Rejected", value: "Rejected" },
+            ],
           },
         ]}
       />

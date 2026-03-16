@@ -1,13 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import { Dropdown } from "@/components/SearchControls";
-import { CHAPTERS, TRAININGS } from "@/constants/Training";
 import { validateFile, validateForm, ValidationErrors } from "../../helper/TrainerApplicationValidation";
+import { submitTrainerApplication } from "@/lib/utils/Trainer/TrainerUtils";
+import { CHAPTERS, TRAININGS } from "@/constants/Training";
 
 const toOptions = (arr: string[]) => arr.map((s) => ({ label: s, value: s }));
-
-const CHAPTER_OPTIONS = toOptions(CHAPTERS);
-const TRAINING_OPTIONS = toOptions(TRAININGS);
 
 export default function TrainerApplication() {
   const context = useOutletContext<{ setPageTitle?: (t: string) => void }>();
@@ -22,7 +20,11 @@ export default function TrainerApplication() {
   const [file, setFile] = useState<File | null>(null);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [showModal, setShowModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const CHAPTER_OPTIONS = CHAPTERS.map((c) => ({ label: c, value: c }));
+  const TRAINING_OPTIONS = TRAININGS.map((t) => ({ label: t, value: t }));
 
   const clearError = (field: string) =>
     setErrors((prev) => { const { [field]: _, ...rest } = prev; return rest; });
@@ -32,7 +34,7 @@ export default function TrainerApplication() {
 
   const resetForm = () => {
     setFirstName(""); setLastName(""); setChapter(""); setTraining("");
-    setDescription(""); setFile(null); setErrors({});
+    setDescription(""); setFile(null); setErrors({}); setSubmitError(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -50,22 +52,26 @@ export default function TrainerApplication() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors = validateForm({ firstName, lastName, chapter, training, description, file });
     if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
     setErrors({});
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    const result = await submitTrainerApplication({ firstName, lastName, chapter, training, description, file: file! });
+
+    setIsSubmitting(false);
+    if (!result.success) {
+      setSubmitError(result.error ?? "Something went wrong. Please try again.");
+      return;
+    }
     setShowModal(true);
   };
 
   const ErrorMsg = ({ msg }: { msg?: string }) =>
     msg ? <span className="text-[#CF2031] text-[10px] font-bold mt-1 pl-2">{msg}</span> : null;
-
-  const RequiredLabel = ({ children }: { children: React.ReactNode }) => (
-    <label className="text-black text-[12px] pl-2">
-      {children} <span className="text-[#CF2031]">*</span>
-    </label>
-  );
 
   return (
     <>
@@ -87,32 +93,35 @@ export default function TrainerApplication() {
 
       <div className="bg-white rounded-[10px] border border-black shadow-[inset_0_0_0_4px_rgba(207,32,49,0.25)] p-6 md:p-8">
         <form onSubmit={handleSubmit} noValidate>
+          {submitError && (
+            <p className="text-[#CF2031] text-[12px] font-bold mb-4">{submitError}</p>
+          )}
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex-1 flex flex-col gap-4">
               <div className="flex flex-col gap-1">
-                <label className="text-black text-[12px] pl-2">First Name <span className="text-[#CF2031]">*</span></label>
+                <label className="text-black text-base pl-2">First Name <span className="text-[#CF2031]">*</span></label>
                 <input
                   type="text" placeholder="Jane Marie" value={firstName}
                   onChange={(e) => { setFirstName(e.target.value); clearError("firstName"); }}
                   onBlur={() => { if (!firstName.trim()) setError("firstName", "First name is required"); }}
-                  className={`w-full h-[42px] rounded-[10px] border ${errors.firstName ? "border-red-500" : "border-[#D9D9D9]"} bg-[#D9D9D9] shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)] px-5 focus:outline-none focus:border-[#CF2031]`}
+                  className={`placeholder:text-black text-black w-full h-[42px] rounded-[10px] border ${errors.firstName ? "border-red-500" : "border-[#D9D9D9]"} bg-[#e2e1e1] shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)] px-5 focus:outline-none focus:border-[#CF2031]`}
                 />
                 <ErrorMsg msg={errors.firstName} />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-black text-[12px] pl-2">Last Name <span className="text-[#CF2031]">*</span></label>
+                <label className="text-black text-base pl-2">Last Name <span className="text-[#CF2031]">*</span></label>
                 <input
                   type="text" placeholder="Doe" value={lastName}
                   onChange={(e) => { setLastName(e.target.value); clearError("lastName"); }}
                   onBlur={() => { if (!lastName.trim()) setError("lastName", "Last name is required"); }}
-                  className={`w-full h-[42px] rounded-[10px] border ${errors.lastName ? "border-red-500" : "border-[#D9D9D9]"} bg-[#D9D9D9] shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)] px-5 focus:outline-none focus:border-[#CF2031]`}
+                  className={`placeholder:text-black text-black w-full h-[42px] rounded-[10px] border ${errors.lastName ? "border-red-500" : "border-[#D9D9D9]"} bg-[#e2e1e1] shadow-[inset_0_4px_4px_rgba(0,0,0,0.25)] px-5 focus:outline-none focus:border-[#CF2031]`}
                 />
                 <ErrorMsg msg={errors.lastName} />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-black text-[12px] pl-2">Chapter <span className="text-[#CF2031]">*</span></label>
+                <label className="text-black text-base pl-2">Chapter <span className="text-[#CF2031]">*</span></label>
                 <Dropdown
                   value={chapter}
                   onChange={(v) => { setChapter(v); clearError("chapter"); }}
@@ -120,34 +129,42 @@ export default function TrainerApplication() {
                   placeholder="Select Chapter"
                   width="w-full"
                   scrollable
+                  placeholderClassName="text-black font-regular"
+                  triggerClassName="text-black font-regular"
                 />
                 <ErrorMsg msg={errors.chapter} />
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-black text-[12px] pl-2">Preferred Training <span className="text-[#CF2031]">*</span></label>
+                <label className="text-black text-base pl-2">Preferred Training <span className="text-[#CF2031]">*</span></label>
                 <Dropdown
                   value={training}
                   onChange={(v) => { setTraining(v); clearError("training"); }}
                   options={TRAINING_OPTIONS}
                   placeholder="Select Training"
                   width="w-full"
+                  placeholderClassName="text-black"
+                  triggerClassName="text-black"
                 />
                 <ErrorMsg msg={errors.training} />
               </div>
 
               <div className="mt-4">
-                <button type="submit" className="w-full h-[48px] rounded-[10px] bg-[#CF2031] shadow-[4px_4px_4px_rgba(0,0,0,0.25)] text-white text-[15px] font-bold hover:bg-[#b51c2b] active:scale-[0.98] transition-all">
-                  Send Application
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full h-[48px] rounded-[10px] bg-[#CF2031] shadow-[4px_4px_4px_rgba(0,0,0,0.25)] text-white text-[15px] font-bold hover:bg-[#b51c2b] active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? "Sending..." : "Send Application"}
                 </button>
               </div>
             </div>
 
             <div className="flex-1 flex flex-col gap-4">
               <div className="flex flex-col gap-1">
-                <label className="text-black text-[12px] pl-2">Upload a Formal Picture <span className="text-[#CF2031]">*</span></label>
+                <label className="text-black text-base pl-2">Upload a Formal Picture <span className="text-[#CF2031]">*</span></label>
                 <div className={`w-full h-[196px] rounded-[5px] border-2 border-dashed ${errors.file ? "border-red-500 bg-red-50" : "border-[#999] bg-white"} flex flex-col items-center justify-center gap-3`}>
-                  <div className="text-[#817E7E] text-[10px] text-center">
+                  <div className="text-[#817E7E] text-sm text-center">
                     <p>Max file size: 2MB</p>
                     <p>File format: .jpg, .jpeg, .png</p>
                   </div>
@@ -162,7 +179,7 @@ export default function TrainerApplication() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-black text-[12px] pl-2">Brief Description <span className="text-[#CF2031]">*</span></label>
+                <label className="text-black text-base pl-2">Brief Description <span className="text-[#CF2031]">*</span></label>
                 <div className="relative">
                   <textarea
                     value={description}
@@ -173,9 +190,9 @@ export default function TrainerApplication() {
                       }
                     }}
                     onBlur={() => { if (!description.trim()) setError("description", "Description is required"); }}
-                    className={`w-full h-[137px] rounded-[5px] border ${errors.description ? "border-red-500" : "border-[#999]"} bg-[#D9D9D9] shadow-[inset_4px_4px_4px_rgba(0,0,0,0.25)] p-3 text-[15px] resize-none focus:outline-none`}
+                    className={`w-full h-[137px] rounded-[5px] border ${errors.description ? "border-red-500" : "border-[#999]"} bg-[#e2e1e1] shadow-[inset_4px_4px_4px_rgba(0,0,0,0.25)] p-3 text-[15px] resize-none focus:outline-none`}
                   />
-                  <span className="absolute bottom-2 right-2 text-[#817E7E] text-[10px]">{description.length}/500</span>
+                  <span className="absolute bottom-2 right-2 text-black text-[10px]">{description.length}/500</span>
                 </div>
                 <ErrorMsg msg={errors.description} />
               </div>

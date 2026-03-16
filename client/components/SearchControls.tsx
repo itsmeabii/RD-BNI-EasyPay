@@ -33,7 +33,9 @@ interface DropdownProps {
   options: { label: string; value: string }[];
   placeholder: string;
   width: string;
-  scrollable?: boolean; 
+  scrollable?: boolean;
+  placeholderClassName?: string; 
+  triggerClassName?: string; 
 }
 
 export const Dropdown: FC<DropdownProps> = ({
@@ -43,6 +45,8 @@ export const Dropdown: FC<DropdownProps> = ({
   placeholder,
   width,
   scrollable = false,
+  placeholderClassName, 
+  triggerClassName,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -77,7 +81,7 @@ export const Dropdown: FC<DropdownProps> = ({
         aria-expanded={isOpen}
         className="flex items-center w-full h-11 bg-white rounded-md border border-bni-gray-400 px-4 gap-2"
       >
-        <span className="flex-1 text-left font-semibold text-bni-gray-500 text-sm select-none">
+        <span className={`flex-1 text-left text-sm select-none ${triggerClassName ?? "text-bni-gray-500 font-semibold"}`}>
           {selected ? selected.label : placeholder}
         </span>
         <ChevronDown

@@ -101,6 +101,14 @@ export const CHAPTERS = [
 export const TRAININGS = [
   "Business Strategy and Training",
   "Entrepreneurship Fundamentals",
+  "ASWS Presentation Skills",
+  "Member Success Program",
+  "BNI Taguig Training Certification Program",
+  "MSWS Member Success Workshop Series",
+  "ASWS Advanced Presentation Workshop",
+  "Networking Mastery Program",
+  "Leadership Excellence Training",
+  "MSP Advanced Member Strategies"
 ];
 
 export type RequestStatus = "Approved" | "Declined" | "Pending";

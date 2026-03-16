@@ -260,3 +260,66 @@ export async function fetchChapters(): Promise<string[]> {
 
   return data ? data.map((c: { name: string }) => c.name) : [];
 }
+
+export async function submitTrainerApplication(form: {
+  firstName: string;
+  lastName: string;
+  chapter: string;
+  training: string;
+  description: string;
+  file: File;
+}): Promise<{ success: boolean; error?: string }> {
+  const fileExt = form.file.name.split(".").pop();
+  const fileName = `${Date.now()}_${form.firstName}_${form.lastName}.${fileExt}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from("trainer_pictures")
+    .upload(fileName, form.file, { upsert: false });
+
+  if (uploadError) {
+    console.error("submitTrainerApplication upload:", uploadError.message);
+    return { success: false, error: "Failed to upload picture. Please try again." };
+  }
+
+  const { data: urlData } = supabase.storage
+    .from("trainer_pictures")
+    .getPublicUrl(fileName);
+
+  const pictureUrl = urlData?.publicUrl ?? "—";
+
+  const { error: insertError } = await supabase
+    .from("trainer_application")
+    .insert({
+      first_name: form.firstName,
+      last_name: form.lastName,
+      chapter: form.chapter,
+      training: form.training,
+      description: form.description,
+      picture_url: pictureUrl,
+    });
+
+  if (insertError) {
+    console.error("submitTrainerApplication insert:", insertError.message);
+    return { success: false, error: "Failed to submit application. Please try again." };
+  }
+
+  // Insert into trainers table with matching column names
+  const { error: trainersError } = await supabase
+    .from("trainers")
+    .insert({
+      first_name: form.firstName,
+      last_name: form.lastName,
+      chapter: form.chapter,
+      preferred_category: form.training,
+      background: form.description,
+      image: pictureUrl,
+      availability: "pending",  
+  });
+  
+  if (trainersError) {
+    console.error("submitTrainerApplication trainers insert:", trainersError.message);
+    return { success: false, error: "Failed to add to trainers. Please try again." };
+  }
+
+  return { success: true };
+}
