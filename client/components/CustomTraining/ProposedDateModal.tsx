@@ -75,7 +75,7 @@ export const ProposedDateModal = ({
     setSelectedDate(d);
   };
 
-  const handleApply = async () => {
+ const handleApply = async () => {
     setSaving(true);
     const h = ampm === "PM" ? (hours % 12) + 12 : hours % 12;
     const finalDate = new Date(selectedDate);
@@ -84,7 +84,11 @@ export const ProposedDateModal = ({
 
     const { error } = await supabase
       .from("training_request")
-      .update({ proposed_date: isoString })
+      .update({ 
+        proposed_date: isoString,
+        status: "Pending",
+        time_approved: null,
+      })
       .eq("id", requestId);
 
     setSaving(false);
