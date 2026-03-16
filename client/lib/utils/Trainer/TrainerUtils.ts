@@ -313,7 +313,7 @@ export async function submitTrainerApplication(form: {
       preferred_category: form.training,
       background: form.description,
       image: pictureUrl,
-      availability: "pending",  
+      availability: "Pending",  
   });
   
   if (trainersError) {

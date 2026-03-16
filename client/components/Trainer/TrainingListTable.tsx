@@ -13,7 +13,7 @@ function AvailabilityBadge({ availability }: { availability: string | null }) {
     return <span className="text-bni-red font-bold">Fully Booked</span>;
   if (availability === "Accepting Training")
     return <span className="text-green-500 font-bold">Accepting Training</span>;
-  if (availability === "pending")
+  if (availability === "Pending")
     return <span className="text-gray-500 font-semibold">Pending</span>;
   return <span className="text-gray-400 font-semibold">Rejected</span>; 
 }
