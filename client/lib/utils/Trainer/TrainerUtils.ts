@@ -252,6 +252,15 @@ export async function fetchTrainingThumbnail(trainingTitle: string): Promise<str
   return data?.thumbnail ?? "";
 }
 
+export async function fetchChapters(): Promise<string[]> {
+  const { data } = await supabase
+    .from("chapters")
+    .select("name")
+    .order("name");
+
+  return data ? data.map((c: { name: string }) => c.name) : [];
+}
+
 export async function submitTrainerApplication(form: {
   firstName: string;
   lastName: string;
@@ -292,6 +301,24 @@ export async function submitTrainerApplication(form: {
   if (insertError) {
     console.error("submitTrainerApplication insert:", insertError.message);
     return { success: false, error: "Failed to submit application. Please try again." };
+  }
+
+  // Insert into trainers table with matching column names
+  const { error: trainersError } = await supabase
+    .from("trainers")
+    .insert({
+      first_name: form.firstName,
+      last_name: form.lastName,
+      chapter: form.chapter,
+      preferred_category: form.training,
+      background: form.description,
+      image: pictureUrl,
+      availability: "pending",  
+  });
+  
+  if (trainersError) {
+    console.error("submitTrainerApplication trainers insert:", trainersError.message);
+    return { success: false, error: "Failed to add to trainers. Please try again." };
   }
 
   return { success: true };
