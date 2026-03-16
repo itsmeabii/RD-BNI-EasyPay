@@ -252,11 +252,47 @@ export async function fetchTrainingThumbnail(trainingTitle: string): Promise<str
   return data?.thumbnail ?? "";
 }
 
-export async function fetchChapters(): Promise<string[]> {
-  const { data } = await supabase
-    .from("chapters")
-    .select("name")
-    .order("name");
+export async function submitTrainerApplication(form: {
+  firstName: string;
+  lastName: string;
+  chapter: string;
+  training: string;
+  description: string;
+  file: File;
+}): Promise<{ success: boolean; error?: string }> {
+  const fileExt = form.file.name.split(".").pop();
+  const fileName = `${Date.now()}_${form.firstName}_${form.lastName}.${fileExt}`;
 
-  return data ? data.map((c: { name: string }) => c.name) : [];
+  const { error: uploadError } = await supabase.storage
+    .from("trainer_pictures")
+    .upload(fileName, form.file, { upsert: false });
+
+  if (uploadError) {
+    console.error("submitTrainerApplication upload:", uploadError.message);
+    return { success: false, error: "Failed to upload picture. Please try again." };
+  }
+
+  const { data: urlData } = supabase.storage
+    .from("trainer_pictures")
+    .getPublicUrl(fileName);
+
+  const pictureUrl = urlData?.publicUrl ?? "—";
+
+  const { error: insertError } = await supabase
+    .from("trainer_application")
+    .insert({
+      first_name: form.firstName,
+      last_name: form.lastName,
+      chapter: form.chapter,
+      training: form.training,
+      description: form.description,
+      picture_url: pictureUrl,
+    });
+
+  if (insertError) {
+    console.error("submitTrainerApplication insert:", insertError.message);
+    return { success: false, error: "Failed to submit application. Please try again." };
+  }
+
+  return { success: true };
 }
